@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Typing Content</title>
+    <link rel="stylesheet" href="typing.css">
+</head>
+<body>
+    <div class="typing-container">
+        <header>
+            <h1>Type Exam Content</h1>
+            <div class="question-counter">Questions Typed: <span id="question-count">0</span></div>
+        </header>
+        <form>
+            <div class="question-container">
+                <label for="question">Question</label>
+                <textarea id="question" placeholder="Type your question here..." rows="3" required></textarea>
+            </div>
+            <div class="options-container">
+                <label for="option1">Option 1</label>
+                <input type="text" id="option1" placeholder="Option 1" required>
+                
+                <label for="option2">Option 2</label>
+                <input type="text" id="option2" placeholder="Option 2" required>
+                
+                <label for="option3">Option 3</label>
+                <input type="text" id="option3" placeholder="Option 3" required>
+                
+                <label for="option4">Option 4</label>
+                <input type="text" id="option4" placeholder="Option 4" required>
+            </div>
+            <div class="correct-answer-container">
+                <label for="correct-answer">Correct Answer</label>
+                <input type="text" id="correct-answer" placeholder="Correct Answer" required>
+            </div>
+            <div class="function-btn">
+                <button type="button" id="next">Next</button>
+                <button type="button" id="submit">Submit</button>
+            </div>
+        </form>
+    </div>
+
+    <!-- Confirmation Overlay -->
+    <div class="overlay" id="confirmation-overlay">
+        <div class="overlay-content">
+            <h2>Confirm Submission</h2>
+            <p>Are you sure you want to submit?</p>
+            <div class="function-btn">
+                <button type="button" id="confirm-yes">Yes</button>
+                <button type="button" id="confirm-no">No</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let questionCount = 0;
+
+        document.getElementById('next').addEventListener('click', function() {
+            const question = document.getElementById('question').value.trim();
+            if (question !== '') {
+                questionCount++;
+                document.getElementById('question-count').textContent = questionCount;
+                // Clear input fields
+                document.getElementById('question').value = '';
+                document.getElementById('option1').value = '';
+                document.getElementById('option2').value = '';
+                document.getElementById('option3').value = '';
+                document.getElementById('option4').value = '';
+                document.getElementById('correct-answer').value = '';
+            } else {
+                alert('Please type a question before clicking next.');
+            }
+        });
+
+        document.getElementById('submit').addEventListener('click', function() {
+            document.getElementById('confirmation-overlay').style.display = 'flex';
+        });
+
+        document.getElementById('confirm-yes').addEventListener('click', function() {
+            // Redirect to the examinations page
+            window.location.href = 'examinations.html'; // Replace with the actual URL of the examinations page
+        });
+
+        document.getElementById('confirm-no').addEventListener('click', function() {
+            document.getElementById('confirmation-overlay').style.display = 'none';
+        });
+    </script>
+</body>
+</html>

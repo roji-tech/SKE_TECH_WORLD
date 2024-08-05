@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Lesson Plan</title>
+    <link rel="stylesheet" href="lessonNote.css">
+    <style>
+        /* Add CSS for the overlay and popup */
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .popup {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        .popup button {
+            margin: 10px;
+        }
+    </style>
+</head>
+<body>
+    
+    <div class="container">
+        <div class="add-division">
+            <p>Upload Lesson Note</p> 
+        </div>
+
+        <div class="contents">
+            <form>   
+                <div class="inline-f">
+                    <label for="Class" class="class">Class</label>
+                    <input type="text" placeholder="Class" required class="input">
+                </div>
+                <div class="inline-f">
+                    <label for="Subject" class="class">Subject</label>
+                    <input type="text" placeholder="Subject" required class="input">
+                </div>
+                <div class="inline-f">
+                    <label for="uploaded By" class="class">Uploaded By</label>
+                    <input type="text" placeholder="uploaded By" required class="input">
+                </div>
+                <div class="inline-f">
+                    <label for="uploaded file" class="class">Uploaded file</label>
+                    <input type="file">
+                </div>
+            </form>
+        </div>
+
+        <div class="function-btn">
+            <button id="add" onclick="showEditPopup(event)">Upload</button>
+            <button id="cancel">Cancel</button>
+        </div>
+    </div>
+
+    <!-- Popup Overlay -->
+    <div id="overlay" class="overlay">
+        <div class="popup">
+            <p>Are you sure you want to Add this lesson plan?</p>
+            <button onclick="confirmEdit()">Yes</button>
+            <button onclick="closePopup()">No</button>
+        </div>
+    </div>
+
+    <script>
+        function showEditPopup(event) {
+            event.preventDefault();
+            document.getElementById('overlay').style.display = 'flex';
+        }
+
+        function closePopup() {
+            document.getElementById('overlay').style.display = 'none';
+        }
+
+        function confirmEdit() {
+            // Here you can add the logic to actually submit the form or perform the edit action
+            // For now, we'll just close the popup
+            document.getElementById('overlay').style.display = 'none';
+            // You can add the form submission logic here, for example:
+            // document.querySelector('form').submit();
+        }
+    </script>
+</body>
+</html>

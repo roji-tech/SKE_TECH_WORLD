@@ -1,0 +1,175 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+* {
+    font-family: 'Poppins', sans-serif;
+}
+
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background: #f0f0f0;
+    margin: 0;
+}
+
+.container {
+    display: flex;
+    flex-direction: column;
+    width: 80%; /* Adjusted width to 60% */
+    background: #f8f7f7;
+    box-shadow: 0.1px 0.1px 0.3px rgba(0, 0, 0, 0.1);
+    z-index: 90;
+    max-width: 1000px; /* Added max-width to limit container size */
+    margin-top: 30px;
+    margin-bottom: 10px; /* Added margin-top for spacing */
+}
+
+.add-division {
+    padding-left: 20px;
+}
+
+.add-division p {
+    margin: 20px;
+    color: #03a73a;
+    font-weight: unset;
+    font-size: large;
+}
+
+.contents {
+    display: flex;
+    flex-direction: column;
+    border-top: 1px solid #b5adad;
+    border-bottom: 1px solid #b5adad;
+    padding: 20px;
+    background: white;
+}
+
+.inline-f {
+    display: flex;
+    justify-content: space-between;
+    margin: 20px 0;
+}
+
+.class {
+    font-size: larger;
+    width: 20%;
+    text-align: center;
+    display: flex;
+    justify-content: flex-end; /* Adjusted alignment */
+    align-items: center;
+}
+
+.input {
+    width: 70%;
+    height: 35px;
+    background: transparent;
+    border: 1px solid #b5adad;
+    padding: 5px; /* Added padding for input field */
+}
+
+input::placeholder {
+    font-size: large;
+}
+
+.function-btn {
+    text-align: end;
+    padding: 2%;
+}
+
+#add, #cancel {
+    padding: 10px 15px;
+    border-radius: 3px;
+    font-weight: 500;
+}
+
+#add {
+    background: #03a73a;
+    color: white;
+    border: 0;
+}
+
+#cancel {
+    background: #fff;
+    border: 1px solid #b5adad;
+    margin-left: 10px; /* Added margin between buttons */
+}
+
+abbr {
+    text-decoration: none;
+}
+
+/* Styling for image preview */
+/* Styling for image preview */
+#imagePreview {
+    position: absolute; /* Position the image absolutely */
+    top: 135px; /* Adjust top position to overlap with container */
+    left: 315px; /* Adjust right position to overlap with container */
+    border: 1px solid #ccc;
+    border-radius: 50%; /* Make the border circular */
+    overflow: hidden;
+    width: 120px; /* Set fixed width */
+    height: 120px; /* Set fixed height */
+    z-index: 10; /* Ensure image appears above container content */
+}
+
+#imagePreview img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* Ensure the image covers the circle */
+}
+.input-1{
+    width: 71.3%;
+    height: 45px;
+    background: transparent;
+    border: 1px solid #b5adad;
+    padding: 5px; /* Added padding for input field */
+}
+
+input-1::placeholder {
+    font-size: larger;
+}
+/* Styles for Popup Modal */
+.popup {
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: white;
+    padding: 20px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+    text-align: center;
+}
+
+.popup-content {
+    margin-bottom: 10px;
+}
+
+.popup-buttons {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+.popup-btn {
+    padding: 10px 20px;
+    margin: 0 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.popup-btn-success {
+    background-color: #03a73a;
+    color: white;
+    border: none;
+}
+
+.popup-btn-cancel {
+    background-color: #fff;
+    color: #03a73a;
+    border: 1px solid #03a73a;
+}
+

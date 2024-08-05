@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Info</title>
+    <link rel="stylesheet" href="employee.css">
+    <style>
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background-color: #fefefe;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+            text-align: center;
+        }
+
+        .modal-content p {
+            font-size: 1.2em;
+            margin-bottom: 20px;
+        }
+
+        .modal-content button {
+            padding: 8px 20px;
+            margin: 0 5px;
+            cursor: pointer;
+            background-color: #1b94c3;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+        }
+
+        .modal-content button:hover {
+            background-color: #156a86;
+        }
+    </style>
+</head>
+<body>
+
+<!-- Student start -->
+<div class="container">
+    <div class="add-division">
+        <p>Student Info</p>
+    </div>
+    <div class="contents">
+        <form>
+            <div class="inline-f">
+                <label for="Name" class="class">Name</label>
+                <input type="text" id="Name" placeholder="Enter Name" class="input" required>
+            </div>
+            <div class="inline-f">
+                <label for="Gender" class="class">Gender</label>
+                <select id="Gender" class="input-1" required>
+                    <option value="" disabled selected>Select Gender</option>
+                    <option value="Male">Male</option>
+                    <option value="Female">Female</option>
+                </select>
+            </div>
+            <div class="inline-f">
+                <label for="Class" class="class">Class</label>
+                <select id="Class" class="input-1" required>
+                    <option value="" disabled selected>Select Class</option>
+                    <option value="Jss1">Jss1</option>
+                    <option value="Jss2">Jss2</option>
+                    <option value="Jss3">Jss3</option>
+                    <option value="Jss4">Jss4</option>
+                    <option value="Jss5">Jss5</option>
+                </select>
+            </div>
+            <div class="inline-f">
+                <label for="Term" class="class">Term</label>
+                <select id="Term" class="input-1" required>
+                    <option value="" disabled selected>Select Term</option>
+                    <option value="1st">1st</option>
+                    <option value="2nd">2nd</option>
+                    <option value="3rd">3rd</option>
+                </select>
+            </div>
+            <div class="inline-f">
+                <label for="ClassDivision" class="class">Class Division</label>
+                <select id="ClassDivision" class="input-1" required>
+                    <option value="" disabled selected>Select Class Division</option>
+                    <option value="(A)">A</option>
+                    <option value="(B)">B</option>
+                    <option value="(C)">C</option>
+                    <option value="(D)">D</option>
+                </select>
+            </div>
+            <div class="inline-f">
+                <label for="Email" class="class">Email</label>
+                <input type="email" id="Email" placeholder="Enter Email" class="input" required>
+            </div>
+            <div class="inline-f">
+                <label for="Password" class="class">Password</label>
+                <input type="password" id="Password" placeholder="Enter Password" class="input" required>
+            </div>
+            <div class="inline-f">
+                <label for="Picture" class="class">Picture</label>
+                <input type="file" id="Picture" onchange="previewImage(this);">
+                <div id="imagePreview"></div> <!-- Container for preview image -->
+            </div>
+        </form>
+    </div>
+    <div class="function-btn">
+        <button id="add">Add</button>
+        <button id="cancel">Cancel</button>
+    </div>
+</div>
+<!-- Student end -->
+
+<!-- Modal for messages -->
+<div id="myModal" class="modal">
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <p id="modalMessage"></p>
+    </div>
+</div>
+
+<!-- Script for Image Preview and Modal -->
+<script>
+    function previewImage(input) {
+        var preview = document.getElementById('imagePreview');
+        while (preview.firstChild) {
+            preview.removeChild(preview.firstChild);
+        }
+        if (input.files && input.files[0]) {
+            var reader = new FileReader();
+            reader.onload = function(e) {
+                var img = document.createElement('img');
+                img.src = e.target.result;
+                img.style.maxWidth = '100%'; // Ensure image fits container
+                preview.appendChild(img);
+            };
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+
+    function showSuccessMessage(message) {
+        var modal = document.getElementById('myModal');
+        var modalMessage = modal.querySelector('#modalMessage');
+        modalMessage.innerText = message;
+        modal.style.display = "flex";
+    }
+
+    // Close the modal when the user clicks on the close button (x)
+    var closeModal = document.querySelector('.close');
+    closeModal.addEventListener('click', function() {
+        var modal = document.getElementById('myModal');
+        modal.style.display = "none";
+    });
+
+    // Close the modal when the user clicks outside of it
+    window.addEventListener('click', function(event) {
+        var modal = document.getElementById('myModal');
+        if (event.target === modal) {
+            modal.style.display = "none";
+        }
+    });
+
+    // Modal for Add button
+    document.getElementById('add').addEventListener('click', function(event) {
+        event.preventDefault();
+        document.getElementById('updateModal').style.display = 'block';
+    });
+
+    // Modal for Cancel button
+    document.getElementById('cancel').addEventListener('click', function(event) {
+        event.preventDefault();
+        document.getElementById('cancelModal').style.display = 'block';
+    });
+
+    // Logic for update modal
+    document.getElementById('confirmUpdate').addEventListener('click', function() {
+        showSuccessMessage('Student added successfully!');
+        document.getElementById('updateModal').style.display = 'none';
+    });
+
+    document.getElementById('closeUpdateModal').addEventListener('click', function() {
+        document.getElementById('updateModal').style.display = 'none';
+    });
+
+    // Logic for cancel modal
+    document.getElementById('confirmCancel').addEventListener('click', function() {
+        document.getElementById('cancelModal').style.display = 'none';
+    });
+
+    document.getElementById('closeCancelModal').addEventListener('click', function() {
+        document.getElementById('cancelModal').style.display = 'none';
+    });
+
+</script>
+
+<!-- Update Confirmation Modal -->
+<div id="updateModal" class="modal">
+    <div class="modal-content">
+        <p>Are you sure you want to add this student?</p>
+        <button id="confirmUpdate">Yes</button>
+        <button id="closeUpdateModal">No</button>
+    </div>
+</div>
+
+<!-- Cancel Confirmation Modal -->
+<div id="cancelModal" class="modal">
+    <div class="modal-content">
+        <p>Are you sure you want to cancel?</p>
+        <button id="confirmCancel">Yes</button>
+        <button id="closeCancelModal">No</button>
+    </div>
+</div>
+
+</body>
+</html>
