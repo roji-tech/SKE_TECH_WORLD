@@ -1,0 +1,52 @@
+body{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.container {
+    display: flex;
+    flex-direction: column;
+    width: 80%;
+    background: #f8f7f788;
+    box-shadow: .1px .1px .3px;
+    z-index: 100;
+}
+
+
+table{
+    width: 100%;
+    box-sizing: border-box;
+    text-align: left;
+
+}
+
+th{
+    box-sizing: border-box;
+    font-size: 15px;
+    text-transform: capitalize;
+}
+
+table, th, td{
+    border: 1px solid #b5adad;
+    border-collapse: collapse;
+    padding: 1%;
+    box-sizing: border-box;
+
+}
+
+#edit{
+ background: blue;
+ padding: 10px  15px;
+ border: 0;
+ border-radius: 3px;
+ margin: 0 3px;
+}
+
+#delete{
+    background: red;
+    padding: 10px  15px;
+    border: 0;
+    border-radius: 3px;
+    margin: 0 3px;
+}

@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard</title>
+     <!-----------Links------------->
+    <link href='https://cdn.jsdelivr.net/npm/fullcalendar@5.10.2/main.min.css' rel='stylesheet'>
+    <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js'></script>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet">
+    <link rel="stylesheet" href="css/styles.css">
+     <!-----------Links End------------->
+  </head>
+  <body>
+    <div class="grid-container">
+
+      <!-- Header -->
+      <header class="header">
+        <div class="menu-icon" onclick="openSidebar()">
+          <span class="material-icons-outlined">menu</span>
+        </div>
+        <div class="header-left">
+          <span class="material-icons-outlined">logout</span>
+        </div>
+        <div class="header-right">
+          <h2 class="h2">Hi, Teacher</h2>
+          <style>
+            .h2 {
+              color: #fff;
+            }
+          </style>
+        </div>
+      </header>
+      <!-- End Header -->
+
+      <!-- Sidebar -->
+      <aside id="sidebar">
+        <div class="sidebar-title">
+          <div class="sidebar-profile">
+            <img src="/images/profile.jpg" alt="Profile Picture" class="profile-picture">
+            <div class="profile-name-box">
+              <span class="profile-name">John Doe</span>
+            </div>
+          </div>
+        </div>
+                <ul class="sidebar-list">
+                  <li class="sidebar-list-item">
+                    <a href="#">
+                      <span class="material-icons-outlined">videocam</span>
+                 G-meet Classes
+                    </a>
+                    <ul class="dropdown-menu">
+                      <li><a href="/updated/gmeet/gmeet.html">Upload Google Meet Classes ‎ ‎ ‎ ‎ ‎ </a></li>
+                      <li><a href="/updated/gmeet/uploadgmeet.html">Edit Google Meet Classes</a></li>
+                    </ul>
+                  </li>
+                  <ul class="sidebar-list">
+                    <li class="sidebar-list-item">
+                      <a href="#">
+                        <span class="material-icons-outlined">library_books</span>
+                  Lesson Plan
+                      </a>
+                      <ul class="dropdown-menu">
+                        <li><a href="/updated/lessonplan/lessonNote.html">Upload Lesson Plan‎ ‎ ‎ ‎ ‎ </a></li>
+                        <li><a href="/updated/lessonplan/lessonNoteList.html">Lesson Plan List ‎ ‎ ‎ ‎ ‎ </a></li>
+                     
+
+
+
+                      </ul>
+                    </li>
+                    <ul class="sidebar-list">
+                      <li class="sidebar-list-item">
+                        <a href="#">
+                          <span class="material-icons-outlined">note</span>
+                  Notes
+                        </a>
+                        <ul class="dropdown-menu">
+                          <li><a href="/updated/note/uploadNote.html">Add Notes ‎ ‎ ‎ ‎ ‎ </a></li>
+                          <li><a href="/updated/note/TeachersNote.html"> Notes list‎ ‎ ‎ ‎ ‎ </a></li>
+                          
+                          
+                          
+                        </ul>
+                      </li>
+                      <ul class="sidebar-list">
+                        <li class="sidebar-list-item">
+                          <a href="#">
+                            <span class="material-icons-outlined">library_add</span>
+                      Library
+                          </a>
+                          <ul class="dropdown-menu">
+                            <li><a href="/updated/library/library.html">View Library Books ‎ ‎ ‎ ‎ ‎ </a></li>
+                          </ul>
+                        </li>
+                        <ul class="sidebar-list">
+                          <li class="sidebar-list-item">
+                            <a href="#">
+                              <span class="material-icons-outlined">assignment</span>
+                       Examination
+                            </a>
+                            <ul class="dropdown-menu">
+                              <li><a href="/updated/exam/examinations.html">View Examination Papers ‎ ‎ ‎ ‎ ‎ </a></li>
+                             
+                            </ul>
+                          </li>
+                          <ul class="sidebar-list">
+                            <li class="sidebar-list-item">
+                              <a href="#">
+                                <span class="material-icons-outlined">assignment</span>
+                         Homework
+                              </a>
+                              <ul class="dropdown-menu">
+                                <li><a href="/updated/homework/homework.html">Add Assignments ‎ ‎ ‎ ‎ ‎ </a></li>
+                               
+                              </ul>
+                            </li>
+                           
+                            <ul class="sidebar-list">
+                              <li class="sidebar-list-item">
+                                <a href="#">
+                                  <span class="material-icons-outlined">grade</span>
+                          Results
+                                </a>
+                                <ul class="dropdown-menu">
+                                  <li><a href="/updated/results/results.html">Add Results ‎ ‎ ‎ ‎ ‎ </a></li>
+                                </ul>
+                              </li>
+                            
+                                </li>
+         
+
+                                
+        </ul>
+      </aside>
+      <!-- End Sidebar -->
+
+      <!-- Main -->
+      <main class="main-container">
+        <div class="main-title">
+          <h2>DASHBOARD</h2>
+        </div>
+
+        <div class="main-cards">
+          <a href="#" class="card-link card-orange">
+            <div class="card">
+              <div class="card-inner">
+                <h3>TOTAL STUDENTS</h3>
+                <span class="material-icons-outlined">groups</span>
+              </div>
+              <h1>249</h1>
+            </div>
+          </a>
+          <a href="#" class="card-link card-green">
+            <div class="card">
+              <div class="card-inner">
+                <h3>TOTAL TEACHERS</h3>
+                <span class="material-icons-outlined">person</span>
+              </div>
+              <h1>25</h1>
+            </div>
+          </a>
+          <a href="#" class="card-link card-red">
+            <div class="card">
+              <div class="card-inner">
+                <h3>TOTAL CLASSES</h3>
+                <span class="material-icons-outlined">house</span>
+              </div>
+              <h1>1500</h1>
+            </div>
+          </a>
+          <a href="#" class="card-link card-yellow">
+            <div class="card">
+              <div class="card-inner">
+                <h3>PENDING TASKS</h3>
+                <span class="material-icons-outlined">notification_important</span>
+              </div>
+              <h1>56</h1>
+            </div>
+          </a>
+        </div>
+
+        <div class="charts">
+          <div class="charts-card">
+              <h2 class="chart-title">Calendar</h2>
+              <div id="calendar"></div>
+          </div>
+      
+          <div class="charts-card">
+            <h2 class="chart-title">Notification Center</h2>
+            <div id="notification-center">
+                <ul id="notification-list">
+                    <!-- Notifications will be dynamically added here -->
+                </ul>
+            </div>
+        </div>
+   </div>
+   <div id="notification-modal" class="modal">
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <h2 id="modal-title"></h2>
+        <p id="modal-message"></p>
+        <p id="modal-time"></p>
+    </div>
+</div>
+ <script>
+  document.addEventListener('DOMContentLoaded', function() {
+    var calendarEl = document.getElementById('calendar');
+    var calendar = new FullCalendar.Calendar(calendarEl, {
+        initialView: 'dayGridMonth',
+        headerToolbar: {
+            left: 'prev,next today',
+            center: 'title',
+            right: 'dayGridMonth,timeGridWeek,timeGridDay'
+        },
+        editable: true, // Allow event dragging and resizing
+        selectable: true, // Allow date selection
+        select: function(info) {
+            var title = prompt('Enter event title:');
+            if (title) {
+                calendar.addEvent({
+                    title: title,
+                    start: info.start,
+                    end: info.end,
+                    allDay: info.allDay
+                });
+            }
+            calendar.unselect();
+        },
+        eventClick: function(info) {
+            if (confirm("Are you sure you want to delete this event?")) {
+                info.event.remove();
+            }
+        },
+        events: [
+            {
+                title: 'Meeting',
+                start: '2023-05-15T14:30:00',
+                end: '2023-05-15T16:30:00'
+            }
+            // Add more initial events as needed
+        ]
+    });
+    calendar.render();
+});
+function saveEvents() {
+  var events = calendar.getEvents().map(function(e) {
+      return {
+          title: e.title,
+          start: e.start,
+          end: e.end,
+          allDay: e.allDay
+      };
+  });
+  localStorage.setItem('calendarEvents', JSON.stringify(events));
+}
+
+function loadEvents() {
+  var storedEvents = localStorage.getItem('calendarEvents');
+  if (storedEvents) {
+      return JSON.parse(storedEvents);
+  }
+  return [];
+}
+// Sample notifications data
+const notifications = [
+    { title: "New student enrolled", message: "John Doe has joined Class 10A", time: "2 minutes ago", icon: "person_add" },
+    { title: "Exam results published", message: "Grade 12 final exam results are now available", time: "1 hour ago", icon: "assessment" },
+    { title: "Staff meeting reminder", message: "Don't forget the staff meeting at 3 PM today", time: "3 hours ago", icon: "event" },
+    { title: "System maintenance", message: "The system will be down for maintenance tonight from 11 PM to 2 AM", time: "5 hours ago", icon: "build" }
+];
+
+function addNotification(notification) {
+    const list = document.getElementById('notification-list');
+    const item = document.createElement('li');
+    item.className = 'notification-item';
+    item.innerHTML = `
+        <span class="notification-icon material-icons-outlined">${notification.icon}</span>
+        <div class="notification-content">
+            <div class="notification-title">${notification.title}</div>
+            <div class="notification-message">${notification.message}</div>
+            <div class="notification-time">${notification.time}</div>
+        </div>
+    `;
+    list.prepend(item); // Add new notifications at the top
+}
+
+function initNotificationCenter() {
+    notifications.forEach(addNotification);
+}
+
+// Simulate receiving a new notification every 30 seconds
+function simulateNewNotification() {
+    const newNotification = {
+        title: "Warning",
+        message: "Your School Has Not Being Given Tokens for Results",
+        time: "Just now",
+        icon: "notifications_active"
+    };
+    addNotification(newNotification);
+}
+function addNotification(notification) {
+  const list = document.getElementById('notification-list');
+  const item = document.createElement('li');
+  item.className = 'notification-item';
+  item.innerHTML = `
+      <span class="notification-icon material-icons-outlined">${notification.icon}</span>
+      <div class="notification-content">
+          <div class="notification-title">${notification.title}</div>
+          <div class="notification-message">${notification.message}</div>
+          <div class="notification-time">${notification.time}</div>
+      </div>
+  `;
+  
+  item.addEventListener('click', function() {
+      showNotificationDetails(notification);
+  });
+  
+  list.prepend(item); // Add new notifications at the top
+}
+
+function showNotificationDetails(notification) {
+  // You can customize this function to show details in a modal, redirect to a new page, or perform any other action
+  alert(`Notification Details:\n\nTitle: ${notification.title}\nMessage: ${notification.message}\nTime: ${notification.time}`);
+}
+document.addEventListener('DOMContentLoaded', function() {
+
+    initNotificationCenter();
+    setInterval(simulateNewNotification, 30000); // Add a new notification every 30 seconds
+});
+function showNotificationDetails(notification) {
+  const modal = document.getElementById('notification-modal');
+  const modalTitle = document.getElementById('modal-title');
+  const modalMessage = document.getElementById('modal-message');
+  const modalTime = document.getElementById('modal-time');
+  
+  modalTitle.textContent = notification.title;
+  modalMessage.textContent = notification.message;
+  modalTime.textContent = notification.time;
+  
+  modal.style.display = 'block';
+  
+  // Close the modal when clicking on <span> (x)
+  const span = document.getElementsByClassName('close')[0];
+  span.onclick = function() {
+      modal.style.display = 'none';
+  }
+  
+  // Close the modal when clicking outside of it
+  window.onclick = function(event) {
+      if (event.target == modal) {
+          modal.style.display = 'none';
+      }
+  }
+}
+</script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/apexcharts/3.35.5/apexcharts.min.js"></script>
+    <script src='https://cdn.jsdelivr.net/npm/fullcalendar@5.10.2/main.min.js'></script>
+    <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js'></script>
+    <script src="js/scripts.js"></script>
+  </body>
+</html>

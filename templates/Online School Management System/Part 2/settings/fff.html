@@ -1,0 +1,402 @@
+<div class="sidebar">
+    <a href="#profile" class="active" onclick="showSection('profile')">Profile</a>
+    <a href="#logo" onclick="showSection('logo')">Logo</a>
+    <a href="#student-panel" onclick="showSection('student-panel')">Student/Guardian Panel</a>
+    <a href="#notifications" onclick="showSection('notifications')">Notifications</a>
+    <a href="#fees" onclick="showSection('fees')">Fees</a>
+    <a href="#maintenance" onclick="showSection('maintenance')"> School Maintenance</a>
+    <a href="#permissions" onclick="showSection('permissions')">Permissions</a>
+    <a href="#security" onclick="showSection('security')">Security</a>
+    <a href="#exams" onclick="showSection('exams')">Exams</a>
+</div>
+
+<div class="settings-container">
+    <div id="profile" class="section active">
+        <h1>Profile Settings</h1>
+        <form>
+            <div class="form-group">
+                <label for="profile-picture">Profile Picture</label>
+                <input type="file" id="profile-picture" accept="image/*" onchange="previewImage(event)">
+                <div class="image-preview" id="image-preview">
+                    <img id="image-preview-src" src="#" alt="Profile Picture Preview" style="display: none;">
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="username">Username</label>
+                <input type="text" id="username" placeholder="Username" required>
+            </div>
+            <div class="form-group">
+                <label for="email">Email</label>
+                <input type="email" id="email" placeholder="Email" required>
+            </div>
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" placeholder="Password" required>
+            </div>
+            <div class="form-buttons">
+                <button type="submit">Save</button>
+                <button type="reset" onclick="resetImagePreview()">Reset</button>
+            </div>
+        </form>
+    </div>
+
+    <div id="logo" class="section">
+        <h1>Logo Settings</h1>
+        <form id="logo-form">
+            <div class="form-group">
+                <label for="school-logo">School Logo</label>
+                <input type="file" id="school-logo" accept="image/*" onchange="previewLogo(event)">
+                <div class="image-preview" id="logo-preview">
+                    <img id="logo-preview-src" src="#" alt="Logo Preview" style="display: none;">
+                </div>
+            </div>
+            <form id="logo-form">
+                <div class="form-group">
+                    <label for="school-logo">School Banner</label>
+                    <input type="file" id="school-logo" accept="image/*" onchange="previewLogo(event)">
+                    <div class="image-preview" id="logo-preview">
+                        <img id="logo-preview-src" src="#" alt="Logo Preview" style="display: none;">
+                    </div>
+                </div>
+            <div class="form-group">
+                <label for="logo-position">Logo Position</label>
+                <select id="logo-position">
+                    <option value="left">Left</option>
+                    <option value="center">Center</option>
+                    <option value="right">Right</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="logo-position">Banner Position</label>
+                <select id="logo-position">
+                    <option value="left">Left</option>
+                    <option value="center">Center</option>
+                    <option value="right">Right</option>
+                </select>
+            </div>
+            <div class="form-buttons">
+                <button type="submit">Save</button>
+                <button type="reset" onclick="resetLogoPreview()">Reset</button>
+            </div>
+        </form>
+    </div>
+
+    <div id="student-panel" class="section">
+        <h1>Overall Dashboard</h1>
+        <form id="student-panel-form">
+            <div class="form-group">
+                <label for="panel-theme">Dashboard Theme</label>
+                <select id="panel-theme">
+                    <option value="light">Light</option>
+                    <option value="dark">Dark</option>
+                    <option value="custom">Custom</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="custom-color">Custom Theme Color</label>
+                <input type="color" id="custom-color">
+            </div>
+            <div class="form-group">
+                <label for="dashboard-widgets">Dashboard Widgets</label>
+                <div class="checkbox-group">
+                    <label><input type="checkbox" name="widgets" value="calendar"> Calendar</label>
+                    <label><input type="checkbox" name="widgets" value="announcements"> Announcements</label>
+                    <label><input type="checkbox" name="widgets" value="grades"> Grades</label>
+                    <label><input type="checkbox" name="widgets" value="attendance"> Attendance</label>
+                </div>
+            </div>
+            <div class="form-buttons">
+                <button type="submit">Save</button>
+                <button type="reset">Reset</button>
+            </div>
+        </form>
+    </div>
+
+    <div id="notifications" class="section">
+        <h1>Notifications Settings</h1>
+        <form id="notifications-form">
+            <div class="form-group">
+                <label>Notification Preferences</label>
+                <div class="checkbox-group">
+                    <label><input type="checkbox" name="notify" value="email"> Email</label>
+                    <label><input type="checkbox" name="notify" value="sms"> SMS</label>
+                    <label><input type="checkbox" name="notify" value="push"> Push Notifications</label>
+                </div>
+            </div>
+            <div class="form-buttons">
+                <button type="submit">Save</button>
+                <button type="reset">Reset</button>
+            </div>
+        </form>
+    </div>
+    
+    <div id="fees" class="section">
+        <h1>Fees Settings</h1>
+        <form id="fees-form">
+            <div class="form-group">
+                <label for="payment-gateway">Payment Gateway</label>
+                <select id="payment-gateway">
+                    <option value="paypal">PayPal</option>
+                    <option value="stripe">Stripe</option>
+                    <option value="square">Access</option>
+                    <option value="paypal">OPay</option>
+                    <option value="stripe">Palmpay</option>
+                    <option value="square">GTank</option>
+                    <option value="paypal">Fidelity</option>
+                    <option value="stripe">Zenith</option>
+                    <option value="square">Other</option>
+                </select>
+            </div>
+            <div class="form-buttons">
+                <button type="submit">Save</button>
+                <button type="reset">Reset</button>
+            </div>
+        </form>
+    </div>
+    
+    <div id="fees" class="section">
+        <h1>Fees Settings</h1>
+        <form id="fees-form">
+            <div class="form-group">
+                <label for="payment-gateway">Payment Gateway</label>
+                <select id="payment-gateway">
+                    <option value="paypal">PayPal</option>
+                    <option value="stripe">Stripe</option>
+                    <option value="square">Square</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="currency">Currency</label>
+                <select id="currency">
+                    <option value="usd">USD</option>
+                    <option value="eur">EUR</option>
+                    <option value="gbp">GBP</option>
+                    <!-- Add more currency options as needed -->
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="late-fee">Late Fee Percentage</label>
+                <input type="number" id="late-fee" min="0" max="100" step="0.1" value="5">
+            </div>
+            <div class="form-group">
+                <label for="payment-reminder">Payment Reminder (days before due date)</label>
+                <input type="number" id="payment-reminder" min="1" max="30" value="7">
+            </div>
+            <div class="form-group">
+                <label>Payment Methods</label>
+                <div class="checkbox-group">
+                    <label><input type="checkbox" name="payment-methods" value="credit-card"> Credit Card</label>
+                    <label><input type="checkbox" name="payment-methods" value="debit-card"> Debit Card</label>
+                    <label><input type="checkbox" name="payment-methods" value="bank-transfer"> Bank Transfer</label>
+                    <label><input type="checkbox" name="payment-methods" value="cash"> Cash</label>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="invoice-prefix">Invoice Prefix</label>
+                <input type="text" id="invoice-prefix" placeholder="e.g., INV-">
+            </div>
+            <div class="form-buttons">
+                <button type="submit">Save</button>
+                <button type="reset">Reset</button>
+            </div>
+        </form>
+    </div>
+    
+    <script>
+        document.getElementById('school-logo').addEventListener('change', function(event) {
+            previewImage(event, 'school-logo-preview');
+        });
+    
+        document.getElementById('school-banner').addEventListener('change', function(event) {
+            previewImage(event, 'school-banner-preview');
+        });
+    
+        function previewImage(event, previewElementId) {
+            var reader = new FileReader();
+            reader.onload = function() {
+                var output = document.getElementById(previewElementId);
+                output.innerHTML = '<img src="' + reader.result + '" alt="Image Preview" style="max-width: 100%; height: auto;">';
+            };
+            reader.readAsDataURL(event.target.files[0]);
+        }
+    </script>
+    
+    <style>
+        .form-group {
+            margin-bottom: 15px;
+        }
+    
+        .form-buttons {
+            margin-top: 20px;
+        }
+    
+        .image-preview {
+            margin-top: 10px;
+        }
+    
+        .image-preview img {
+            border: 1px solid #ccc;
+            padding: 5px;
+        }
+    </style>
+    
+    <div id="permissions" class="section">
+        <h1>Permissions Settings</h1>
+        <form id="permissions-form">
+            <div class="form-group">
+                <label for="role-select">Select Role</label>
+                <select id="role-select">
+                    <option value="admin">Administrator</option>
+                    <option value="teacher">Teacher</option>
+                    <option value="student">Student</option>
+
+                </select>
+            </div>
+            <div id="permissions-list">
+                <h3>Permissions for <span id="selected-role">Administrator</span></h3>
+                <div class="permission-group">
+                    <h4>Student Management</h4>
+                    <div class="checkbox-group">
+                        <label><input type="checkbox" name="perm-student" value="view"> View Students</label>
+                        <label><input type="checkbox" name="perm-student" value="add"> Add Students</label>
+                        <label><input type="checkbox" name="perm-student" value="edit"> Edit Students</label>
+                        <label><input type="checkbox" name="perm-student" value="delete"> Delete Students</label>
+                    </div>
+                </div>
+                <div class="permission-group">
+                    <h4>Course Management</h4>
+                    <div class="checkbox-group">
+                        <label><input type="checkbox" name="perm-course" value="view"> View Courses</label>
+                        <label><input type="checkbox" name="perm-course" value="add"> Add Courses</label>
+                        <label><input type="checkbox" name="perm-course" value="edit"> Edit Courses</label>
+                        <label><input type="checkbox" name="perm-course" value="delete"> Delete Courses</label>
+                    </div>
+                </div>
+                <div class="permission-group">
+                    <h4>Grade Management</h4>
+                    <div class="checkbox-group">
+                        <label><input type="checkbox" name="perm-grade" value="view"> View Grades</label>
+                        <label><input type="checkbox" name="perm-grade" value="add"> Add Grades</label>
+                        <label><input type="checkbox" name="perm-grade" value="edit"> Edit Grades</label>
+                    </div>
+                </div>
+                <!-- Add more permission groups as needed -->
+            </div>
+            <div class="form-buttons">
+                <button type="submit">Save</button>
+                <button type="reset">Reset</button>
+            </div>
+        </form>
+    </div>
+
+    <div id="security" class="section">
+        <h1>Security Settings</h1>
+        <form id="security-form">
+            <div class="form-group">
+                <label for="password-policy">Password Policy</label>
+                <select id="password-policy">
+                    <option value="standard">Standard (8+ characters, 1 uppercase, 1 lowercase, 1 number)</option>
+                    <option value="strong">Strong (12+ characters, 1 uppercase, 1 lowercase, 1 number, 1 special)</option>
+                    <option value="custom">Custom</option>
+                </select>
+            </div>
+            <div id="custom-password-policy" style="display: none;">
+                <div class="form-group">
+                    <label for="min-length">Minimum Length</label>
+                    <input type="number" id="min-length" min="8" value="8">
+                </div>
+                <div class="form-group">
+                    <label>Requirements</label>
+                    <div class="checkbox-group">
+                        <label><input type="checkbox" name="password-req" value="uppercase"> Uppercase Letter</label>
+                        <label><input type="checkbox" name="password-req" value="lowercase"> Lowercase Letter</label>
+                        <label><input type="checkbox" name="password-req" value="number"> Number</label>
+                        <label><input type="checkbox" name="password-req" value="special"> Special Character</label>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="session-timeout">Session Timeout (minutes)</label>
+                <input type="number" id="session-timeout" min="5" max="1440" value="30">
+            </div>
+            <div class="form-group">
+                <label for="login-attempts">Max Failed Login Attempts</label>
+                <input type="number" id="login-attempts" min="3" max="10" value="5">
+            </div>
+            <div class="form-group">
+                <label for="2fa">Two-Factor Authentication</label>
+                <div class="toggle-switch">
+                    <input type="checkbox" id="2fa">
+                    <label for="2fa"></label>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="ip-whitelist">IP Whitelist (one per line)</label>
+                <textarea id="ip-whitelist" rows="4" placeholder="Enter allowed IP addresses"></textarea>
+            </div>
+            <div class="form-group">
+                <label for="ssl-mode">SSL Mode</label>
+                <select id="ssl-mode">
+                    <option value="disabled">Disabled</option>
+                    <option value="optional">Optional</option>
+                    <option value="required">Required</option>
+                </select>
+            </div>
+            <div class="form-buttons">
+                <button type="submit">Save</button>
+                <button type="reset">Reset</button>
+            </div>
+        </form>
+    </div>
+
+    <div id="exams" class="section">
+        <h1>Exam Settings</h1>
+        <form id="exam-settings-form">
+            <div class="form-group">
+                <label for="show-exam-results">Allow Students to See Exam Results</label>
+                <div class="toggle-switch">
+                    <input type="checkbox" id="show-exam-results">
+                    <label for="show-exam-results"></label>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="exam-results-date">Schedule Date for Exam Results Release</label>
+                <input type="date" id="exam-results-date">
+            </div>
+            <div class="form-group">
+                <label for="exam-retake-policy">Exam Retake Policy</label>
+                <select id="exam-retake-policy">
+                    <option value="none">No Retakes Allowed</option>
+                    <option value="once">One Retake Allowed</option>
+                    <option value="multiple">Multiple Retakes Allowed</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="exam-time-limit">Default Exam Time Limit (minutes)</label>
+                <input type="number" id="exam-time-limit" min="15" max="240" value="60">
+            </div>
+            <div class="form-group">
+                <label for="exam-grading-scale">Exam Grading Scale</label>
+                <select id="exam-grading-scale">
+                    <option value="percentage">Percentage</option>
+                    <option value="letter">Letter Grade</option>
+                    <option value="gpa">GPA Scale</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Exam Notification Preferences</label>
+                <div class="checkbox-group">
+                    <label><input type="checkbox" name="exam-notify" value="email"> Email</label>
+                    <label><input type="checkbox" name="exam-notify" value="sms"> SMS</label>
+                    <label><input type="checkbox" name="exam-notify" value="push"> Push Notifications</label>
+                </div>
+            </div>
+            <div class="form-buttons">
+                <button type="submit">Save</button>
+                <button type="reset">Reset</button>
+            </div>
+        </form>
+    </div>
+
+    <!-- ... other sections ... -->
+</div>

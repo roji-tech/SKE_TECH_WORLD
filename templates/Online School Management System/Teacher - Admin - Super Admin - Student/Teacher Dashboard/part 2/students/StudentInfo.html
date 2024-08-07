@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>studentInfo</title>
+    <link rel="stylesheet" href="studentInfo.css">
+
+</head>
+<body>
+
+    <!-- student start -->
+    <div class="container">
+
+        <div class="add-division">
+
+           <p> Student Info</p> 
+
+        </div>
+
+        <div class="contents">
+        
+        <form >   
+            <div class="inline-f"> <label for="Class "  class="class">Name </label>  <input type="text"  placeholder="Name" class="input" required> </div>
+           
+            <div class="inline-f"> <label for="Gender"  class="class">Gender  </label>   <input list="Gender" name="Gender" placeholder="Select" required class="input"> </div>
+
+            <datalist id="Gender">
+    
+                <option value="Male">
+                <option value="female">
+    
+            </datalist>
+
+            <div class="inline-f"> <label for=" Date of birth "  class="class"> Date of birth </label>  <input type="date"  placeholder="Select" class="input" required> </div>
+
+            <div class="inline-f"> <label for="Admission Date "  class="class"><abbr title="Admission date">Admn. date</abbr></label>  <input type="date"  placeholder="Select" class="input" required> </div>
+
+            <div class="inline-f"> <label for="Class "  class="class">Class </label>  <input list="class"  placeholder="Select" class="input" required> </div>
+
+            <datalist id="class">
+
+                <option value="Jss1">
+                <option value="Jss2">
+                <option value="Jss3">
+                <option value="Jss4">
+                <option value="Jss5">
+
+            </datalist>
+
+           <div class="inline-f"> <label for="Academic year "  class="class">Academic year</label>  <input list="academic"  placeholder="Select" class="input" required> </div>
+
+            <datalist id="academic">
+
+                <option value="2023/2024">
+                <option value="2023/2024">
+                <option value="2023/2024">
+                <option value="2023/2024">
+
+            </datalist>
+
+           <div class="inline-f"> <label for="Term "  class="class">Term </label>  <input list="term"  placeholder="Select" class="input" required> </div>
+
+           <datalist id="term">
+
+            <option value="1st">
+            <option value="2nd">
+            <option value="3rd">
+
+        </datalist>
+          
+           <div class="inline-f"> <label for="Class Division "  class="class">Class Division </label>  <input type="text"  placeholder="Select" class="input" required> </div>
+           
+           <div class="inline-f"> <label for="Registration No. "  class="class"><abbr title="Registration number">Reg no.</abbr> </label>  <input type="number"  placeholder="number" class="input" required> </div>
+         
+           <div class="inline-f"> <label for="email "  class="class">Email </label>  <input type="email"  placeholder="email" class="input" required> </div>
+
+           <div class="inline-f"> <label for="Password "  class="class">Password </label>  <input type="password"  placeholder="Password" class="input" required> </div>
+
+           <div class="inline-f"> <label for="picture "  class="class">picture  </label>  <input type="file" > </div>
+
+        </form> 
+
+
+
+        </div>
+        
+        <div class="function-btn">
+
+            <button id="add">Add</button>
+            <button id="cancel">cancel</button>
+
+        </div>
+        
+    </div>
+
+    <!-- students end -->
+
+
+</body>
+</html>

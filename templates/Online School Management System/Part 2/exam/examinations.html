@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Examinations</title>
+    <link rel="stylesheet" href="examinations.css">
+</head>
+<body>
+    <div class="exam-container">
+        <header>
+            <h1>Examinations</h1>
+            <button id="openOverlay">Create New Exam</button>
+        </header>
+        <div class="search-row">
+            <input type="search" placeholder="Search Examinations">
+        </div>
+        <div class="exam-cards" id="examCards">
+            <!-- Existing Exam Cards -->
+            <div class="exam-card">
+                <h2>Mathematics Final Exam</h2>
+                <p>Class: JSS1</p>
+                <p>Date: 12/07/2023</p>
+                <div class="card-actions">
+                    <button class="edit-btn">Edit</button>
+                    <button class="delete-btn">Delete</button>
+                </div>
+            </div>
+            <!-- Additional Exam Cards will be inserted here -->
+        </div>
+    </div>
+
+    <!-- Main Overlay -->
+    <div class="overlay" id="uploadOverlay" style="display: none;">
+        <div class="overlay-content">
+            <span class="close" id="closeOverlay">&times;</span>
+            <form id="examForm">
+                <div class="inline-f">
+                    <label for="examTitle">Exam Title</label>
+                    <input type="text" id="examTitle" placeholder="Exam Title" required class="input">
+                </div>
+                <div class="inline-f">
+                    <label for="class">Class</label>
+                    <input type="text" id="class" placeholder="Class" required class="input">
+                </div>
+                <div class="inline-f">
+                    <label for="examDate">Date</label>
+                    <input type="date" id="examDate" required class="input">
+                </div>
+                <div class="inline-f">
+                    <label for="uploadType">Upload Type</label>
+                    <select id="uploadType" required class="input">
+                        <option value="" disabled selected>Select Upload Type</option>
+                        <option value="typing">Type Content</option>
+                    </select>
+                </div>
+                <div id="uploadContent">
+                    <!-- PDF Upload -->
+                    <div class="inline-f pdf-upload" style="display: none;">
+                        <label for="pdfFile">PDF File</label>
+                        <input type="file" id="pdfFile" accept=".pdf" class="input">
+                    </div>
+                    <!-- Typing Content -->
+                    <div class="inline-f typing-content" style="display: none;">
+                        <button type="button" id="confirmTyping">Type Content</button>
+                    </div>
+                </div>
+                <div class="function-btn">
+                    <button type="submit" id="add">Save</button>
+                    <button type="button" id="cancel">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Confirmation Overlay -->
+    <div class="overlay" id="confirmOverlay" style="display: none;">
+        <div class="overlay-content">
+            <span class="close" id="closeConfirmOverlay">&times;</span>
+            <h2>Are you sure you want to type the content?</h2>
+            <div class="function-btn">
+                <button type="button" id="proceedTyping">Proceed</button>
+                <button type="button" id="cancelConfirm">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const openOverlay = document.getElementById('openOverlay');
+        const uploadOverlay = document.getElementById('uploadOverlay');
+        const closeOverlay = document.getElementById('closeOverlay');
+        const cancelOverlay = document.getElementById('cancel');
+        const uploadType = document.getElementById('uploadType');
+        const pdfUpload = document.querySelector('.pdf-upload');
+        const typingContent = document.querySelector('.typing-content');
+        const confirmTyping = document.getElementById('confirmTyping');
+        const confirmOverlay = document.getElementById('confirmOverlay');
+        const closeConfirmOverlay = document.getElementById('closeConfirmOverlay');
+        const cancelConfirm = document.getElementById('cancelConfirm');
+        const proceedTyping = document.getElementById('proceedTyping');
+        const examForm = document.getElementById('examForm');
+        const examCards = document.getElementById('examCards');
+
+        openOverlay.addEventListener('click', function() {
+            uploadOverlay.style.display = 'block';
+        });
+
+        closeOverlay.addEventListener('click', function() {
+            uploadOverlay.style.display = 'none';
+        });
+
+        cancelOverlay.addEventListener('click', function() {
+            uploadOverlay.style.display = 'none';
+        });
+
+        uploadType.addEventListener('change', function() {
+            if (uploadType.value === 'pdf') {
+                pdfUpload.style.display = 'block';
+                typingContent.style.display = 'none';
+            } else if (uploadType.value === 'typing') {
+                pdfUpload.style.display = 'none';
+                typingContent.style.display = 'block';
+            } else {
+                pdfUpload.style.display = 'none';
+                typingContent.style.display = 'none';
+            }
+        });
+
+        confirmTyping.addEventListener('click', function() {
+            confirmOverlay.style.display = 'block';
+        });
+
+        closeConfirmOverlay.addEventListener('click', function() {
+            confirmOverlay.style.display = 'none';
+        });
+
+        cancelConfirm.addEventListener('click', function() {
+            confirmOverlay.style.display = 'none';
+        });
+
+        proceedTyping.addEventListener('click', function() {
+            // Redirect to another page for typing content
+            window.location.href = 'typing.html';
+        });
+
+        examForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const title = document.getElementById('examTitle').value;
+            const className = document.getElementById('class').value;
+            const date = document.getElementById('examDate').value;
+
+            const newCard = document.createElement('div');
+            newCard.classList.add('exam-card');
+            newCard.innerHTML = `
+                <h2>${title}</h2>
+                <p>Class: ${className}</p>
+                <p>Date: ${date}</p>
+                <div class="card-actions">
+                    <button class="edit-btn">Edit</button>
+                    <button class="delete-btn">Delete</button>
+                </div>
+            `;
+
+            examCards.appendChild(newCard);
+
+            uploadOverlay.style.display = 'none';
+
+            // Clear form fields
+            examForm.reset();
+
+            // Add event listeners for the new buttons
+            newCard.querySelector('.edit-btn').addEventListener('click', function() {
+                window.location.href = 'typing.html';
+            });
+            newCard.querySelector('.delete-btn').addEventListener('click', function() {
+                newCard.remove();
+            });
+        });
+
+        document.querySelectorAll('.edit-btn').forEach(button => {
+            button.addEventListener('click', function() {
+                window.location.href = 'typing.html';
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Academic Session</title>
+    <link rel="stylesheet" href="session.css">
+    <style>
+        /* Add some basic styles for the overlay */
+        .overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000; /* Ensure the overlay is on top */
+        }
+        .overlay-content {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            width: 300px;
+        }
+        .overlay-buttons {
+            margin-top: 20px;
+        }
+        .overlay-buttons button {
+            margin: 0 10px;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- add class start -->
+    <div class="container">
+
+        <div class="add-division">
+           <p><span id="plus"></span>Add Academic Session</p> 
+        </div>
+
+        <div class="contents">
+            <h3>Academic Session <span id="text">(Example: 2023-2024)</span><span id="ast">*</span></h3> 
+
+            <div class="forms">
+                <input type="text" id="start-year" placeholder="Session start year">
+                <span id="dash">-</span>
+                <input type="text" id="end-year" placeholder="Session end year">
+            </div>
+
+            <div class="forms">
+                <input type="date" id="session-date" placeholder="Session date">
+            </div>
+        </div>
+
+        <div class="function-btn">
+            <button id="add">Add</button>
+        </div>
+
+    </div>
+    <!-- add class end -->
+
+    <!-- overlay start -->
+    <div id="overlay" class="overlay">
+        <div class="overlay-content">
+            <p>Are you sure you want to add this session?</p>
+            <div id="session-details"></div>
+            <div class="overlay-buttons">
+                <button id="confirm">Yes</button>
+                <button id="cancel">No</button>
+            </div>
+        </div>
+    </div>
+    <!-- overlay end -->
+
+    <script>
+        const addButton = document.getElementById('add');
+        const overlay = document.getElementById('overlay');
+        const cancelButton = document.getElementById('cancel');
+        const confirmButton = document.getElementById('confirm');
+        const sessionDetails = document.getElementById('session-details');
+
+        addButton.addEventListener('click', () => {
+            const startYear = document.getElementById('start-year').value;
+            const endYear = document.getElementById('end-year').value;
+            const sessionDate = document.getElementById('session-date').value;
+
+            if (startYear && endYear && sessionDate) {
+                sessionDetails.innerHTML = `
+                    <p>Start Year: ${startYear}</p>
+                    <p>End Year: ${endYear}</p>
+                    <p>Date: ${sessionDate}</p>
+                `;
+                overlay.style.display = 'flex';
+            } else {
+                alert('Please fill in all fields.');
+            }
+        });
+
+        cancelButton.addEventListener('click', () => {
+            overlay.style.display = 'none';
+        });
+
+        confirmButton.addEventListener('click', () => {
+            // Add your logic to handle the session addition here
+            alert('Session added!');
+            overlay.style.display = 'none';
+        });
+    </script>
+</body>
+</html>
