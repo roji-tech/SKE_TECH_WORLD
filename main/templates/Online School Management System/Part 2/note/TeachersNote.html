@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teachers Note</title>
+    <link rel="stylesheet" href="teachersnote.css">
+</head>
+<body>
+    <div class="table-datas">
+        <div class="sub-rows">
+            <p>Note List</p>
+           
+        </div>
+        <div class="padd">
+            <div class="search-row">
+                <span>
+                    <select name="class" id="">
+                        <option value="10">10</option>
+                        <option value="9">9</option>
+                        <option value="8">8</option>
+                        <option value="7">7</option>
+                        <option value="6">6</option>
+                        <option value="5">5</option>
+                        <option value="4">4</option>
+                        <option value="3">3</option>
+                        <option value="2">2</option>
+                        <option value="1">1</option>
+                    </select>
+                </span>
+                <input type="search" placeholder="Search">
+            </div>
+            <table>
+                <tr>
+                    <th>No</th>
+                    <th>Subject</th>
+                    <th>Class</th>
+                    <th>Topic</th>
+                    <th>Uploaded By</th>
+                    <th>Download</th>
+                    <th>Options</th>
+                </tr>
+                <tr>
+                    <td>1</td>
+                    <td>Computer Science</td>
+                    <td>JSS1</td>
+                    <td>Social Studies</td>
+                    <td>Demo Teachers</td>
+                    <td><a href="#">Download</a></td>
+                    <td><span id="edit">Edit</span><span id="del">Delete</span></td>
+                </tr>
+            </table>
+        </div>    
+    </div>
+
+    <!-- Overlay -->
+    <div class="overlay" id="uploadOverlay">
+        <div class="overlay-content">
+            <span class="close" id="closeOverlay">&times;</span>
+            <form>
+                <div class="inline-f">
+                    <label for="subject" class="class">Subject</label>
+                    <input type="text" id="subject" placeholder="Subject" class="input" required>
+                </div>
+                <div class="inline-f">
+                    <label for="class" class="class">Class</label>
+                    <input type="text" id="class" placeholder="Class" required class="input">
+                </div>
+                <div class="inline-f">
+                    <label for="topic" class="class">Topic</label>
+                    <input type="text" id="topic" placeholder="Topic" required class="input">
+                </div>
+                <div class="inline-f">
+                    <label for="uploadedBy" class="class">Uploaded By</label>
+                    <input type="text" id="uploadedBy" placeholder="Uploaded By" required class="input">
+                </div>
+                <div class="inline-f">
+                    <label for="uploadedFile" class="class">Uploaded File</label>
+                    <input type="file" id="uploadedFile" class="input">
+                </div>
+                <div class="function-btn">
+                    <button type="submit" id="add">Save</button>
+                    <button type="button" id="cancel">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        const openOverlay = document.getElementById('openOverlay');
+        const uploadOverlay = document.getElementById('uploadOverlay');
+        const closeOverlay = document.getElementById('closeOverlay');
+        const cancelOverlay = document.getElementById('cancel');
+
+        openOverlay.addEventListener('click', function() {
+            uploadOverlay.style.display = 'block';
+        });
+
+        closeOverlay.addEventListener('click', function() {
+            uploadOverlay.style.display = 'none';
+        });
+
+        cancelOverlay.addEventListener('click', function() {
+            uploadOverlay.style.display = 'none';
+        });
+    </script>
+</body>
+</html>

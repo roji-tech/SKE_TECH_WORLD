@@ -1,0 +1,123 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap');
+
+* {
+    font-family: 'Poppins', sans-serif;
+}
+
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    margin: 0;
+    min-height: 100vh;
+    background: #f4f4f4;
+}
+
+table {
+    width: 95%;
+    box-sizing: border-box;
+}
+
+th {
+    box-sizing: border-box;
+    font-size: 15px;
+    text-transform: capitalize;
+    background: rgb(0, 204, 255);
+}
+
+table, th, td {
+    border: 1px solid #b5adad;
+    border-collapse: collapse;
+    padding: 3px;
+    text-align: center;
+    box-sizing: border-box;
+}
+
+td {
+    background: rgb(223, 218, 218);
+}
+
+#btn-1 {
+    background: rgb(242, 245, 5);
+    padding: 10px;
+    border-radius: 5px;
+}
+
+#btn-2 {
+    background: rgb(250, 19, 19);
+    padding: 10px;
+    border-radius: 5px;
+    color: white;
+    cursor: pointer;
+}
+
+a {
+    text-decoration: none;
+    color: white;
+}
+
+.overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    justify-content: center;
+    align-items: center;
+}
+
+.overlay-content {
+    background: white;
+    padding: 20px;
+    border-radius: 5px;
+    text-align: center;
+}
+
+#confirm-delete, #cancel-delete {
+    padding: 10px 15px;
+    margin: 10px;
+    border-radius: 5px;
+    border: none;
+    cursor: pointer;
+}
+
+#confirm-delete {
+    background: #f00;
+    color: white;
+}
+
+#cancel-delete {
+    background: #ccc;
+    color: black;
+}
+#imagePreview {
+    position: absolute; /* Position the image absolutely */
+    top: 200px; /* Adjust top position to overlap with container */
+    left: 315px; /* Adjust right position to overlap with container */
+    border: 1px solid #ccc;
+    border-radius: 50%; /* Make the border circular */
+    overflow: hidden;
+    width: 120px; /* Set fixed width */
+    height: 120px; /* Set fixed height */
+    z-index: 10; /* Ensure image appears above container content */
+}
+
+#imagePreview img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* Ensure the image covers the circle */
+}
+.input-1{
+    width: 71.3%;
+    height: 45px;
+    background: transparent;
+    border: 1px solid #b5adad;
+    padding: 5px; /* Added padding for input field */
+}
+
+input-1::placeholder {
+    font-size: larger;
+}

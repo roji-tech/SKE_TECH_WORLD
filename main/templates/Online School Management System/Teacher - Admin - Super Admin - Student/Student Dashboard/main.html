@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Exam Results</title>
+    <link rel="stylesheet" href="main.css">
+</head>
+<body>
+    <div class="container">
+        <form class="results-form" id="resultsForm">
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="class">Class:</label>
+                    <select id="class" name="class" required>
+                        <option value="" disabled selected>Select Class</option>
+                        <option value="JSS 1">JSS 1</option>
+                        <option value="JSS 2">JSS 2</option>
+                        <option value="JSS 3">JSS 3</option>
+                        <option value="SS 1">SS 1</option>
+                        <option value="SS 2">SS 2</option>
+                        <option value="SS 3">SS 3</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="exam">Term:</label>
+                    <select id="exam" name="exam" required>
+                        <option value="" disabled selected>Select Term</option>
+                        <option value="term1">Term 1</option>
+                        <option value="term2">Term 2</option>
+                        <option value="term3">Term 3</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="class-division">Class Division:</label>
+                <select id="class-division" name="class-division" required>
+                    <option value="" disabled selected>Select Division</option>
+                    <option value="A">A</option>
+                    <option value="B">B</option>
+                    <option value="C">C</option>
+                    <option value="D">D</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="serial-key">Serial Key:</label>
+                <input type="text" id="serial-key" name="serial-key" maxlength="17" required pattern="[A-Za-z0-9]{5}-[A-Za-z0-9]{5}-[A-Za-z0-9]{5}">
+            </div>
+            <div class="form-group">
+                <label for="regi-no">Reg No:</label>
+                <input type="text" id="regi-no" name="regi-no" required>
+            </div>
+            <div class="form-group">
+                <label for="year">Select Year:</label>
+                <select id="year" name="year" required>
+                    <option value="" disabled selected>Select Year</option>
+                    <option value="2023">2023</option>
+                    <!-- Add more options as needed -->
+                </select>
+            </div>
+            <button type="submit" class="results-btn">View Results</button>
+        </form>
+    </div>
+
+    <!-- Popup HTML Structure -->
+    <div id="popup" class="popup">
+        <div class="popup-content">
+            <span class="close" onclick="closePopup()">&times;</span>
+            <div class="popup-details">
+                <img src="/others/assets/images/profile.jpg" alt="Profile Picture" class="profile-pic">
+                <div class="details">
+                    <p id="popup-name">Name: John Doe</p>
+                    <p id="popup-class">Class: </p>
+                    <p id="popup-class-division">Class Division: </p>
+                    <p id="popup-regi-no">Reg No: </p>
+                    <p id="popup-age">Age: 16</p>
+                    <p id="popup-gender">Gender: Male</p>
+                    <p id="popup-school">School: XYZ High School</p>
+                </div>
+            </div>
+            <button class="results-btn popup-btn" onclick="redirectToResults()">View Results</button>
+        </div>
+    </div>
+
+    <style>
+        .results-btn {
+            color: white;
+            text-decoration: none;
+            font-weight: bold;
+            background-color: #4CAF50;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+
+        .results-btn:hover {
+            background-color: #45a049;
+        }
+
+        /* Popup Styles */
+        .popup {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.4);
+            animation: fadeIn 0.5s;
+        }
+
+        .popup-content {
+            background-color: #fefefe;
+            margin: 5% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+            max-width: 600px;
+            position: relative;
+            animation: slideDown 0.5s;
+            border-radius: 10px;
+            height: auto;
+        }
+
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .popup-details {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 20px;
+        }
+
+        .profile-pic {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            margin-right: 20px;
+        }
+
+        .details {
+            flex: 1;
+        }
+
+        .popup-btn {
+            display: block;
+            width: 100%;
+            text-align: center;
+            color: white;
+            background-color: #4CAF50;
+            padding: 10px 20px;
+            margin-top: 20px;
+            border: none;
+            cursor: pointer;
+            text-decoration: none;
+            font-weight: bold;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+
+        .popup-btn:hover {
+            background-color: #45a049;
+        }
+
+        @keyframes fadeIn {
+            from {opacity: 0;}
+            to {opacity: 1;}
+        }
+
+        @keyframes slideDown {
+            from {transform: translateY(-50px);}
+            to {transform: translateY(0);}
+        }
+    </style>
+
+    <script>
+        document.getElementById('resultsForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            if (validateForm()) {
+                showPopup();
+            }
+        });
+
+        function validateForm() {
+            const classValue = document.getElementById('class').value;
+            const examValue = document.getElementById('exam').value;
+            const classDivisionValue = document.getElementById('class-division').value;
+            const serialKeyValue = document.getElementById('serial-key').value;
+            const regNoValue = document.getElementById('regi-no').value;
+            const yearValue = document.getElementById('year').value;
+
+            if (!classValue || !examValue || !classDivisionValue || !serialKeyValue || !regNoValue || !yearValue) {
+                alert('Please fill in all fields.');
+                return false;
+            }
+
+            const serialKeyPattern = /^[A-Za-z0-9]{5}-[A-Za-z0-9]{5}-[A-Za-z0-9]{5}$/;
+            if (!serialKeyPattern.test(serialKeyValue)) {
+                alert('Please enter a valid serial key in the format xxxxx-xxxxx-xxxxx.');
+                return false;
+            }
+
+            return true;
+        }
+
+        function showPopup() {
+            const classValue = document.getElementById('class').value;
+            const classDivisionValue = document.getElementById('class-division').value;
+            const regNoValue = document.getElementById('regi-no').value;
+
+            document.getElementById('popup-class').innerText = `Class: ${classValue}`;
+            document.getElementById('popup-class-division').innerText = `Class Division: ${classDivisionValue}`;
+            document.getElementById('popup-regi-no').innerText = `Reg No: ${regNoValue}`;
+
+            document.getElementById('popup').style.display = 'block';
+        }
+
+        function closePopup() {
+            document.getElementById('popup').style.display = 'none';
+        }
+
+        function redirectToResults() {
+            window.location.href = 'check.html';
+        }
+
+        // Event listener to automatically insert hyphens in the serial key field
+        document.getElementById('serial-key').addEventListener('input', function (event) {
+            let value = event.target.value.replace(/-/g, '');
+            if (value.length > 5 && value.length <= 10) {
+                value = value.slice(0, 5) + '-' + value.slice(5);
+            } else if (value.length > 10) {
+                value = value.slice(0, 5) + '-' + value.slice(5, 10) + '-' + value.slice(10);
+            }
+            event.target.value = value;
+        });
+    </script>
+</body>
+</html>

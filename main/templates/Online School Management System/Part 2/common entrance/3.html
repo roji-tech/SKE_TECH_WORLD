@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Subject Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="dashboard">
+        <nav class="navbar">
+            <div class="timer" id="timer">00:00:00</div>
+            <div class="subject-name">Mathematics</div>
+            <div class="profile">
+                <img src="https://via.placeholder.com/40" alt="Profile Picture" class="profile-pic">
+                <span class="profile-name">John Doe</span>
+            </div>
+        </nav>
+        <div class="content">
+            <div class="question-count">No. of questions answered: <span id="questionCount">0</span></div>
+            <div class="question-container" id="questionContainer">
+                <div class="question" id="currentQuestion">
+                    <h2>Question 1</h2>
+                    <p>What is 2 + 2?</p>
+                </div>
+                <div class="options" id="options">
+                    <div class="option" onclick="selectOption(this)"><div class="option-checkbox"></div>A) 3</div>
+                    <div class="option" onclick="selectOption(this)"><div class="option-checkbox"></div>B) 4</div>
+                    <div class="option" onclick="selectOption(this)"><div class="option-checkbox"></div>C) 5</div>
+                    <div class="option" onclick="selectOption(this)"><div class="option-checkbox"></div>D) 6</div>
+                </div>
+                <div class="button-container">
+                    <button class="nav-btn" id="prevBtn" onclick="prevQuestion()" disabled>Previous</button>
+                    <button class="nav-btn" id="nextBtn" onclick="nextQuestion()">Next</button>
+                </div>
+            </div>
+        </div>
+        <button class="nav-btn submit-btn" onclick="showConfirmation()">Submit</button>
+    </div>
+    <div class="overlay" id="confirmationOverlay">
+        <div class="confirmation-box">
+            <h2>Confirm Submission</h2>
+            <p>Are you Sure You Want to Submit your exam?, You cannot undo this action</p>
+            <button class="confirm-btn" onclick="submitQuiz()">Yes, Submit</button>
+            <button class="cancel-btn" onclick="hideConfirmation()">Cancel</button>
+        </div>
+    </div>
+    <div class="overlay" id="scoreOverlay">
+        <div class="confirmation-box">
+            <h2>Quiz Completed</h2>
+            <p>Your score is: <span id="scoreDisplay"></span></p>
+            <button class="confirm-btn" onclick="closeScoreOverlay()">Close</button>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>

@@ -1,0 +1,177 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+* {
+    font-family: 'Poppins', sans-serif;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background-color: #f0f0f0;
+}
+
+.exam-container {
+    width: 80%;
+    background: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+header h1 {
+    font-size: 24px;
+    color: #1b94c3;
+}
+
+header button {
+    padding: 10px 20px;
+    background: #1b94c3;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.search-row {
+    margin-bottom: 20px;
+}
+
+.search-row input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+.exam-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 20px;
+}
+
+.exam-card {
+    background: linear-gradient(89.7deg, rgb(0, 32, 95) 2.8%, rgb(132, 53, 142) 97.8%);
+    padding: 20px;
+    border-radius: 10px;
+    color: #fff;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.exam-card h2 {
+    font-size: 20px;
+    margin-bottom: 10px;
+}
+
+.exam-card p {
+    margin-bottom: 10px;
+}
+
+.card-actions {
+    display: flex;
+    justify-content: space-between;
+}
+
+.card-actions button {
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.edit-btn {
+    background: #127185;
+    color: #fff;
+}
+
+.delete-btn {
+    background: #d41111;
+    color: #fff;
+}
+
+/* Overlay Styles */
+.overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+    justify-content: center;
+    align-items: center;
+}
+
+.overlay-content {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    width: 50%;
+    max-width: 600px;
+    position: relative;
+}
+
+.overlay-content .close {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    font-size: 24px;
+    cursor: pointer;
+    color: #aaa;
+}
+
+.inline-f {
+    margin-bottom: 15px;
+    text-align: left;
+}
+
+.inline-f label {
+    display: block;
+    margin-bottom: 5px;
+}
+
+.inline-f .input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+}
+
+.function-btn {
+    display: flex;
+    justify-content: space-between;
+}
+
+#add, #cancel {
+    background-color: #1b94c3;
+    color: #fff;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+#cancel {
+    background-color: #ff1717;
+}
+
+#add:hover {
+    background-color: #127185;
+}
+
+#cancel:hover {
+    background-color: #d41111;
+}

@@ -1,0 +1,98 @@
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  background-color: #f4f4f4;
+}
+
+nav ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  background-color: #333;
+  text-align: center;
+}
+
+nav ul li {
+  display: inline;
+  margin-right: 20px;
+}
+
+nav ul li a {
+  text-decoration: none;
+  color: #fff;
+  padding: 15px;
+  display: inline-block;
+}
+
+.container {
+  width: 30%; /* Slimmer container */
+  margin: 50px auto;
+  height: 450px;
+  padding: 40px; /* Increased padding */
+  background-color: #fff;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.results-form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.form-row {
+  display: flex;
+  gap: 20px;
+}
+
+.form-group {
+  flex: 1;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 5px;
+}
+
+.form-group input,
+.form-group select {
+  width: 100%;
+  padding: 12px; /* Increased padding */
+  box-sizing: border-box;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  transition: all 0.3s ease;
+}
+
+.form-group input::placeholder {
+  color: #aaa;
+  font-style: italic;
+}
+
+.form-group input:focus,
+.form-group select:focus {
+  border-color: #007bff;
+  box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+}
+
+.form-group select {
+  background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 4 5"><path fill="#999" d="M2 0L0 2h4zm0 5L0 3h4z"/></svg>') no-repeat right 10px center;
+  appearance: none;
+  background-color: #fff;
+  padding-right: 30px;
+}
+
+button {
+  padding: 10px 20px;
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  align-self: flex-start;
+  border-radius: 16px;
+  transition: background-color 0.3s ease;
+}
+
+button:hover {
+  background-color: #0056b3;
+}

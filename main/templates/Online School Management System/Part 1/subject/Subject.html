@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Subject</title>
+    <link rel="stylesheet" href="subject.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap">
+</head>
+<body>
+
+    <!-- Container starts -->
+    <div class="container">
+        <div class="add-division">
+          <h1>Add Subject</h1>
+        </div>
+        <div class="contents">
+            <form id="subjectForm">
+                <div class="inline-f">
+                    <label for="Class" class="class">Class</label>
+                    <input list="Class" name="Class" placeholder="Select" class="input">
+                </div>
+                <datalist id="Class">
+                    <option value="Jss1">
+                    <option value="Jss2">
+                    <option value="Jss3">
+                </datalist>
+                <div id="subjectContainer">
+                    <div class="inline-f">
+                        <label for="Subject" class="class">Subject</label>
+                        <input type="text" name="Subject" class="input">
+                    </div>
+                </div>
+                <div class="function-btn">
+                    <button id="add">Add</button>
+                </div>
+            </form>
+        </div>
+        <div class="function-btn2">
+            <button id="save">Save</button>
+            <button id="cancel">Cancel</button>
+        </div>
+    </div>
+    <!-- Container ends -->
+
+    <!-- Add Confirmation Overlay -->
+    <div id="addOverlay" class="overlay">
+        <div class="overlay-content">
+            <span class="close">&times;</span>
+            <p>Are you sure you want to add this subject?</p>
+            <button id="confirmAdd">Yes</button>
+            <button id="closeAddOverlay">No</button>
+        </div>
+    </div>
+
+    <!-- Save Confirmation Overlay -->
+    <div id="saveOverlay" class="overlay">
+        <div class="overlay-content">
+            <span class="close">&times;</span>
+            <p>Are you sure you want to save the changes?</p>
+            <button id="confirmSave">Yes</button>
+            <button id="closeSaveOverlay">No</button>
+        </div>
+    </div>
+
+    <!-- Cancel Confirmation Overlay -->
+    <div id="cancelOverlay" class="overlay">
+        <div class="overlay-content">
+            <span class="close">&times;</span>
+            <p>Are you sure you want to cancel?</p>
+            <button id="confirmCancel">Yes</button>
+            <button id="closeCancelOverlay">No</button>
+        </div>
+    </div>
+
+    <!-- Success Overlay -->
+    <div id="successOverlay" class="overlay success-overlay">
+        <div class="overlay-content">
+            <span class="close">&times;</span>
+            <p>Subject added successfully!</p>
+            <button id="closeSuccessOverlay">Close</button>
+        </div>
+    </div>
+    <script src="subject.js"></script>
+</body>
+</html>

@@ -1,0 +1,112 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+*{
+    font-family: 'poppins',sans-serif;
+
+}
+
+body{
+    /* padding: 10%; */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+.table-datas{
+    border: 1px solid;
+    width: 90%;
+    background: #f8f7f788;
+    margin-bottom: 10%;
+}
+
+.sub-rows {
+    /* padding:  1em 2em;   */
+    border-bottom: 1px solid #b5adad;
+}
+
+.sub-rows p{
+    margin: 20px;
+    color: #525050;
+    font-weight: unset;
+    font-family: sans-serif;
+}
+
+.search-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1em 2em;
+}
+
+.search-row p{
+    padding: 2%;
+    background: #ffffffe0;
+    border-radius: 3px;
+    border: 1px  solid #b5adad;
+}
+
+.search-row input{
+    display: flex;
+    align-items: center;
+    width: 50%;
+    height: 35px;
+    background: transparent;
+    border: 1px solid #b5adad;
+}
+
+select{
+    border: none;
+}
+
+span{
+    padding: 2%;
+    border: 1px solid #b5adad;
+
+}
+
+table{
+    width: 100%;
+}
+
+table, th, td{
+    border: 1px solid #b5adad;
+    border-collapse: collapse;
+    padding: 2%;
+    text-align: center;
+}
+
+a{
+    text-decoration: none;
+    /* color: white; */
+    cursor: pointer;
+}
+.edit-1{
+    position: relative;
+    margin-left: 1300px;
+    top: 185px;
+    right: 70px;
+    padding: 10px;
+    background-color: rgb(118, 118, 223);
+    border: none;
+    color: white;
+    text-decoration: none;
+    border-radius: 20px;
+}
+.del{
+    position: relative;
+    margin-right: 1300px;
+    margin-left: -30px;
+    top: 145px;
+    left: 1350px;
+    right: 50px;
+    padding: 10px;
+    background-color: rgb(255, 0, 0);
+    border: none;
+    border-radius: 20px;
+}
+.edit-2{
+    color: white;
+}
+.edit-3{
+    color: white;
+}

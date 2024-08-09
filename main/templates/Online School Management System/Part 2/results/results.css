@@ -1,0 +1,297 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+* {
+    font-family: 'Poppins', sans-serif;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background-color: #f0f0f0;
+}
+
+.table-datas {
+    border: 1px solid #b5adad;
+    width: 90%;
+    background: #f8f7f788;
+    margin-bottom: 10%;
+}
+
+.padd {
+    padding: 2%;
+    background: white;
+}
+
+.sub-rows {
+    display: flex;
+    border-bottom: 1px solid #b5adad;
+    justify-content: space-between;
+    text-transform: capitalize;
+    align-items: center;
+}
+
+.sub-rows p {
+    padding: 2%;
+    font-size: larger;
+    color: #1b94c3;
+    font-weight: unset;
+    font-family: sans-serif;
+}
+
+a {
+    text-decoration: none;
+    color: #1b94c3;
+}
+
+.search-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1em 0;
+}
+
+.search-row input {
+    width: 50%;
+    height: 35px;
+    background: transparent;
+    border: 1px solid #b5adad;
+    padding: 0 10px;
+}
+
+select {
+    border: none;
+}
+
+span {
+    padding: 2%;
+    border: 1px solid #b5adad;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+table, th, td {
+    border: 1px solid #b5adad;
+    padding: 10px;
+    text-align: left;
+    text-transform: capitalize;
+}
+
+th {
+    background-color: #f0f0f0;
+}
+
+#edit {
+    position: relative;
+    padding: 8px;
+    background: #1b94c3;
+    color: white;
+    margin: 0 5px;
+    cursor: pointer;
+    right: 50px;
+    border-radius: 25px;
+}
+
+#del {
+    padding: 9px;
+    background: rgb(255, 23, 23);
+    color: white;
+    margin: 0 5px;
+    cursor: pointer;
+    border-radius: 25px;
+}
+
+/* Overlay Styles */
+.overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+    justify-content: center;
+    align-items: center;
+}
+
+.overlay-content {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    width: 50%;
+    max-width: 600px;
+    position: relative;
+}
+
+.overlay-content .close {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    font-size: 24px;
+    cursor: pointer;
+    color: #aaa;
+}
+
+.inline-f {
+    margin-bottom: 15px;
+    text-align: left;
+}
+
+.inline-f label {
+    display: block;
+    margin-bottom: 5px;
+}
+
+.inline-f .input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+}
+
+.function-btn {
+    display: flex;
+    justify-content: space-between;
+}
+
+#add, #cancel {
+    background-color: #1b94c3;
+    color: #fff;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+#cancel {
+    background-color: #ff1717;
+}
+
+#add:hover {
+    background-color: #127185;
+}
+
+#cancel:hover {
+    background-color: #d41111;
+}
+.upload{
+    position: relative;
+    color: #fff;
+}
+.upload-1{
+    position: relative;
+    color: #fff;
+   
+}
+#edit-1{
+    padding: 8px;
+    background: #1b94c3;
+    color: white;
+    margin: 0 5px;
+    cursor: pointer;
+    right: 50px;
+    border-radius: 20px;
+    width: 30px;
+}
+.search{
+    position: relative;
+    border-radius: 12px;
+    left: 280px;
+}
+.csv{
+    padding: 11px;
+    border-radius: 20px;
+    border: none;
+    background-color: rgb(43, 184, 43);
+    color: #fff;
+    cursor: pointer;
+    width: 150px;
+}
+.csv:hover{
+    background-color: rgb(6, 104, 6);
+}
+.openOverlay{
+    margin-right: -980px;
+} 
+.close{
+    height: 12px;
+    width: 20px;
+   
+}
+.text{
+    margin-bottom: 50px;
+}
+#closeOverlaytwo{
+    height: 12px;
+}
+.x{
+    position: relative;
+    margin-left: 550px;
+    bottom: 10px;
+    left: 3px;
+    cursor: pointer;
+   
+}
+
+/* Tooltip styles */
+[data-tooltip] {
+  position: relative;
+  cursor: pointer;
+}
+
+[data-tooltip]:before,
+[data-tooltip]:after {
+  visibility: hidden;
+  opacity: 0;
+  pointer-events: none;
+  transition: all 0.15s ease;
+}
+
+[data-tooltip]:before {
+  position: absolute;
+  bottom: 150%;
+  left: 50%;
+  margin-bottom: 5px;
+  margin-left: -80px;
+  padding: 7px;
+  width: 160px;
+  border-radius: 3px;
+  background-color: #000;
+  background-color: hsla(0, 0%, 20%, 0.9);
+  color: #fff;
+  content: attr(data-tooltip);
+  text-align: center;
+  font-size: 14px;
+  line-height: 1.2;
+}
+
+[data-tooltip]:after {
+  position: absolute;
+  bottom: 150%;
+  left: 50%;
+  margin-left: -5px;
+  width: 0;
+  border-top: 5px solid #000;
+  border-top: 5px solid hsla(0, 0%, 20%, 0.9);
+  border-right: 5px solid transparent;
+  border-left: 5px solid transparent;
+  content: " ";
+  font-size: 0;
+  line-height: 0;
+}
+
+[data-tooltip]:hover:before,
+[data-tooltip]:hover:after {
+  visibility: visible;
+  opacity: 1;
+}

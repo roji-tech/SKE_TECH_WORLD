@@ -1,0 +1,97 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap');
+
+* {
+    font-family: 'Poppins', sans-serif;
+}
+
+
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #f0f0f0;
+    font-family: 'Poppins', sans-serif;
+    margin: 0;
+    height: 100vh;
+}
+
+.container {
+    display: flex;
+    flex-direction: column;
+    width: 80%;
+    background: #d3d1d15e;
+    margin: 15% auto;
+    box-shadow: 0.1px 0.1px 0.3px;
+    z-index: 100;
+    padding: 20px;
+    border-radius: 8px;
+    outline: none;
+}
+
+.add-division {
+    background-color: rgba(255, 255, 255, 0.1);
+    padding: 20px;
+    text-align: center;
+    font-size: 24px;
+    font-weight: bold;
+}
+
+.contents {
+    padding: 20px;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    background-color: rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+th, td {
+    padding: 15px;
+    text-align: left;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+th {
+    background-color: rgba(0, 0, 0, 0.1);
+    text-transform: capitalize;
+}
+
+td {
+    background-color: rgba(255, 255, 255, 0.05);
+}
+
+button {
+    padding: 10px 15px;
+    border: none;
+    border-radius: 3px;
+    margin: 0 5px;
+    color: #fff;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.edit {
+    background: blue;
+    border-radius: 20px;
+}
+
+.delete {
+    background: red;
+    border-radius: 20px;
+    margin-left: -100px;
+}
+
+#edit:hover{
+    background-color: rgb(43, 43, 117);
+}
+#delete:hover{
+    background-color: rgb(235, 104, 100);
+}
+
+button:hover {
+    opacity: 0.8;
+}
