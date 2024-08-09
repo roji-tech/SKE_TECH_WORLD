@@ -4,7 +4,7 @@ from django.views import View
 from django.views.generic import ListView
 
 
-class Home(View):
+class TeachersHome(View):
     def get(self, request, *args, **kwargs):
         # Custom logic here
         return render(request, "teachers/index.html")
