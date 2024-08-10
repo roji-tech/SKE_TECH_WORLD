@@ -1,55 +1,59 @@
 <!DOCTYPE html>
-<html lang='en'>
-
-<head>
-    <meta charset='UTF-8'>
-    <meta name='viewport' content='width=device-width, initial-scale=1.0'>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Sign Up</title>
-    <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
-    <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
-    <link rel='stylesheet' href='index.css'>
-</head>
+    <script
+      type="module"
+      src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"
+    ></script>
+    <script
+      nomodule
+      src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"
+    ></script>
+    <link rel="stylesheet" href="index.css" />
+  </head>
 
-<body>
+  <body>
     <section>
-        <div class="form-box">
-            <div class="form-value">
-                <form>
-                    <h2>Sign In</h2>
-                    <div class="inputbox">
-                        <ion-icon name="person-outline"></ion-icon>
-                        <input type="text" required>
-                        <label>UserName</label>
-                    </div>
-                    <div class="inputbox">
-                        <ion-icon name="lock-closed-outline"></ion-icon>
-                        <input type="password" required>
-                        <label>Password</label>
-                    </div>
-                   
-                    <div class="inputbox">
-                        <ion-icon name="layers-outline"></ion-icon>
-                        <select required>
-                            <option value="" disabled selected></option>
-                            <option value="student">Student</option>
-                            <option value="admin">Admin</option>
-                            <option value="teacher">Teacher</option>
-                            <option value="super-admin">Super Admin</option>
-                        </select>
-                        <label>Role</label>
-                    </div>
-                    <div class="forget">
-                        <label><input type="checkbox">Remember Me</label>
-                        <a href="#">Forgot Password?</a>
-                    </div>
-                   <button>Sign In</button>
-                    <div class="register">
-                        <p>Don't have an account? <a href="/help.html">Help</a></p>
-                    </div>
-                </form>
+      <div class="form-box">
+        <div class="form-value">
+          <form>
+            <h2>Sign In</h2>
+            <div class="inputbox">
+              <ion-icon name="person-outline"></ion-icon>
+              <input type="text" required />
+              <label>UserName</label>
             </div>
-        </div>
-    </section>
-</body>
+            <div class="inputbox">
+              <ion-icon name="lock-closed-outline"></ion-icon>
+              <input type="password" required />
+              <label>Password</label>
+            </div>
 
+            <div class="inputbox">
+              <ion-icon name="layers-outline"></ion-icon>
+              <select required>
+                <option value="" disabled selected></option>
+                <option value="student">Student</option>
+                <option value="admin">Admin</option>
+                <option value="teacher">Teacher</option>
+                <option value="super-admin">Super Admin</option>
+              </select>
+              <label>Role</label>
+            </div>
+            <div class="forget">
+              <label><input type="checkbox" />Remember Me</label>
+              <a href="#">Forgot Password?</a>
+            </div>
+            <button>Sign In</button>
+            <div class="register">
+              <p>Don't have an account? <a href="./help.html">Help</a></p>
+            </div>
+          </form>
+        </div>
+      </div>
+    </section>
+  </body>
 </html>
