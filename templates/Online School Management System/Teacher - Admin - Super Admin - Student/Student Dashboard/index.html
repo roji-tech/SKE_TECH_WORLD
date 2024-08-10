@@ -1,3 +1,4 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -12,7 +13,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 
     <!--=============== CSS ===============-->
-    <link rel="stylesheet" href="assets/css/styles.css">
+    <link rel="stylesheet" href="{% static 'students/css/styles.css' %}">
 
     <title>E.M.I.S</title>
     <style>
@@ -62,7 +63,7 @@
         <nav class="nav container">
             <div class="nav__data">
                 <a href="#" class="nav__logo">
-                    <img src="/others/assets/images/logo.png" alt="Logo" class="nav__logo-img">
+                    <img src="{% static 'students/images/logo.png' %}" alt="Logo" class="nav__logo-img">
                 </a>
             </div>
             <div class="nav__toggle" id="nav-toggle">
@@ -94,10 +95,10 @@
         </nav>
     </header>
 
-    <!-- Profile Section -->
+    <!-- Profile Section -->pythi
     <section class="profile-section">
         <div class="profile-details">
-            <img id="profile-pic" src="/others/assets/images/profile.jpg" alt="Profile Picture" class="profile-pic">
+            <img id="profile-pic" src="{% static 'students/images/logo.png' %}" alt="Profile Picture" class="profile-pic">
             <div class="profile-buttons">
                 <button class="profile-button">Logout</button>
             </div>
@@ -215,7 +216,7 @@
     </footer>
 
     <!--=============== MAIN JS ===============-->
-    <script src="assets/js/main.js"></script>
+    <script src=" {% static 'students/js/main.js' %}"></script>
     <script>
         // Toggle Menu
         const navToggle = document.getElementById('nav-toggle');
