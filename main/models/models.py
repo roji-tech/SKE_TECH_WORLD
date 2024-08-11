@@ -1,7 +1,19 @@
+from django_tenants.models import TenantMixin, DomainMixin
 from django.db import models
+
+class School(TenantMixin):
+    name = models.CharField(max_length=100)
+    created_on = models.DateField(auto_now_add=True)
+
+
+class Domain(DomainMixin):
+    domain = models.CharField(max_length=128)
+    school = models.ForeignKey(
+        School, related_name='domains', on_delete=models.CASCADE)
 
 
 class AcademicSession(models.Model):
+    school = models.ForeignKey(School, on_delete=models.CASCADE)
     name = models.CharField(max_length=100)
     start_date = models.DateField()
     end_date = models.DateField()

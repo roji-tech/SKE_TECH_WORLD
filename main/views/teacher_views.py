@@ -8,3 +8,10 @@ class TeachersHome(View):
     def get(self, request, *args, **kwargs):
         # Custom logic here
         return render(request, "teachers/index.html")
+
+
+def uploadgmeet(request):
+    return render(request, 'updated/gmeet/gmeet.html')
+
+def editgmeet(request):
+    return render(request, 'updated/gmeet/uploadgmeet.html')
