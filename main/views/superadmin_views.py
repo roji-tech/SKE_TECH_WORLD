@@ -4,8 +4,7 @@ from django.views import View
 from django.views.generic import ListView
 
 
-class SuperAdminHome(View):
+class SuperadminHome(View):
     def get(self, request, *args, **kwargs):
         # Custom logic here
-        return render(request, "updated/super admin/super.html")
-
+        return render(request, "superadmin/index.html")

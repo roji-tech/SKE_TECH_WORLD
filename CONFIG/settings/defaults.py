@@ -15,7 +15,7 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
-
+TENANT_MODEL = "main.School"  # Your tenant model
 
 
 ROOT_URLCONF = 'CONFIG.urls'

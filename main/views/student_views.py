@@ -4,8 +4,7 @@ from django.views import View
 from django.views.generic import ListView
 
 
-class StudentHome(View):
+class StudentsHome(View):
     def get(self, request, *args, **kwargs):
         # Custom logic here
-        return render(request, "Online School Management System/Teacher - Admin - Super Admin - Student/Student Dashboard/index.html")
-
+        return render(request, "students/index.html")
