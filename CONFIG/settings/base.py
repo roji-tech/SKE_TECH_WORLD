@@ -1,7 +1,7 @@
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
-BASE_DIR = Path(__file__).resolve().parent.parent
+BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
 
 # Quick-start development settings - unsuitable for production
@@ -14,8 +14,6 @@ SECRET_KEY = 'django-insecure-&b=mem0=8mv&qa#79t3h6mnn2*@p!iaaf1bu!@6!$prx+2828f
 DEBUG = True
 
 ALLOWED_HOSTS = []
-
-TENANT_MODEL = "main.School"  # Your tenant model
 
 
 ROOT_URLCONF = 'CONFIG.urls'
@@ -37,7 +35,6 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'CONFIG.wsgi.application'
-
 
 
 # Password validation
@@ -82,3 +79,5 @@ STATIC_URL = '/static/'
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+AUTH_USER_MODEL = "main.user"

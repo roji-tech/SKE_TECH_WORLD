@@ -1,4 +1,4 @@
-from .defaults import BASE_DIR
+from .base import BASE_DIR
 
 STATIC_URL = '/static/'
 
