@@ -10,4 +10,6 @@ INSTALLED_APPS = [
     'django_extensions',
 
     'main',
+    'notification',
+    'quiz',
 ]
