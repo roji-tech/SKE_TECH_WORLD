@@ -3,5 +3,5 @@ from ..views import AdminsHome
 
 
 urlpatterns = [
-    path('admins-home/', AdminsHome.as_view(), name='admins_home')
+    path('admins/', AdminsHome.as_view(), name='admins_home')
 ]
