@@ -45,6 +45,7 @@ class AcademicSession(models.Model):
     name = models.CharField(max_length=100)  # e.g., "2023/2024"
     start_date = models.DateField()
     end_date = models.DateField()
+    next_session_begins = models.DateField(blank=True, null=True)
     is_current = models.BooleanField(default=False)
     max_exam_score = models.SmallIntegerField(default=60)
 
@@ -60,6 +61,7 @@ class Term(models.Model):
     name = models.CharField(max_length=4, choices=TERM_CHOICES)
     start_date = models.DateField()
     end_date = models.DateField()
+    next_term_begins = models.DateField(null=True, blank=True)
 
     class Meta:
         unique_together = ('academic_session', 'name')

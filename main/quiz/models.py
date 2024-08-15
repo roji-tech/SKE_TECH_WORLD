@@ -1,5 +1,3 @@
-
-
 import re
 import json
 
@@ -52,8 +50,7 @@ class QuizManager(models.Manager):
 
 class Quiz(models.Model):
     course = models.ForeignKey(Course, on_delete=models.CASCADE, null=True)
-    title = models.CharField(verbose_name=_(
-        "Title"), max_length=60, blank=False)
+    title = models.CharField(verbose_name=_("Title"), max_length=60, blank=False)
     slug = models.SlugField(blank=True, unique=True)
     description = models.TextField(
         verbose_name=_("Description"),
@@ -65,8 +62,7 @@ class Quiz(models.Model):
         blank=False,
         default=False,
         verbose_name=_("Random Order"),
-        help_text=_(
-            "Display the questions in a random order or as they are set?"),
+        help_text=_("Display the questions in a random order or as they are set?"),
     )
 
     # max_questions = models.PositiveIntegerField(blank=True, null=True, verbose_name=_("Max Questions"),
@@ -206,19 +202,16 @@ class Progress(models.Model):
         ):
             return _("error"), _("category does not exist or invalid score")
 
-        to_find = re.escape(str(question.quiz)) + \
-            r",(?P<score>\d+),(?P<possible>\d+),"
+        to_find = re.escape(str(question.quiz)) + r",(?P<score>\d+),(?P<possible>\d+),"
 
         match = re.search(to_find, self.score, re.IGNORECASE)
 
         if match:
             updated_score = int(match.group("score")) + abs(score_to_add)
-            updated_possible = int(match.group(
-                "possible")) + abs(possible_to_add)
+            updated_possible = int(match.group("possible")) + abs(possible_to_add)
 
             new_score = ",".join(
-                [str(question.quiz), str(updated_score),
-                 str(updated_possible), ""]
+                [str(question.quiz), str(updated_score), str(updated_possible), ""]
             )
 
             # swap old score for the new one
@@ -280,8 +273,7 @@ class SittingManager(models.Manager):
         ):
             return False
         try:
-            sitting = self.get(user=user, quiz=quiz,
-                               course=course, complete=False)
+            sitting = self.get(user=user, quiz=quiz, course=course, complete=False)
         except Sitting.DoesNotExist:
             sitting = self.new_sitting(user, quiz, course)
         except Sitting.MultipleObjectsReturned:
@@ -295,8 +287,7 @@ class Sitting(models.Model):
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL, verbose_name=_("User"), on_delete=models.CASCADE
     )
-    quiz = models.ForeignKey(Quiz, verbose_name=_(
-        "Quiz"), on_delete=models.CASCADE)
+    quiz = models.ForeignKey(Quiz, verbose_name=_("Quiz"), on_delete=models.CASCADE)
     course = models.ForeignKey(
         Course, null=True, verbose_name=_("Course"), on_delete=models.CASCADE
     )
@@ -423,8 +414,7 @@ class Sitting(models.Model):
     def get_questions(self, with_answers=False):
         question_ids = self._question_ids()
         questions = sorted(
-            self.quiz.question_set.filter(
-                id__in=question_ids).select_subclasses(),
+            self.quiz.question_set.filter(id__in=question_ids).select_subclasses(),
             key=lambda q: question_ids.index(q.id),
         )
 
@@ -467,8 +457,7 @@ class Question(models.Model):
     explanation = models.TextField(
         max_length=2000,
         blank=True,
-        help_text=_(
-            "Explanation to be shown after the question has been answered."),
+        help_text=_("Explanation to be shown after the question has been answered."),
         verbose_name=_("Explanation"),
     )
 
@@ -555,3 +544,22 @@ class Choice(models.Model):
         verbose_name_plural = _("Choices")
 
 
+class EssayQuestion(Question):
+    def check_if_correct(self, guess):
+        return False
+
+    def get_answers(self):
+        return False
+
+    def get_answers_list(self):
+        return False
+
+    def answer_choice_to_string(self, guess):
+        return str(guess)
+
+    def __str__(self):
+        return self.content
+
+    class Meta:
+        verbose_name = _("Essay style question")
+        verbose_name_plural = _("Essay style questions")
