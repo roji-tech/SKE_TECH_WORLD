@@ -19,10 +19,10 @@ class School(models.Model):
     name = models.CharField(max_length=255)
     owner = models.OneToOneField(
         User, on_delete=models.CASCADE, related_name='owned_school')
-    address = models.TextField()
+    address = models.TextField(default="")
     phone = models.CharField(max_length=15)
     email = models.EmailField()
-    logo = models.URLField()
+    logo = models.URLField(default="")
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):

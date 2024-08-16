@@ -2,13 +2,20 @@ from django.contrib.auth.models import AbstractUser
 from django.db import models
 
 
+SUPERADMIN = "superadmin"
+OWNER = "owner"
+ADMIN = "admin"
+TEACHER = "teacher"
+STUDENT = "student"
+
+
 class User(AbstractUser):
     ROLE_CHOICES = (
-        ("superadmin", "Super Admin"),
-        ("owner", "School Owner"),
-        ("admin", "Admin"),
-        ("teacher", "Teacher"),
-        ("student", "Student"),
+        (SUPERADMIN, "Super Admin"),
+        (OWNER, "School Owner"),
+        (ADMIN, "Admin"),
+        (TEACHER, "Teacher"),
+        (STUDENT, "Student"),
     )
 
     GENDER_CHOICES = (
