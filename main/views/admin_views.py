@@ -1,3 +1,4 @@
+from django.http.response import JsonResponse
 from typing import Any
 from django.contrib.auth.decorators import login_required
 from django.db.models.query import QuerySet
@@ -41,6 +42,8 @@ class RegisterSchool(View):
         school_name = request.POST.get('school_name')
         school_phone = request.POST.get('school_phone')
         school_email = request.POST.get('school_email')
+        print(username, first_name, last_name, email, password,
+              gender, school_email, school_name, school_phone)
 
         if all((first_name, last_name, email, password, gender)):
             try:
@@ -53,7 +56,9 @@ class RegisterSchool(View):
                 school.save()
 
                 messages.success(request, f"Account created successfuly.")
-                return redirect('admin-login')
+                return JsonResponse({
+                    "status": True
+                })
 
             except Exception as e:
                 print(e)
@@ -66,6 +71,52 @@ class RegisterSchool(View):
             )
 
         return render(request, "myadmin/register.html")
+
+    def post(self, request, *args, **kwargs):
+        try:
+            # Extract POST data
+            username = request.POST.get('username')
+            first_name = request.POST.get('first_name')
+            last_name = request.POST.get('last_name')
+            email = request.POST.get('email')
+            password = request.POST.get('password')
+            gender = request.POST.get('gender')
+            school_name = request.POST.get('school_name')
+            school_phone = request.POST.get('school_phone')
+            school_email = request.POST.get('school_email')
+
+            # Log the extracted data for debugging
+            print(
+                f"Received data: {username}, {first_name}, {last_name}, {email}, {password}, {gender}, {school_name}, {school_phone}, {school_email}")
+
+            # Validate the received data
+            if not all((username, first_name, last_name, email, password, gender, school_name, school_phone, school_email)):
+                messages.error(request, "Please fill all fields correctly.")
+                return JsonResponse({"status": False, "message": "Please fill all fields correctly."})
+
+            # Create the User
+            owner = User(username=username, first_name=first_name,
+                         last_name=last_name, email=email, gender=gender, role=OWNER)
+            owner.set_password(password)
+            owner.save()
+
+            # Create the School
+            school = School(name=school_name, owner=owner,
+                            phone=school_phone, email=school_email)
+            school.save()
+
+            # Success message
+            messages.success(request, "Account created successfully.")
+            return JsonResponse({"status": True, "message": "Account created successfully."})
+
+        except Exception as e:
+            # Log the exception
+            print(f"Error creating account: {str(e)}")
+
+            # Error message
+            messages.error(
+                request, "Error creating account. Please try again.")
+            return JsonResponse({"status": False, "message": "Error creating account. Please try again."})
 
 
 class AdminLogin(View):
