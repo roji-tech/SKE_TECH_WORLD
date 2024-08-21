@@ -254,7 +254,7 @@ class ContinuousAssessment(models.Model):
 
 
 class Score(models.Model):
-    student = models.ForeignKey(Student, on_delete=models.CASCADE)
+    student = models.ForeignKey("Student", on_delete=models.CASCADE)
     examination = models.ForeignKey(Examination, on_delete=models.CASCADE)
     score = models.IntegerField()
 
