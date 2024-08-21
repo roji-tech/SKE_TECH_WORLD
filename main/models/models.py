@@ -148,7 +148,7 @@ class Examination(models.Model):
 
 
 class Score(models.Model):
-    student = models.ForeignKey(Student, on_delete=models.CASCADE)
+    student = models.ForeignKey("Student", on_delete=models.CASCADE)
     examination = models.ForeignKey(Examination, on_delete=models.CASCADE)
     score = models.IntegerField()
 
@@ -166,7 +166,7 @@ class Homework(models.Model):
 
 
 class Result(models.Model):
-    student = models.ForeignKey(Student, on_delete=models.CASCADE)
+    student = models.ForeignKey("Student", on_delete=models.CASCADE)
     total_marks = models.IntegerField()
     obtained_marks = models.IntegerField()
 
