@@ -1,6 +1,6 @@
 from django.urls import path
-from ..views import SuperAdminHome
+from ..views import SuperadminHome
 
 urlpatterns = [
-  path('', SuperAdminHome.as_view(), name='superadmin_index'),
+  path('', SuperadminHome.as_view(), name='superadmin_index'),
 ]

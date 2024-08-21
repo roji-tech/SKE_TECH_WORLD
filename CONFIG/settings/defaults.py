@@ -17,6 +17,10 @@ ALLOWED_HOSTS = []
 
 TENANT_MODEL = "main.School"  # Your tenant model
 
+# DATABASE_ROUTERS = (
+#     'django_tenants.routers.TenantSyncRouter',
+# )
+
 
 ROOT_URLCONF = 'CONFIG.urls'
 

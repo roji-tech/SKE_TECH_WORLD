@@ -4,7 +4,7 @@ from django.db import models
 from main.models.users import User
 
 
-class School(TenantMixin):
+class School(models.Model):
     # class School(models.Model):
     name = models.CharField(max_length=255)
     owner = models.OneToOneField(
@@ -18,7 +18,7 @@ class School(TenantMixin):
         return self.name
 
 
-class Domain(DomainMixin):
+class Domain(models.Model):
     domain = models.CharField(max_length=128)
     school = models.ForeignKey(
         School, related_name='domains', on_delete=models.CASCADE)
