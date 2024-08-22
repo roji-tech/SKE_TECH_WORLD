@@ -5,7 +5,6 @@ from django.db.models.query import QuerySet
 from django.utils.decorators import method_decorator
 from django.http import HttpResponse
 from django.shortcuts import redirect, render
-import django.utils.decorators
 from django.views import View
 from django.views.generic import ListView, CreateView
 from django.contrib import messages
@@ -13,6 +12,9 @@ from django.contrib import messages
 from main.models.users import OWNER, User
 from main.models.models import AcademicSession, School
 from django.contrib.auth import authenticate, login
+
+from ..models.profiles import Teacher
+from ..forms import TeachersForm
 
 
 def admin_is_authenticated(*args):
