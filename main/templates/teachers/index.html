@@ -11,7 +11,7 @@
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet">
-    <link rel="stylesheet" href="{% static 'teachers/css/styles.css' %}">
+    <link rel="stylesheet" href="{% static 'css/teachers/styles.css' %}">
      <!-----------Links End------------->
   </head>
   <body>
@@ -53,7 +53,7 @@
                  G-meet Classes
                     </a>
                     <ul class="dropdown-menu">
-                      <li><a href="{% url  'gmeet' %}">Upload Google Meet Classes ‎ ‎ ‎ ‎ ‎ </a></li>
+                      <li><a href="{% url 'add_gmeet' %}">Upload Google Meet Classes ‎ ‎ ‎ ‎ ‎ </a></li>
                       <li><a href="{% url 'edit_gmeet' %}">Edit Google Meet Classes</a></li>
                     </ul>
                   </li>
@@ -64,8 +64,8 @@
                   Lesson Plan
                       </a>
                       <ul class="dropdown-menu">
-                        <li><a href="/updated/lessonplan/lessonNote.html">Upload Lesson Plan‎ ‎ ‎ ‎ ‎ </a></li>
-                        <li><a href="/updated/lessonplan/lessonNoteList.html">Lesson Plan List ‎ ‎ ‎ ‎ ‎ </a></li>
+                        <li><a href="{% url 'upload_lesson_plan' %}">Upload Lesson Plan‎ ‎ ‎ ‎ ‎ </a></li>
+                        <li><a href="{% url 'lessons_lists' %}">Lesson Plan List ‎ ‎ ‎ ‎ ‎ </a></li>
                      
 
 
@@ -361,6 +361,6 @@ function showNotificationDetails(notification) {
     <script src="https://cdnjs.cloudflare.com/ajax/libs/apexcharts/3.35.5/apexcharts.min.js"></script>
     <script src='https://cdn.jsdelivr.net/npm/fullcalendar@5.10.2/main.min.js'></script>
     <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js'></script>
-    <script src="{% static 'teachers/js/scripts.js' %}"></script>
+    <script src="{% static 'js/teachers/scripts.js' %}"></script>
   </body>
 </html>

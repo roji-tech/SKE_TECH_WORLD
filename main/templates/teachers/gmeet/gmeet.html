@@ -1,0 +1,67 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Google Meet</title>
+    <link rel="stylesheet" href="{% static 'teachers/gmeet/css/styles.css' %}">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <div class="add-division">
+            <p>Google Meet</p>
+        </div>
+
+        <div class="contents">
+            <form id="meeting-form">
+                <div class="inline-f">
+                    <label for="meeting-title" class="label">Meeting Title</label>
+                    <input type="text" id="meeting-title" placeholder="Meeting Title" required class="input">
+                </div>
+
+                <div class="inline-f">
+                    <label for="description" class="label">Description</label>
+                    <input type="text" id="description" placeholder="Description" required class="input">
+                </div>
+
+                <div class="inline-f">
+                    <label for="datetime" class="label">Date and Time</label>
+                    <input type="datetime-local" id="datetime" required class="input">
+                </div>
+
+                <div class="inline-f">
+                    <label for="created-by" class="label">Created By</label>
+                    <input type="text" id="created-by" placeholder="Created By" required class="input">
+                </div>
+
+                <div class="inline-f">
+                    <label for="link" class="label">Link</label>
+                    <input type="url" id="link" placeholder="Link" class="input">
+                </div>
+
+                <div class="function-btn">
+                    <button type="submit" id="add">Add Meeting</button>
+                    <button type="button" id="cancel">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Confirmation Overlay -->
+    <div class="overlay" id="confirmation-overlay">
+        <div class="overlay-content">
+            <h2>Meeting Added Successfully!</h2>
+            <p>Meeting Title: <span id="overlay-title"></span></p>
+            <p>Description: <span id="overlay-description"></span></p>
+            <p>Date and Time: <span id="overlay-datetime"></span></p>
+            <p>Created By: <span id="overlay-created-by"></span></p>
+            <p>Link: <a href="#" id="overlay-link"></a></p>
+            <button id="close-overlay">Close</button>
+        </div>
+    </div>
+
+    <script src="{% static 'teachers/gmeet/js/scripts.js' %}"></script>
+</body>
+</html>

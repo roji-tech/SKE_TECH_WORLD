@@ -1,0 +1,359 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Super Admin Dashboard</title>
+    <link rel="stylesheet" href="{% static 'css/superadmin/styles.css' %}">
+    <script src="https://kit.fontawesome.com/your-fontawesome-kit.js" crossorigin="anonymous"></script>
+    <script src="{% static 'js/superadmin/scripts.js' %}"></script>
+
+</head>
+<body>
+<div class="container">
+    <nav class="sidebar">
+        <div class="profile-section">
+            <img src="profile-pic.jpg" alt="Super Admin" class="profile-pic">
+            <h2>John Doe</h2>
+           
+        </div>
+        <ul>
+          <li><a href="#dashboard" class="active" onclick="showSection('dashboard')">Dashboard</a></li>
+          <li><a href="#multi-school-management" onclick="showSection('multi-school-management')">Multi-School Management</a></li>
+          <li><a href="#admin-management" onclick="showSection('admin-management')">Admin Management</a></li>
+          <li><a href="#system-settings" onclick="showSection('system-settings')">System Settings</a></li>
+          <li><a href="#data-management" onclick="showSection('data-management')">Data Management</a></li>
+          <li><a href="#security" onclick="showSection('security')">Security</a></li>
+          <li><a href="#licensing" onclick="showSection('licensing')">Licensing & Subscriptions</a></li>
+          <li><a href="#support" onclick="showSection('support')">Support & Troubleshooting</a></li>
+          <li><a href="#profile" onclick="showSection('profile')">Profile</a></li>
+      </ul>
+  </nav>
+
+  <div class="content" role="main">
+      <section id="dashboard" class="section active">
+          <h2>Dashboard</h2>
+          <div class="analytics-grid">
+              <div class="analytics-item" style="--color: #FF6B6B;">
+                  <h3>Total Schools</h3>
+                  <p>0</p>
+              </div>
+              <div class="analytics-item" style="--color: #4ECDC4;">
+                  <h3>Total Admins</h3>
+                  <p>0</p>
+              </div>
+              <div class="analytics-item" style="--color: #45B7D1;">
+                  <h3>Total Students</h3>
+                  <p>0</p>
+              </div>
+              <div class="analytics-item" style="--color: #FFA07A;">
+                  <h3>Active Licenses</h3>
+                  <p>0</p>
+              </div>
+          </div>
+          <div id="chart-container"></div>
+          <button class="btn">Generate Report</button>
+          
+          <h3>Quick Actions</h3>
+          <div class="quick-actions">
+              <button class="btn">Add School</button>
+              <button class="btn">Add Admin</button>
+              <button class="btn">View Reports</button>
+          </div>
+          
+          <h3>Recent Activities</h3>
+          <ul class="activity-feed">
+              <li>New school added: Example School</li>
+              <li>Admin account created: admin@example.com</li>
+              <li>System backup completed</li>
+          </ul>
+      </section>
+
+      <section id="multi-school-management" class="section">
+          <h2>Multi-School Management</h2>
+          <div class="form-group">
+              <label>Add New School</label>
+              <input type="text" placeholder="School Name">
+          </div>
+          <div class="form-group">
+              <label>View/Edit Schools</label>
+              <select>
+                  <option>Select a school</option>
+              </select>
+          </div>
+          <div class="form-group">
+              <label>Deactivate/Reactivate Schools</label>
+              <select>
+                  <option>Select a school</option>
+              </select>
+          </div>
+          <div class="form-buttons">
+              <button class="btn">Save</button>
+              <button class="btn">Reset</button>
+          </div>
+      </section>
+
+      <section id="admin-management" class="section">
+          <h2>Admin Management</h2>
+          <div class="form-group">
+              <label>Admin Username</label>
+              <input type="text">
+          </div>
+          <div class="form-group">
+              <label>Admin Email</label>
+              <input type="email">
+          </div>
+          <div class="form-group">
+              <label>Admin Password</label>
+              <input type="password">
+          </div>
+          <div class="form-group">
+              <label>Assign School</label>
+              <select>
+                  <option>Select a school</option>
+              </select>
+          </div>
+          <div class="form-buttons">
+              <button class="btn">Register Admin</button>
+              <button class="btn">Reset</button>
+          </div>
+          
+          <h3>Current Admins</h3>
+          <table class="admin-list">
+              <thead>
+                  <tr>
+                      <th>Username</th>
+                      <th>Email</th>
+                      <th>School</th>
+                      <th>Actions</th>
+                  </tr>
+              </thead>
+              <tbody>
+                  <tr>
+                      <td>admin1</td>
+                      <td>admin1@example.com</td>
+                      <td>School A</td>
+                      <td>
+                          <button class="btn-small">Edit</button>
+                          <button class="btn-small">Deactivate</button>
+                      </td>
+                  </tr>
+              </tbody>
+          </table>
+          
+          <h3>Admin Roles</h3>
+          <button class="btn">Create New Role</button>
+      </section>
+
+      <section id="system-settings" class="section">
+          <h2>System Settings</h2>
+          <div class="form-group">
+              <label>Timezone</label>
+              <select>
+                  <option>UTC</option>
+                  <option>GMT</option>
+              </select>
+          </div>
+          <div class="form-group">
+              <label>Date Format</label>
+              <select>
+                  <option>YYYY-MM-DD</option>
+                  <option>DD/MM/YYYY</option>
+              </select>
+          </div>
+          <h3>Email Configuration</h3>
+          <div class="form-group">
+              <label>SMTP Server</label>
+              <input type="text">
+          </div>
+          <div class="form-group">
+              <label>SMTP Port</label>
+              <input type="number">
+          </div>
+          <h3>Notification Settings</h3>
+          <div class="form-group">
+              <label>Email Notifications</label>
+              <input type="checkbox">
+          </div>
+          <h3>Integration Settings</h3>
+          <div class="form-group">
+              <label>Payment Gateway</label>
+              <select>
+                  <option>PayPal</option>
+                  <option>Stripe</option>
+              </select>
+          </div>
+          
+          <div class="form-buttons">
+              <button class="btn">Save Settings</button>
+          </div>
+      </section>
+
+      <section id="data-management" class="section">
+          <h2>Data Management</h2>
+          <h3>Database Backup</h3>
+          <button class="btn">Create Backup</button>
+          <h3>Data Import/Export</h3>
+          <button class="btn">Import Data</button>
+          <button class="btn">Export Data</button>
+          <h3>Data Archiving</h3>
+          <div class="form-group">
+              <label>Archive data older than</label>
+              <input type="number"> months
+          </div>
+          <div class="form-buttons">
+              <button class="btn">Save Settings</button>
+          </div>
+      </section>
+
+      
+
+      <section id="security" class="section">
+          <h2>Security Settings</h2>
+          <div class="form-group">
+              <label>Global Password Policy</label>
+              <select>
+                  <option>Standard</option>
+                  <option>Strong</option>
+                  <option>Custom</option>
+              </select>
+          </div>
+          <div class="form-group">
+              <label>Two-Factor Authentication</label>
+              <input type="checkbox">
+          </div>
+          <div class="form-group">
+              <label>IP Whitelist (one per line)</label>
+              <textarea></textarea>
+          </div>
+          <div class="form-buttons">
+              <button class="btn">Save</button>
+              <button class="btn">Run Security Audit</button>
+          </div>
+          <h3>Access Log</h3>
+          <button class="btn">View Access Log</button>
+          <h3>Failed Login Attempts</h3>
+          <button class="btn">View Failed Login Report</button>
+      </section>
+
+      <section id="licensing" class="section">
+          <h2>Licensing & Subscriptions</h2>
+          <h3>License Key Management</h3>
+          <div class="form-group">
+              <label>Current License Key</label>
+              <input type="text" readonly>
+          </div>
+          <button class="btn">Update License Key</button>
+          <h3>Subscription Plan</h3>
+          <p>Current Plan: Premium</p>
+          <button class="btn">Upgrade Plan</button>
+          <h3>Billing Information</h3>
+          <button class="btn">View Billing History</button>
+      </section>
+
+      <section id="support" class="section">
+          <h2>Support & Troubleshooting</h2>
+          <h3>System Status</h3>
+          <button class="btn">Run Health Check</button>
+          <h3>Error Log</h3>
+          <button class="btn">View Error Log</button>
+          <h3>FAQ</h3>
+          <ul>
+              <li><a href="#">How do I add a new school?</a></li>
+              <li><a href="#">How can I reset an admin's password?</a></li>
+          </ul>
+          <h3>Contact Support</h3>
+          <form>
+              <div class="form-group">
+                  <label>Subject</label>
+                  <input type="text">
+              </div>
+              <div class="form-group">
+                  <label>Message</label>
+                  <textarea></textarea>
+              </div>
+              <button class="btn">Send Message</button>
+          </form>
+      </section>
+
+      <section id="profile" class="section">
+          <h2>Super Admin Profile</h2>
+          <div class="form-group">
+              <label>Profile Picture</label>
+              <input type="file">
+          </div>
+          <div class="form-group">
+              <label>Username</label>
+              <input type="text">
+          </div>
+          <div class="form-group">
+              <label>Email</label>
+              <input type="email">
+          </div>
+          <div class="form-group">
+              <label>Password</label>
+              <input type="password">
+          </div>
+          <div class="form-buttons">
+              <button class="btn">Save</button>
+              <button class="btn">Reset</button>
+          </div>
+      </section>
+ 
+    </main>
+</div>
+<script src="script.js"></script>
+</body>
+</html>
+
+
+
+<div id="permissions" class="section">
+  <h1>Permissions Settings</h1>
+  <form id="permissions-form">
+      <div class="form-group">
+          <label for="role-select">Select Role</label>
+          <select id="role-select">
+              <option value="admin">Administrator</option>
+              <option value="teacher">Teacher</option>
+              <option value="student">Student</option>
+
+          </select>
+      </div>
+      <div id="permissions-list">
+          <h3>Permissions for <span id="selected-role">Administrator</span></h3>
+          <div class="permission-group">
+              <h4>Student Management</h4>
+              <div class="checkbox-group">
+                  <label><input type="checkbox" name="perm-student" value="view"> View Students</label>
+                  <label><input type="checkbox" name="perm-student" value="add"> Add Students</label>
+                  <label><input type="checkbox" name="perm-student" value="edit"> Edit Students</label>
+                  <label><input type="checkbox" name="perm-student" value="delete"> Delete Students</label>
+              </div>
+          </div>
+          <div class="permission-group">
+              <h4>Course Management</h4>
+              <div class="checkbox-group">
+                  <label><input type="checkbox" name="perm-course" value="view"> View Courses</label>
+                  <label><input type="checkbox" name="perm-course" value="add"> Add Courses</label>
+                  <label><input type="checkbox" name="perm-course" value="edit"> Edit Courses</label>
+                  <label><input type="checkbox" name="perm-course" value="delete"> Delete Courses</label>
+              </div>
+          </div>
+          <div class="permission-group">
+              <h4>Grade Management</h4>
+              <div class="checkbox-group">
+                  <label><input type="checkbox" name="perm-grade" value="view"> View Grades</label>
+                  <label><input type="checkbox" name="perm-grade" value="add"> Add Grades</label>
+                  <label><input type="checkbox" name="perm-grade" value="edit"> Edit Grades</label>
+              </div>
+          </div>
+          <!-- Add more permission groups as needed -->
+      </div>
+      <div class="form-buttons">
+          <button type="submit">Save</button>
+          <button type="reset">Reset</button>
+      </div>
+  </form>
+</div>
