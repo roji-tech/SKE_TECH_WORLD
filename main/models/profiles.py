@@ -21,7 +21,7 @@ class StudentProfile(models.Model):
         AcademicSession, on_delete=models.CASCADE, null=True, blank=True)  # e.g., 2023/2024
     reg_no = models.CharField(max_length=20, unique=True)
 
-    picture = models.URLField(
+    picture = models.ImageField(
         upload_to='student_pictures/', null=True, blank=True)
 
     def save(self, *args, **kwargs):
@@ -63,8 +63,28 @@ class StudentProfile(models.Model):
 
 
 class Teacher(models.Model):
+    GENDER_CHOICES = [
+    ('M', 'Male'),
+    ('F', 'Female'),
+    ('O', 'Other'),
+]
+
+    DEPARTMENT_CHOICES = [
+    ('S', 'Science'),
+    ('H', 'Humanity'),
+    ('B', 'Business'),
+    ('O', 'Other'),
+]
+
     name = models.CharField(max_length=100)
     subjects = models.ManyToManyField(Subject)
+    # extending the model
+    gender = models.CharField(max_length=1, choices=GENDER_CHOICES)
+    department = models.CharField(max_length=1, choices=DEPARTMENT_CHOICES)
+    specifications = models.TextField(null=True, blank=True)
+    picture = models.ImageField(upload_to='images/teachers_images/', blank=True, null=True)
+
+
 
     def __str__(self):
         return self.name
