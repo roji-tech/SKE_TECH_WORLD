@@ -2,19 +2,20 @@ from django.http.response import JsonResponse
 from typing import Any
 from django.contrib.auth.decorators import login_required
 from django.db.models.query import QuerySet
+from django.urls import reverse_lazy
 from django.utils.decorators import method_decorator
 from django.http import HttpResponse
 from django.shortcuts import redirect, render
 from django.views import View
-from django.views.generic import ListView, CreateView
+from django.views.generic import ListView, CreateView, UpdateView, DeleteView
 from django.contrib import messages
 
 from main.models.users import OWNER, User
 from main.models.models import AcademicSession, School
 from django.contrib.auth import authenticate, login
 
-from ..models.profiles import Teacher
-from ..forms import TeachersForm
+# from ..models.profiles import Teacher
+# from ..forms import TeachersForm
 
 
 def admin_is_authenticated(*args):
@@ -152,12 +153,12 @@ class AdminsHelp(View):
 # ADMISSIN SESSION
 @admin_is_authenticated()
 class ListSession(ListView):
-    template_name = "myadmin/list_session.html"
+    template_name = "myadmin/academicsession_list.html"
 
-    def get_queryset(self) -> QuerySet[Any]:
+    def get_queryset(self):
         user = self.request.user
         school = School.objects.filter(owner=user)
-        return AcademicSession.objects.filter(school=school)
+        return AcademicSession.objects.filter(school__in=school)
 
     # def get(self, request, *args, **kwargs):
     #     # Custom logic here
@@ -190,3 +191,30 @@ class AddSession(View):
         #     messages.error(request, 'Invalid username or password')
 
         return render(request, self.template_name)
+    
+class UpdateSession(UpdateView):
+    model = AcademicSession
+    context_object_name = 'academicSession'
+    fields = ['start_date', 'end_date']
+    template_name = "myadmin/update_session.html"
+    success_url = reverse_lazy('list-sessions')
+
+    def get_queryset(self):
+        user = self.request.user
+        school = School.objects.filter(owner=user)
+        return AcademicSession.objects.filter(school__in=school)
+
+
+    
+class DeleteSession(DeleteView):
+    model = AcademicSession
+    template_name = "myadmin/delete_session.html"
+    success_url = reverse_lazy('academicsession-list')  # Redirect after successful deletion
+
+    def get_queryset(self):
+        user = self.request.user
+        school = School.objects.filter(owner=user)
+        return AcademicSession.objects.filter(school__in=school)
+
+
+# Class session 
