@@ -1,5 +1,5 @@
 from django.urls import path
-from main.views.admin_views import AddSession, ListSession
+from main.views.admin_views import AddSession, DeleteSession, ListSession, UpdateSession
 from ..views import AdminsHome, RegisterSchool, AdminLogin, AdminsHelp
 
 
@@ -11,4 +11,7 @@ urlpatterns = [
     
     path('admin/add-session/', AddSession.as_view(), name='add-session'),
     path('admin/list-sessions/', ListSession.as_view(), name='list-sessions'),
+    path('admin/session/<int:pk>/update/', UpdateSession.as_view(), name='update-session'),
+    path('admin/session/<int:pk>/delete', DeleteSession.as_view(), name='delete-session'),
+
 ]
