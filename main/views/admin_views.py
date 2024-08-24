@@ -1,3 +1,4 @@
+from django.db import IntegrityError
 from django.http.response import JsonResponse
 from typing import Any
 from django.contrib.auth.decorators import login_required
@@ -7,15 +8,15 @@ from django.utils.decorators import method_decorator
 from django.http import HttpResponse
 from django.shortcuts import redirect, render
 from django.views import View
-from django.views.generic import ListView, CreateView, UpdateView, DeleteView
 from django.contrib import messages
+from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 
 from main.models.users import OWNER, User
-from main.models.models import AcademicSession, School
+from main.models.models import AcademicSession, School, Term, SchoolClass, Division
 from django.contrib.auth import authenticate, login
 
 # FORMS
-from ..forms import AcademicSessionForm  # Assuming you have a form
+from ..forms import AcademicSessionForm, ClassForm  # Assuming you have a form
 
 # from ..models.profiles import Teacher
 # from ..forms import TeachersForm
@@ -157,26 +158,16 @@ class AdminsHelp(View):
         return render(request, "myadmin/help.html")
 
 
-# ADMISSIN SESSION
+# ACADEMIC SESSION
+# ACADEMIC SESSION
+# ACADEMIC SESSION
 @admin_is_authenticated()
 class ListSession(ListView):
     template_name = "myadmin/academicsession_list.html"
-    # Optional: specify context object name
     context_object_name = 'academic_sessions'
 
     def get_queryset(self):
-        user = self.request.user
-        school = School.objects.filter(owner=user).first()
-        if school:
-            return AcademicSession.objects.filter(school=school)
-        # Return empty queryset if no school is found
-        return AcademicSession.objects.none()
-
-    # def get(self, request, *args, **kwargs):
-    #     # Custom logic here
-    #     return render(request, )
-
-# ADMISSIN SESSION
+        return AcademicSession.get_school_sessions(request=self.request)
 
 
 @admin_is_authenticated()
@@ -224,10 +215,16 @@ class AddSession(View):
             else:
                 print(request.POST)
                 print('Error adding academic session. Please try again.')
+
+        # except School.DoesNotExist:
+        #     messages.error(
+        #         request, 'School not found. Please ensure your account is linked to a school.')
+        except IntegrityError:
+            messages.error(
+                request, 'This academic session already exists. Please enter a different session.')
         except Exception as e:
             messages.error(
-                request, 'Error adding academic session. Please try again.'
-            )
+                request, 'Error adding academic session. Please try again.')
             print(e)
 
         form = AcademicSessionForm()
@@ -242,21 +239,122 @@ class UpdateSession(UpdateView):
     success_url = reverse_lazy('list-sessions')
 
     def get_queryset(self):
-        user = self.request.user
-        school = School.objects.filter(owner=user)
-        return AcademicSession.objects.filter(school__in=school)
+        return AcademicSession.get_school_sessions(request=self.request)
 
 
 class DeleteSession(DeleteView):
     model = AcademicSession
     template_name = "myadmin/delete_session.html"
     # Redirect after successful deletion
-    success_url = reverse_lazy('academicsession-list')
+    success_url = reverse_lazy('list-sessions')
 
     def get_queryset(self):
-        user = self.request.user
-        school = School.objects.filter(owner=user)
-        return AcademicSession.objects.filter(school__in=school)
+        return AcademicSession.get_school_sessions(request=self.request)
 
 
-# Class session
+# CLASSES
+# CLASSES
+# CLASSES
+class ClassListView(ListView):
+    model = SchoolClass
+    template_name = 'myadmin/classes_list.html'
+    context_object_name = 'classes'
+
+
+class ClassDetailView(DetailView):
+    model = SchoolClass
+    template_name = 'myadmin/class_detail.html'
+    context_object_name = 'class'
+
+
+class ClassCreateView(CreateView):
+    model = SchoolClass
+    template_name = 'myadmin/add_class.html'
+    form_class = ClassForm
+    success_url = reverse_lazy('list-classes')
+    
+
+
+class ClassUpdateView(UpdateView):
+    model = SchoolClass
+    template_name = 'myadmin/schoolclass_form.html'
+    fields = ['name', 'academic_session', 'class_teacher', 'division']
+    success_url = reverse_lazy('list-classes')
+
+
+class ClassDeleteView(DeleteView):
+    model = SchoolClass
+    template_name = 'myadmin/schoolclass_confirm_delete.html'
+    success_url = reverse_lazy('list-classes')
+
+
+# TERMS
+# TERMS
+# TERMS
+class TermListView(ListView):
+    model = Term
+    template_name = 'myadmin/term_list.html'
+    context_object_name = 'terms'
+
+
+class TermDetailView(DetailView):
+    model = Term
+    template_name = 'myadmin/term_detail.html'
+    context_object_name = 'term'
+
+
+class TermCreateView(CreateView):
+    model = Term
+    template_name = 'myadmin/term_form.html'
+    fields = ['academic_session', 'name',
+              'start_date', 'end_date', 'next_term_begins']
+    success_url = reverse_lazy('term-list')
+
+
+class TermUpdateView(UpdateView):
+    model = Term
+    template_name = 'myadmin/term_form.html'
+    fields = ['academic_session', 'name',
+              'start_date', 'end_date', 'next_term_begins']
+    success_url = reverse_lazy('term-list')
+
+
+class TermDeleteView(DeleteView):
+    model = Term
+    template_name = 'myadmin/term_confirm_delete.html'
+    success_url = reverse_lazy('term-list')
+
+
+# CLASS DIVISIONS
+# CLASS DIVISIONS
+# CLASS DIVISIONS
+class DivisionListView(ListView):
+    model = Division
+    template_name = 'myadmin/division_list.html'
+    context_object_name = 'divisions'
+
+
+class DivisionDetailView(DetailView):
+    model = Division
+    template_name = 'myadmin/division_detail.html'
+    context_object_name = 'division'
+
+
+class DivisionCreateView(CreateView):
+    model = Division
+    template_name = 'myadmin/division_form.html'
+    fields = ['name']
+    success_url = reverse_lazy('division-list')
+
+
+class DivisionUpdateView(UpdateView):
+    model = Division
+    template_name = 'myadmin/division_form.html'
+    fields = ['name']
+    success_url = reverse_lazy('division-list')
+
+
+class DivisionDeleteView(DeleteView):
+    model = Division
+    template_name = 'myadmin/division_confirm_delete.html'
+    success_url = reverse_lazy('division-list')

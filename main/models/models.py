@@ -62,6 +62,12 @@ class AcademicSession(models.Model):
 
         super().save(*args, **kwargs)
 
+    @staticmethod
+    def get_school_sessions(request):
+        user = request.user
+        school = School.objects.filter(owner=user).first()
+        return AcademicSession.objects.filter(school=school)
+
 
 class Term(models.Model):
     TERM_CHOICES = [
