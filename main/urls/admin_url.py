@@ -1,5 +1,5 @@
 from django.urls import path
-from main.views.admin_views import AddSession, DeleteSession, ListSession, UpdateSession
+from main.views.admin_views import AddSession, DeleteSession, GmeetClassView, ListSession, UpdateSession
 from ..views import AdminsHome, RegisterSchool, AdminLogin, AdminsHelp
 
 
@@ -24,5 +24,8 @@ urlpatterns = [
          UpdateSession.as_view(), name='update-class'),
     path('admin/classes/<int:pk>/delete',
          DeleteSession.as_view(), name='delete-class'),
+         
+     # GMEET
+     path('all-gmeets', GmeetClassView.as_view(), name='all-gmeet-classes'),
 
 ]

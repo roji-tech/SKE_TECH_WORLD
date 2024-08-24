@@ -11,7 +11,7 @@ from django.views.generic import ListView, CreateView, UpdateView, DeleteView
 from django.contrib import messages
 
 from main.models.users import OWNER, User
-from main.models.models import AcademicSession, School
+from main.models.models import AcademicSession, GmeetClass, School
 from django.contrib.auth import authenticate, login
 
 # FORMS
@@ -259,4 +259,16 @@ class DeleteSession(DeleteView):
         return AcademicSession.objects.filter(school__in=school)
 
 
-# Class session
+# Gmeet
+
+class GmeetClassView(ListView):
+    # model = GmeetClass
+    context_object_name = 'gmeets'
+    template_name = 'myadmin/gmeetclasses.html'
+    ordering = ['start_time']
+    
+    def get_queryset(self):
+        return GmeetClass.objects.all()
+
+    def test_func(self):
+        return self.request.user.is_staff
