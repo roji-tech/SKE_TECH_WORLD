@@ -32,9 +32,6 @@ class School(models.Model):
 class AcademicSession(models.Model):
 
     def __str__(self):
-        return self.name
-
-    def __str__(self):
         return f"{self.name} ({self.school.name})"
 
     class Meta:
@@ -48,6 +45,22 @@ class AcademicSession(models.Model):
     next_session_begins = models.DateField(blank=True, null=True)
     is_current = models.BooleanField(default=False)
     max_exam_score = models.SmallIntegerField(default=60)
+
+    def save(self, *args, **kwargs):
+        if not self.name:  # Set the name only if it's not already set
+            self.name = f"{self.start_date.year}-{self.end_date.year}"
+
+        # Split the existing name to check if the years match
+        name_parts = self.name.split('-')
+        existing_start_year = int(name_parts[0])
+        existing_end_year = int(name_parts[1]) if len(
+            name_parts) > 1 else existing_start_year
+
+        # If both years are the same, update the name to just the year
+        if existing_start_year == existing_end_year:
+            self.name = str(existing_start_year)
+
+        super().save(*args, **kwargs)
 
 
 class Term(models.Model):

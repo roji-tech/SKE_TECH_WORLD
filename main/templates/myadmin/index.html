@@ -6,204 +6,24 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Dashboard</title>
-     <!-----------Links------------->
+
     <link href='https://cdn.jsdelivr.net/npm/fullcalendar@5.10.2/main.min.css' rel='stylesheet'>
     <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js'></script>
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet">
-    <link rel="stylesheet" href="css/styles.css">
     <link rel="stylesheet" href="{% static 'css/myadmin/styles.css' %}">
 
-     <!-----------Links End------------->
   </head>
   <body>
     <div class="grid-container">
 
       <!-- Header -->
-      <header class="header">
-        <div class="menu-icon" onclick="openSidebar()">
-          <span class="material-icons-outlined">menu</span>
-        </div>
-        <div class="header-left">
-          <span class="material-icons-outlined">logout</span>
-        </div>
-        <div class="header-right">
-          <h2 class="h2">Hi, Admin</h2>
-          <style>
-            .h2 {
-              color: #fff;
-            }
-          </style>
-        </div>
-      </header>
+      {% include '_header.html' %}
       <!-- End Header -->
 
       <!-- Sidebar -->
-      <aside id="sidebar">
-        <div class="sidebar-title">
-          <div class="sidebar-profile">
-            <img src="/images/profile.jpg" alt="Profile Picture" class="profile-picture">
-            <div class="profile-name-box">
-              <span class="profile-name">John Doe</span>
-            </div>
-          </div>
-        </div>
-
-        <ul class="sidebar-list">
-          <li class="sidebar-list-item">
-            <a href="#">
-              <span class="material-icons-outlined">school</span>
-              Academic Sect...
-            </a>
-            <ul class="dropdown-menu" id="dropdown-menu">
-              <li><a href="{% url 'add-session' %}">Add Section‎ ‎ ‎ ‎ ‎ ‎ ‎ </a></li>
-              <li><a href="{% url 'list-sessions' %}">Section List</a></li>
-            </ul>
-          </li>
-          <ul class="sidebar-list">
-            <li class="sidebar-list-item">
-              <a href="#">
-                <span class="material-icons-outlined">class</span>
-           Classes
-              </a>
-              <ul class="dropdown-menu">
-                <li><a href="/john's assignment/class/add class.html">Add Class ‎ ‎ ‎ ‎ ‎ </a></li>
-                <li><a href="/john's assignment/class/class.html">Class List</a></li>
-              </ul>
-            </li>
-            <ul class="sidebar-list">
-              <li class="sidebar-list-item">
-                <a href="#">
-                  <span class="material-icons-outlined">notes</span>
-            Subjects
-                </a>
-                <ul class="dropdown-menu">
-                  <li><a href="/john's assignment/subject/Subject.html">Add Subjects ‎ ‎ ‎ ‎ ‎ </a></li>
-                  <li><a href="/john's assignment/subject/addSubject.html">Subject List ‎ ‎ ‎ ‎ ‎</a></li>
-                </ul>
-              </li>
-            <ul class="sidebar-list">
-              <li class="sidebar-list-item">
-                <a href="#">
-                  <span class="material-icons-outlined">group</span>
-            Students
-                </a>
-                <ul class="dropdown-menu">
-                  <li><a href="/john's assignment/students/StudentInfo.html">Add Students ‎ ‎ ‎ ‎ ‎ </a></li>
-                  <li><a href="/john's assignment/students/student list.html">Student List</a></li>
-                </ul>
-              </li>
-              <ul class="sidebar-list">
-                <li class="sidebar-list-item">
-                  <a href="#">
-                    <span class="material-icons-outlined">person</span>
-             Teachers
-                  </a>
-                  <ul class="dropdown-menu">
-                    <li><a href="/john's assignment/employee/employeedata.html">Add Teachers ‎ ‎ ‎ ‎ ‎ </a></li>
-                    <li><a href="/john's assignment/employee/teachers List.html">List Teachers ‎ ‎ ‎ ‎ ‎</a></li>
-                  </ul>
-                </li>
-                <ul class="sidebar-list">
-                  <li class="sidebar-list-item">
-                    <a href="#">
-                      <span class="material-icons-outlined">videocam</span>
-                 G-meet Classes
-                    </a>
-                    <ul class="dropdown-menu">
-                      <li><a href="/updated/gmeet/gmeet.html">Upload Google Meet Classes ‎ ‎ ‎ ‎ ‎ </a></li>
-                      <li><a href="/updated/gmeet/uploadgmeet.html">Edit Google Meet Classes</a></li>
-                    </ul>
-                  </li>
-                  <ul class="sidebar-list">
-                    <li class="sidebar-list-item">
-                      <a href="#">
-                        <span class="material-icons-outlined">library_books</span>
-                  Lesson Plan
-                      </a>
-                      <ul class="dropdown-menu">
-                        <li><a href="/updated/lessonplan/lessonNote.html">Upload Lesson Plan‎ ‎ ‎ ‎ ‎ </a></li>
-                        <li><a href="/updated/lessonplan/lessonNoteList.html">Lesson Plan List ‎ ‎ ‎ ‎ ‎ </a></li>
-                     
-
-
-
-                      </ul>
-                    </li>
-                    <ul class="sidebar-list">
-                      <li class="sidebar-list-item">
-                        <a href="#">
-                          <span class="material-icons-outlined">note</span>
-                  Notes
-                        </a>
-                        <ul class="dropdown-menu">
-                          <li><a href="/updated/note/uploadNote.html">Add Notes ‎ ‎ ‎ ‎ ‎ </a></li>
-                          <li><a href="/updated/note/TeachersNote.html"> Notes list‎ ‎ ‎ ‎ ‎ </a></li>
-                          
-                          
-                          
-                        </ul>
-                      </li>
-                      <ul class="sidebar-list">
-                        <li class="sidebar-list-item">
-                          <a href="#">
-                            <span class="material-icons-outlined">library_add</span>
-                      Library
-                          </a>
-                          <ul class="dropdown-menu">
-                            <li><a href="/updated/library/library.html">View Library Books ‎ ‎ ‎ ‎ ‎ </a></li>
-                          </ul>
-                        </li>
-                        <ul class="sidebar-list">
-                          <li class="sidebar-list-item">
-                            <a href="#">
-                              <span class="material-icons-outlined">assignment</span>
-                       Examination
-                            </a>
-                            <ul class="dropdown-menu">
-                              <li><a href="/updated/exam/examinations.html">View Examination Papers ‎ ‎ ‎ ‎ ‎ </a></li>
-                             
-                            </ul>
-                          </li>
-                          <ul class="sidebar-list">
-                            <li class="sidebar-list-item">
-                              <a href="#">
-                                <span class="material-icons-outlined">assignment</span>
-                         Homework
-                              </a>
-                              <ul class="dropdown-menu">
-                                <li><a href="/updated/homework/homework.html">Add Assignments ‎ ‎ ‎ ‎ ‎ </a></li>
-                               
-                              </ul>
-                            </li>
-                           
-                            <ul class="sidebar-list">
-                              <li class="sidebar-list-item">
-                                <a href="#">
-                                  <span class="material-icons-outlined">grade</span>
-                          Results
-                                </a>
-                                <ul class="dropdown-menu">
-                                  <li><a href="/updated/results/results.html">Add Results ‎ ‎ ‎ ‎ ‎ </a></li>
-                                </ul>
-                              </li>
-                              <ul class="sidebar-list">
-                                <li class="sidebar-list-item">
-                                  <a href="#">
-                                    <span class="material-icons-outlined">settings</span>
-                                Settings   
-                                  </a>
-                                  <ul class="dropdown-menu">
-                                    <li><a href="/updated/settings/settings.html">Configurations</a></li>
-                                  
-                                  </ul>
-                                </li>
-         
-
-                                
-        </ul>
-      </aside>
+      {% include 'myadmin/_sidebar.html' %}
       <!-- End Sidebar -->
 
       <!-- Main -->
@@ -275,6 +95,7 @@
     </div>
 </div>
  <script>
+
   document.addEventListener('DOMContentLoaded', function() {
     var calendarEl = document.getElementById('calendar');
     var calendar = new FullCalendar.Calendar(calendarEl, {

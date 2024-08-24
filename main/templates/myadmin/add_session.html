@@ -1,281 +1,365 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Add Academic Session</title>
-    <link rel="stylesheet" href="session.css" />
-    <style>
-      /* Add some basic styles for the overlay */
-      .overlay {
-        display: none;
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: rgba(0, 0, 0, 0.5);
-        justify-content: center;
-        align-items: center;
-        z-index: 1000; /* Ensure the overlay is on top */
-      }
-      .overlay-content {
-        background: white;
-        padding: 20px;
-        border-radius: 10px;
-        text-align: center;
-        width: 300px;
-      }
-      .overlay-buttons {
-        margin-top: 20px;
-      }
-      .overlay-buttons button {
-        margin: 0 10px;
-      }
-    </style>
 
-    <style>
-      @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap");
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Add Academic Session</title>
+  <link rel="stylesheet" href="session.css" />
+  <style>
+    /* Add some basic styles for the overlay */
+    .overlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.5);
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+      /* Ensure the overlay is on top */
+    }
 
-      * {
-        font-family: "Poppins", sans-serif;
-      }
+    .overlay-content {
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      text-align: center;
+      width: 300px;
+    }
 
-      body {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        height: 100vh;
-        margin: 0;
-        background: #f0f0f0;
-      }
+    .overlay-buttons {
+      margin-top: 20px;
+    }
 
-      .container {
-        display: flex;
-        flex-direction: column;
-        width: 80%;
-        background: #f8f7f788;
-        margin: 15% auto;
-        box-shadow: 0.1px 0.1px 0.3px;
-        z-index: 100;
-        padding: 20px;
-        border-radius: 8px;
-      }
+    .overlay-buttons button {
+      margin: 0 10px;
+    }
+  </style>
 
-      .add-division {
-        padding-left: 20px;
-      }
+  <style>
+    @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap");
 
-      .add-division p {
-        color: #1b94c3;
-        font-weight: 600;
-      }
+    * {
+      font-family: "Poppins", sans-serif;
+    }
 
-      .contents {
-        display: flex;
-        flex-direction: column;
-        border-top: 1px solid #b5adad;
-        border-bottom: 1px solid #b5adad;
-        padding: 20px;
-        background: white;
-        border-radius: 8px;
-      }
+    body {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+      background: #f0f0f0;
+    }
 
-      h3 {
-        font-weight: 600;
-      }
+    .container {
+      display: flex;
+      flex-direction: column;
+      width: 80%;
+      background: #f8f7f788;
+      margin: 15% auto;
+      box-shadow: 0.1px 0.1px 0.3px;
+      z-index: 100;
+      padding: 20px;
+      border-radius: 8px;
+    }
 
-      #ast {
-        color: red;
-      }
+    .add-division {
+      padding-left: 20px;
+    }
 
-      #text {
-        font-size: small;
-        font-weight: 400;
-      }
+    .add-division p {
+      color: #1b94c3;
+      font-weight: 600;
+    }
 
-      .forms {
-        display: flex;
-        justify-content: space-between;
-        height: 35px;
-        margin-top: 10px;
-      }
+    .contents {
+      display: flex;
+      flex-direction: column;
+      border-top: 1px solid #b5adad;
+      border-bottom: 1px solid #b5adad;
+      padding: 20px;
+      background: white;
+      border-radius: 8px;
+    }
 
-      input {
-        border: none;
-        width: 45%;
-        padding: 8px;
-        border: 1px solid #b5adad;
-        border-radius: 4px;
-        font-size: medium;
-      }
+    h3 {
+      font-weight: 600;
+    }
 
-      input::placeholder {
-        text-transform: capitalize;
-        text-align: center;
-      }
+    #ast {
+      color: red;
+    }
 
-      #dash {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        margin: 0 5px;
-        font-size: larger;
-        color: #b5adad;
-      }
+    #text {
+      font-size: small;
+      font-weight: 400;
+    }
 
-      .function-btn {
-        text-align: end;
-        padding: 2%;
-      }
+    .forms {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-top: 10px;
+    }
 
-      #add {
-        padding: 10px 15px;
-        background: #1b94c3;
-        color: white;
-        border-radius: 3px;
-        border: none;
-        font-weight: 600;
-        cursor: pointer;
-      }
+    .formInput {
+      display: grid;
+      grid-template-columns: 1fr 2fr;
+      align-items: center;
+      border-bottom: 5px solid rgb(226, 226, 226);
+      padding: 5px;
+      padding-bottom: 10px;
+      border: 3px solid #1782a1;
+    }
 
-      #add:hover {
-        background: #1782a1;
-      }
+    .formInput label {
+      text-transform: capitalize;
+      font-weight: 600;
+      font-size: 15px;
+    }
 
-      /* Overlay styles */
-      .overlay {
-        display: none;
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: rgba(0, 0, 0, 0.7);
-        justify-content: center;
-        align-items: center;
-      }
+    .formInput>input {
+      border: none;
+      width: 45%;
+      padding: 8px;
+      border-radius: 4px;
+      font-size: medium;
+      width: 100%;
+      justify-self: flex-end;
+    }
 
-      .overlay-content {
-        background: white;
-        padding: 20px;
-        border-radius: 8px;
-        width: 40%;
-        text-align: center;
-      }
+    .formInput input::placeholder {
+      text-transform: capitalize;
+      text-align: center;
+    }
 
-      .overlay-content h2 {
-        margin-bottom: 20px;
-      }
+    I .formInput #dash {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin: 0 5px;
+      font-size: larger;
+      color: #b5adad;
+    }
 
-      .overlay-buttons {
-        margin-top: 20px;
-      }
+    .function-btn {
+      text-align: end;
+      padding: 2%;
+    }
 
-      .overlay-buttons button {
-        padding: 10px 15px;
-        border: none;
-        border-radius: 3px;
-        font-weight: 600;
-        cursor: pointer;
-        margin: 0 10px;
-      }
+    #add {
+      padding: 10px 15px;
+      background: #1b94c3;
+      color: white;
+      border-radius: 3px;
+      border: none;
+      font-weight: 600;
+      cursor: pointer;
+    }
 
-      #cancel {
-        background: #b5adad;
-        color: white;
-      }
+    #add:hover {
+      background: #1782a1;
+    }
 
-      #cancel:hover {
-        background: #a09a9a;
-      }
+    /* Overlay styles */
+    .overlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.7);
+      justify-content: center;
+      align-items: center;
+    }
 
-      #save {
-        background: #1b94c3;
-        color: white;
-      }
+    .overlay-content {
+      background: white;
+      padding: 20px;
+      border-radius: 8px;
+      width: 40%;
+      text-align: center;
+    }
 
-      #save:hover {
-        background: #1782a1;
-      }
-    </style>
-  </head>
-  <body>
-    <!-- add class start -->
-    <div class="container">
-      <div class="add-division">
-        <p><span id="plus"></span>Add Academic Session</p>
-      </div>
+    .overlay-content h2 {
+      margin-bottom: 20px;
+    }
 
-      <div class="contents">
-        <h3>
-          Academic Session <span id="text">(Example: 2023-2024)</span
-          ><span id="ast">*</span>
-        </h3>
+    .overlay-buttons {
+      margin-top: 20px;
+    }
 
-        <div class="forms">
-          <input type="text" id="start-year" placeholder="Session start year" />
-          <span id="dash">-</span>
-          <input type="text" id="end-year" placeholder="Session end year" />
+    .overlay-buttons button {
+      padding: 10px 15px;
+      border: none;
+      border-radius: 3px;
+      font-weight: 600;
+      cursor: pointer;
+      margin: 0 10px;
+    }
+
+    #cancel {
+      background: #b5adad;
+      color: white;
+    }
+
+    #cancel:hover {
+      background: #a09a9a;
+    }
+
+    #save {
+      background: #1b94c3;
+      color: white;
+    }
+
+    #save:hover {
+      background: #1782a1;
+    }
+  </style>
+</head>
+
+<body>
+  <!-- add class start -->
+  <div class="container">
+    <div class="add-division">
+      <p><span id="plus"></span>Add Academic Session</p>
+    </div>
+
+    <div class="contents">
+      <h3>
+        Academic Session <span id="text">(Example: 2023-2024)</span><span id="ast">*</span>
+      </h3>
+
+      <form method="post" action="{% url 'add-session' %}" id="sessionForm">
+        {% csrf_token %}
+        <div class="formInput">
+          <label for="start_date">Session Start Date</label>
+          {{ form.start_date }}
+        </div>
+        <div class="formInput">
+          <label for="end_date">Session End Date</label>
+          {{ form.end_date }}
+        </div>
+        <div class="formInput">
+          <label for="name">Session Name ( 2024-2025 )</label>
+          {{ form.name }}
         </div>
 
-        <div class="forms">
-          <input type="date" id="session-date" placeholder="Session date" />
-        </div>
-      </div>
 
-      <div class="function-btn">
-        <button id="add">Add</button>
+        <div class="function-btn">
+          <button type="button" id="add">Add</button>
+        </div>
+
+        {% if messages %}
+        <style>
+          .messages {
+            margin: 20px 0;
+          }
+
+          .alert {
+            padding: 15px;
+            margin-bottom: 10px;
+            border: 1px solid transparent;
+            border-radius: 4px;
+          }
+
+          .alert.success {
+            color: #3c763d;
+            background-color: #dff0d8;
+            border-color: #d6e9c6;
+          }
+
+          .alert.error {
+            color: #a94442;
+            background-color: #f2dede;
+            border-color: #ebccd1;
+          }
+
+          .alert.warning {
+            color: #8a6d3b;
+            background-color: #fcf8e3;
+            border-color: #faebcc;
+          }
+
+          .alert.info {
+            color: #31708f;
+            background-color: #d9edf7;
+            border-color: #bce8f1;
+          }
+        </style>
+
+        <div class="messages">
+          {% for message in messages %}
+          <div class="alert {% if message.tags %}{{ message.tags }}{% endif %}">
+            {{ message }}
+          </div>
+          {% endfor %}
+        </div>
+        {% endif %}
+
+      </form>
+
+    </div>
+  </div>
+  <!-- add class end -->
+
+  <!-- overlay start -->
+  <div id="overlay" class="overlay">
+    <div class="overlay-content">
+      <p>Are you sure you want to add this session?</p>
+      <div id="session-details"></div>
+      <div class="overlay-buttons">
+        <button id="confirm">Yes</button>
+        <button id="cancel">No</button>
       </div>
     </div>
-    <!-- add class end -->
+  </div>
+  <!-- overlay end -->
 
-    <!-- overlay start -->
-    <div id="overlay" class="overlay">
-      <div class="overlay-content">
-        <p>Are you sure you want to add this session?</p>
-        <div id="session-details"></div>
-        <div class="overlay-buttons">
-          <button id="confirm">Yes</button>
-          <button id="cancel">No</button>
-        </div>
-      </div>
-    </div>
-    <!-- overlay end -->
+  <script>
+    const addButton = document.getElementById("add");
+    const overlay = document.getElementById("overlay");
+    const cancelButton = document.getElementById("cancel");
+    const confirmButton = document.getElementById("confirm");
+    const sessionDetails = document.getElementById("session-details");
+    const sessionForm = document.getElementById('sessionForm');
 
-    <script>
-      const addButton = document.getElementById("add");
-      const overlay = document.getElementById("overlay");
-      const cancelButton = document.getElementById("cancel");
-      const confirmButton = document.getElementById("confirm");
-      const sessionDetails = document.getElementById("session-details");
+    addButton.addEventListener("click", () => {
+      const startDate = document.getElementById("start_date").value;
+      const endDate = document.getElementById("end_date").value;
+      let sessionName = document.getElementById("name").value;
 
-      addButton.addEventListener("click", () => {
-        const startYear = document.getElementById("start-year").value;
-        const endYear = document.getElementById("end-year").value;
-        const sessionDate = document.getElementById("session-date").value;
-
-        if (startYear && endYear && sessionDate) {
-          sessionDetails.innerHTML = `
-                    <p>Start Year: ${startYear}</p>
-                    <p>End Year: ${endYear}</p>
-                    <p>Date: ${sessionDate}</p>
-                `;
-          overlay.style.display = "flex";
-        } else {
-          alert("Please fill in all fields.");
+      if (startDate && endDate) {
+        if (!sessionName) {
+          sessionName = `${new Date(startDate).getFullYear()}-${new Date(endDate).getFullYear()}`;
+          document.getElementById('name').value = sessionName;
         }
-      });
+        sessionDetails.innerHTML = `
+                    <p>Start Year: ${startDate}</p>
+                    <p>End Year: ${endDate}</p>
+                    <p>Session Name: ${sessionName}</p>
+                    `;
+        overlay.style.display = "flex";
+      } else {
+        alert("Please fill in all fields.");
+      }
+    });
 
-      cancelButton.addEventListener("click", () => {
-        overlay.style.display = "none";
-      });
+    cancelButton.addEventListener("click", () => {
+      overlay.style.display = "none";
+    });
 
-      confirmButton.addEventListener("click", () => {
-        // Add your logic to handle the session addition here
-        alert("Session added!");
-        overlay.style.display = "none";
-      });
-    </script>
-  </body>
+    confirmButton.addEventListener("click", () => {
+      // Add your logic to handle the session addition here
+      sessionForm.submit();
+      overlay.style.display = "none";
+    });
+  </script>
+</body>
+
 </html>

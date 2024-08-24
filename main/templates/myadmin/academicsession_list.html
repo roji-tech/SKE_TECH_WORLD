@@ -72,36 +72,59 @@
         background-color: rgba(255, 255, 255, 0.05);
       }
 
+      .actions {
+        display: flex;
+        gap: 10px;
+      }
+
       button {
-        padding: 10px 15px;
+        padding: 10px;
         border: none;
-        border-radius: 3px;
-        margin: 0 5px;
         color: #fff;
         cursor: pointer;
         transition: background-color 0.3s ease;
+        border-radius: 20px;
       }
 
       .edit {
         background: blue;
-        border-radius: 20px;
       }
 
       .delete {
         background: red;
-        border-radius: 20px;
-        margin-left: -100px;
       }
 
       #edit:hover {
         background-color: rgb(43, 43, 117);
       }
-      #delete:hover {
+
+      .delete:hover {
         background-color: rgb(235, 104, 100);
       }
 
       button:hover {
         opacity: 0.8;
+      }
+
+      .session_status * {
+        font-size: 12px;
+      }
+      .is_current_session {
+        background-color: #4caf50; /* Green background */
+        color: white; /* White text */
+        padding: 5px 10px; /* Padding inside the span */
+        border-radius: 5px; /* Rounded corners */
+        font-weight: bold; /* Bold text */
+        display: inline-block; /* Makes padding apply correctly */
+      }
+
+      .inactive_session {
+        background-color: #f44336; /* Red background */
+        color: white;
+        padding: 5px 10px;
+        border-radius: 5px;
+        font-weight: bold;
+        display: inline-block;
       }
     </style>
   </head>
@@ -122,20 +145,33 @@
             </tr>
           </thead>
           <tbody>
+            {% for session in academic_sessions %}
             <tr>
-              <td>2023-2024</td>
-              <td>2023</td>
-              <td>2024</td>
-              <td>Active Academic Status</td>
-              <td>
-                <a href="{% url 'update-session' academicSession.pk %}"
-                  ><button class="edit">Edit</button></a
-                >
+              <td>{{ session.name }}</td>
+              <td>{{ session.start_date }}</td>
+              <td>{{ session.end_date }}</td>
+              <td class="session_status">
+                {% if session.is_current %}
+                <span class="is_current_session">Active Academic Status</span>
+                {% else %}
+                <span class="inactive_session">Inactive Academic Status</span>
+                {% endif %}
               </td>
-              <td>
-                <button class="delete" id="delete">Delete</button>
+              <td class="actions">
+                <a href="{% url 'update-session' session.pk %}">
+                  <button class="edit">Edit</button>
+                </a>
+
+                <a href="{% url 'delete-session' session.pk %}">
+                  <button class="delete">Delete</button>
+                </a>
               </td>
             </tr>
+            {% empty %}
+            <tr>
+              <td colspan="6">No academic sessions found.</td>
+            </tr>
+            {% endfor %}
           </tbody>
         </table>
       </div>

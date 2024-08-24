@@ -1,0 +1,19 @@
+<!-- _header.html -->
+<header class="header">
+  <div class="menu-icon" onclick="openSidebar()">
+    <span class="material-icons-outlined">menu</span>
+  </div>
+  <div class="header-left">
+    <span class="material-icons-outlined">logout</span>
+  </div>
+  <div class="header-right">
+    <h2 class="h2">Hi, {{ user.username }}</h2>
+  </div>
+</header>
+
+<style>
+  .h2 {
+    color: #fff;
+    text-transform: capitalize;
+  }
+</style>

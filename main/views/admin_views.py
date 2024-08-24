@@ -14,6 +14,9 @@ from main.models.users import OWNER, User
 from main.models.models import AcademicSession, School
 from django.contrib.auth import authenticate, login
 
+# FORMS
+from ..forms import AcademicSessionForm  # Assuming you have a form
+
 # from ..models.profiles import Teacher
 # from ..forms import TeachersForm
 
@@ -90,7 +93,10 @@ class RegisterSchool(View):
 
             # Log the extracted data for debugging
             print(
-                f"Received data: {username}, {first_name}, {last_name}, {email}, {password}, {gender}, {school_name}, {school_phone}, {school_email}")
+                f"""Received data: {username}, {first_name},
+                {last_name}, {email}, {password}, {gender},
+                {school_name}, {school_phone}, {school_email}"""
+            )
 
             # Validate the received data
             if not all((username, first_name, last_name, email, password, gender, school_name, school_phone, school_email)):
@@ -118,7 +124,8 @@ class RegisterSchool(View):
 
             # Error message
             messages.error(
-                request, "Error creating account. Please try again.")
+                request, "Error creating account. Please try again."
+            )
             return JsonResponse({"status": False, "message": "Error creating account. Please try again."})
 
 
@@ -154,11 +161,16 @@ class AdminsHelp(View):
 @admin_is_authenticated()
 class ListSession(ListView):
     template_name = "myadmin/academicsession_list.html"
+    # Optional: specify context object name
+    context_object_name = 'academic_sessions'
 
     def get_queryset(self):
         user = self.request.user
-        school = School.objects.filter(owner=user)
-        return AcademicSession.objects.filter(school__in=school)
+        school = School.objects.filter(owner=user).first()
+        if school:
+            return AcademicSession.objects.filter(school=school)
+        # Return empty queryset if no school is found
+        return AcademicSession.objects.none()
 
     # def get(self, request, *args, **kwargs):
     #     # Custom logic here
@@ -172,26 +184,56 @@ class AddSession(View):
     template_name = "myadmin/add_session.html"
 
     def get(self, request, *args, **kwargs):
-        # Custom logic here
-        return render(request, self.template_name)
+        form = AcademicSessionForm()
+        return render(request, self.template_name, {'form': form})
 
     def post(self, request, *args, **kwargs):
         print(request.POST)
-        start_date = request.POST.get('username')
-        end_date = request.POST.get('password')
-        next_session_begins = request.POST.get('password')
-        is_current = request.POST.get('password')
-        max_exam_score = request.POST.get('password')
+        form = AcademicSessionForm(request.POST)
 
-        # if user is not None:
-        #     print(user)
-        #     login(request, user)
-        #     return redirect('myadmin')
-        # else:
-        #     messages.error(request, 'Invalid username or password')
+        try:
+            user = self.request.user
+            school = School.objects.filter(owner=user).first()
 
-        return render(request, self.template_name)
-    
+            if form.is_valid():
+                start_date = form.cleaned_data.get('start_date')
+                end_date = form.cleaned_data.get('end_date')
+                _name = form.cleaned_data.get("name")
+                school_name = _name if _name else f"{start_date.year}-{end_date.year}"
+                print(start_date, end_date, _name, school_name, school)
+
+                # is_current = form.cleaned_data.get('is_current')
+                # next_session_begins = form.cleaned_data.get('next_session_begins')
+                # max_exam_score = form.cleaned_data.get('max_exam_score')
+
+                # Create and save the AcademicSession instance
+                session = AcademicSession(
+                    school_id=school.id,  # Adjust as needed
+                    start_date=start_date,
+                    end_date=end_date,
+                    # is_current=is_current,
+                    # next_session_begins=next_session_begins,
+                    # max_exam_score=max_exam_score
+                )
+                session.save()
+
+                messages.success(
+                    request, 'Academic session added successfully!')
+                # Redirect to a relevant page
+                return redirect('/admin/list-sessions/')
+            else:
+                print(request.POST)
+                print('Error adding academic session. Please try again.')
+        except Exception as e:
+            messages.error(
+                request, 'Error adding academic session. Please try again.'
+            )
+            print(e)
+
+        form = AcademicSessionForm()
+        return render(request, self.template_name, {'form': form})
+
+
 class UpdateSession(UpdateView):
     model = AcademicSession
     context_object_name = 'academicSession'
@@ -205,11 +247,11 @@ class UpdateSession(UpdateView):
         return AcademicSession.objects.filter(school__in=school)
 
 
-    
 class DeleteSession(DeleteView):
     model = AcademicSession
     template_name = "myadmin/delete_session.html"
-    success_url = reverse_lazy('academicsession-list')  # Redirect after successful deletion
+    # Redirect after successful deletion
+    success_url = reverse_lazy('academicsession-list')
 
     def get_queryset(self):
         user = self.request.user
@@ -217,4 +259,4 @@ class DeleteSession(DeleteView):
         return AcademicSession.objects.filter(school__in=school)
 
 
-# Class session 
+# Class session
