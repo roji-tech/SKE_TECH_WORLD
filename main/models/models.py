@@ -228,9 +228,11 @@ class Subject(models.Model):
 class GmeetClass(models.Model):
     subject = models.ForeignKey(
         Subject, on_delete=models.CASCADE, related_name='gmeet_classes')
+    description = models.TextField()
     gmeet_link = models.URLField()
     start_time = models.DateTimeField()
     end_time = models.DateTimeField()
+    created_by = models.ForeignKey(User, on_delete=models.CASCADE, )
 
     def __str__(self):
         return f"{self.subject.name} - {self.subject.school_class.name} ({self.start_time})"
