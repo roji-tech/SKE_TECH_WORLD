@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Academic Session List</title>
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap");
+
+      * {
+        font-family: "Poppins", sans-serif;
+      }
+
+      body {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background-color: #f0f0f0;
+        font-family: "Poppins", sans-serif;
+        margin: 0;
+        height: 100vh;
+      }
+
+      .container {
+        display: flex;
+        flex-direction: column;
+        width: 80%;
+        background: #d3d1d15e;
+        margin: 15% auto;
+        box-shadow: 0.1px 0.1px 0.3px;
+        z-index: 100;
+        padding: 20px;
+        border-radius: 8px;
+        outline: none;
+      }
+
+      .add-division {
+        background-color: rgba(255, 255, 255, 0.1);
+        padding: 20px;
+        text-align: center;
+        font-size: 24px;
+        font-weight: bold;
+
+        display: flex;
+        justify-content: space-between;
+      }
+
+      .contents {
+        padding: 20px;
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 20px;
+        background-color: rgba(255, 255, 255, 0.1);
+        border-radius: 10px;
+        overflow: hidden;
+      }
+
+      th,
+      td {
+        padding: 15px;
+        text-align: left;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+      }
+
+      th {
+        background-color: rgba(0, 0, 0, 0.1);
+        text-transform: capitalize;
+      }
+
+      td {
+        background-color: rgba(255, 255, 255, 0.05);
+      }
+
+      .actions {
+        display: flex;
+        gap: 10px;
+      }
+
+      button {
+        padding: 10px;
+        border: none;
+        color: #fff;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+        border-radius: 20px;
+      }
+
+      .edit {
+        background: blue;
+      }
+
+      .delete {
+        background: red;
+      }
+
+      #edit:hover {
+        background-color: rgb(43, 43, 117);
+      }
+
+      .delete:hover {
+        background-color: rgb(235, 104, 100);
+      }
+
+      button:hover {
+        opacity: 0.8;
+      }
+
+      .session_status * {
+        font-size: 12px;
+      }
+      .is_current_session {
+        background-color: #4caf50; /* Green background */
+        color: white; /* White text */
+        padding: 5px 10px; /* Padding inside the span */
+        border-radius: 5px; /* Rounded corners */
+        font-weight: bold; /* Bold text */
+        display: inline-block; /* Makes padding apply correctly */
+      }
+
+      .inactive_session {
+        background-color: #f44336; /* Red background */
+        color: white;
+        padding: 5px 10px;
+        border-radius: 5px;
+        font-weight: bold;
+        display: inline-block;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="add-division">
+        <p><span id="plus"></span> Academic Session List</p>
+
+        <p>
+          <a href="{% url 'add-session' %}">add new session</a>
+        </p>
+      </div>
+      <div class="contents">
+        <table>
+          <thead>
+            <tr>
+              <th>Session</th>
+              <th>Start Year</th>
+              <th>End Year</th>
+              <th>Status</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for session in academic_sessions %}
+            <tr>
+              <td>{{ session.name }}</td>
+              <td>{{ session.start_date }}</td>
+              <td>{{ session.end_date }}</td>
+              <td class="session_status">
+                {% if session.is_current %}
+                <span class="is_current_session">Active Academic Status</span>
+                {% else %}
+                <span class="inactive_session">Inactive Academic Status</span>
+                {% endif %}
+              </td>
+              <td class="actions">
+                <a href="{% url 'update-session' session.pk %}">
+                  <button class="edit">Edit</button>
+                </a>
+
+                <a href="{% url 'delete-session' session.pk %}">
+                  <button class="delete">Delete</button>
+                </a>
+              </td>
+            </tr>
+            {% empty %}
+            <tr>
+              <td colspan="6">No academic sessions found.</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <!-- overlay start -->
+    <div id="overlay" class="overlay">
+      <div class="overlay-content">
+        <p>Are you sure you want to Delete this session?</p>
+        <div id="session-details"></div>
+        <div class="overlay-buttons">
+          <button id="confirm" class="confirm">Yes</button>
+          <button id="cancel" class="cancel">No</button>
+        </div>
+      </div>
+    </div>
+    <!-- overlay end -->
+    <script>
+      const deleteButton = document.getElementById("delete");
+      const overlay = document.getElementById("overlay");
+      const cancelButton = document.getElementById("cancel");
+      const confirmButton = document.getElementById("confirm");
+
+      // deleteButton.addEventListener("click", () => {
+      //   overlay.style.display = "flex";
+      // });
+
+      cancelButton.addEventListener("click", () => {
+        overlay.style.display = "none";
+      });
+
+      confirmButton.addEventListener("click", () => {
+        // Add your logic to handle the session deletion here
+        alert("Session Deleted!");
+        overlay.style.display = "none";
+      });
+    </script>
+    <style>
+      /* Add some basic styles for the overlay */
+      .overlay {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.5);
+        justify-content: center;
+        align-items: center;
+        z-index: 1000; /* Ensure the overlay is on top */
+      }
+      .overlay-content {
+        background: white;
+        padding: 20px;
+        border-radius: 10px;
+        text-align: center;
+        width: 300px;
+      }
+      .overlay-buttons {
+        margin-top: 20px;
+      }
+      .overlay-buttons button {
+        margin: 0 10px;
+      }
+      .confirm {
+        background-color: rgb(10, 190, 10);
+      }
+      .cancel {
+        background-color: rgb(221, 21, 21);
+      }
+      .cancel:hover {
+        color: rgb(236, 61, 61);
+      }
+      .confirm:hover {
+        color: rgb(5, 105, 5);
+      }
+    </style>
+  </body>
+</html>
