@@ -1,4 +1,5 @@
 from django.db import IntegrityError
+from django.forms.models import BaseModelForm
 from django.http.response import JsonResponse
 from typing import Any
 from django.contrib.auth.decorators import login_required
@@ -260,6 +261,11 @@ class ClassListView(ListView):
     template_name = 'myadmin/class/list.html'
     context_object_name = 'classes'
 
+    def get_form(self, form_class=None):
+        if form_class is None:
+            form_class = self.get_form_class()
+        return form_class(request=self.request, **self.get_form_kwargs())
+
     def get_queryset(self):
         return SchoolClass.get_school_classes(request=self.request)
 
@@ -268,6 +274,11 @@ class ClassDetailView(DetailView):
     model = SchoolClass
     template_name = 'myadmin/detail.html'
     context_object_name = 'class'
+
+    def get_form(self, form_class=None):
+        if form_class is None:
+            form_class = self.get_form_class()
+        return form_class(request=self.request, **self.get_form_kwargs())
 
     def get_queryset(self):
         return SchoolClass.get_school_classes(request=self.request)
@@ -278,6 +289,11 @@ class ClassCreateView(CreateView):
     template_name = 'myadmin/class/add_class.html'
     form_class = ClassForm
     success_url = reverse_lazy('list-classes')
+
+    def get_form(self, form_class=None):
+        if form_class is None:
+            form_class = self.get_form_class()
+        return form_class(request=self.request, **self.get_form_kwargs())
 
     def get_queryset(self):
         return SchoolClass.get_school_classes(request=self.request)
@@ -310,6 +326,11 @@ class ClassUpdateView(UpdateView):
     def get_queryset(self):
         return SchoolClass.get_school_classes(request=self.request)
 
+    def get_form(self, form_class=None):
+        if form_class is None:
+            form_class = self.get_form_class()
+        return form_class(request=self.request, **self.get_form_kwargs())
+
 
 class ClassDeleteView(DeleteView):
     model = SchoolClass
@@ -318,6 +339,11 @@ class ClassDeleteView(DeleteView):
 
     def get_queryset(self):
         return SchoolClass.get_school_classes(request=self.request)
+
+    def get_form(self, form_class=None):
+        if form_class is None:
+            form_class = self.get_form_class()
+        return form_class(request=self.request, **self.get_form_kwargs())
 
 
 # TERMS

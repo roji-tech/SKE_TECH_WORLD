@@ -44,11 +44,16 @@ class ClassForm(forms.ModelForm):
                   'class_teacher', 'division', 'category']
 
     def __init__(self, *args, **kwargs):
-        # Assuming that you pass the `school` object when initializing the form
-        school = kwargs.pop('school', None)
+        # Extract the request object from the keyword arguments
+        self.request = kwargs.pop('request', None)
         super(ClassForm, self).__init__(*args, **kwargs)
 
-        self.fields['academic_session'].queryset = AcademicSession.get_school_sessions(self.request)
+        self.fields['academic_session'].queryset = AcademicSession.get_school_sessions(
+            self.request)
+
+        if self.request:
+            self.fields['academic_session'].queryset = AcademicSession.get_school_sessions(
+                self.request)
 
         # widgets = {SchoolClass
         #     'start_date': forms.DateInput(attrs={'type': 'date', "id": "start_date"}),
