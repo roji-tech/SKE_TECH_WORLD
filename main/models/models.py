@@ -156,6 +156,7 @@ class SchoolClass(models.Model):
     def get_school_classes(request):
         user = request.user
         school = School.objects.filter(owner=user).first()
+        print(SchoolClass.objects.filter(academic_session__school=school))
         return SchoolClass.objects.filter(academic_session__school=school)
 
 

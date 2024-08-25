@@ -1,5 +1,5 @@
 from django.urls import path
-from main.views.admin_views import AddSession, ClassListView, DeleteSession, ListSession, UpdateSession
+from main.views.admin_views import AddSession, ClassCreateView, ClassDeleteView, ClassListView, ClassUpdateView, DeleteSession, ListSession, UpdateSession
 from ..views import AdminsHome, RegisterSchool, AdminLogin, AdminsHelp
 
 urlpatterns = [
@@ -18,21 +18,21 @@ urlpatterns = [
 
     # CLASSES
     path('admin/classes/', ClassListView.as_view(), name='list-classes'),
-    # path('admin/add-class/', ClassCreateView.as_view(), name='add-class'),
-    # path('admin/classes/<int:pk>/update/',
-    #      UpdateSession.as_view(), name='update-class'),
-    # path('admin/classes/<int:pk>/delete',
-    #      DeleteSession.as_view(), name='delete-class'),
+    path('admin/add-class/', ClassCreateView.as_view(), name='add-class'),
+    path('admin/classes/<int:pk>/update/',
+         ClassUpdateView.as_view(), name='update-class'),
+    path('admin/classes/<int:pk>/delete',
+         ClassDeleteView.as_view(), name='delete-class'),
 
-    # path("",  ClassCreateView.as_view(), name="add-student"),
-    # path("",  ClassCreateView.as_view(), name="list-students"),
+    path("",  ClassCreateView.as_view(), name="add-student"),
+    path("",  ClassCreateView.as_view(), name="list-students"),
 
-    # path("",  ClassCreateView.as_view(), name="add-subject"),
-    # path("",  ClassCreateView.as_view(), name="list-subjects"),
+    path("",  ClassCreateView.as_view(), name="add-subject"),
+    path("",  ClassCreateView.as_view(), name="list-subjects"),
 
-    # path("",  ClassCreateView.as_view(), name="add-teacher"),
-    # path("",  ClassCreateView.as_view(), name="list-teachers"),
+    path("",  ClassCreateView.as_view(), name="add-teacher"),
+    path("",  ClassCreateView.as_view(), name="list-teachers"),
 
-    # path("",  ClassCreateView.as_view(), name="add-subject"),
-    # path("",  ClassCreateView.as_view(), name="list-subjects"),
+    path("",  ClassCreateView.as_view(), name="add-subject"),
+    path("",  ClassCreateView.as_view(), name="list-subjects"),
 ]

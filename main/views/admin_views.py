@@ -300,7 +300,7 @@ class ClassCreateView(CreateView):
 class ClassUpdateView(UpdateView):
     model = SchoolClass
     template_name = 'myadmin/class/edit.html'
-    fields = ['name', 'academic_session', 'class_teacher', 'division']
+    # fields = ['name', 'academic_session', 'class_teacher', 'division']
     success_url = reverse_lazy('list-classes')
     form_class = ClassForm
 

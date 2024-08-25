@@ -289,15 +289,15 @@
               <td>{{class.category}}</td>
 
               <td>
-                <a href="edit.html"><button class="btn-btn">Edit</button></a
-                ><button
+                <a href="{% url "update-class" class.pk %}"><button class="btn-btn">Edit</button></a
+                ><a
                   class="btn-btn-1 remove-btn"
                   data-class="JSS1"
                   data-division="A"
                   data-students="90"
                 >
                   Remove
-                </button>
+                </a>
               </td>
             </tr>
             {% endfor %}
