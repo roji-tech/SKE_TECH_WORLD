@@ -255,6 +255,7 @@ class ClassNote(models.Model):
     lesson_plan = models.ForeignKey(
         LessonPlan, on_delete=models.CASCADE, related_name='class_notes')
     title = models.CharField(max_length=255)
+    for_class = models.ForeignKey(SchoolClass, on_delete=models.CASCADE, related_name='+')
     content = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
     attachment = models.URLField()

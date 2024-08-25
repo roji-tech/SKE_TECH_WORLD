@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Teachers Note</title>
-    <link rel="stylesheet" href="teachersnote.css">
+    <link rel="stylesheet" href="{% static 'css/teachersnote.css'%}">
 </head>
 <body>
     <div class="table-datas">
@@ -42,13 +42,15 @@
                     <th>Options</th>
                 </tr>
                 <tr>
-                    <td>1</td>
-                    <td>Computer Science</td>
-                    <td>JSS1</td>
-                    <td>Social Studies</td>
-                    <td>Demo Teachers</td>
-                    <td><a href="#">Download</a></td>
-                    <td><span id="edit">Edit</span><span id="del">Delete</span></td>
+                    {% for note in classnotes %}
+                        <td>{{ note.id }}</td>
+                        <td>{{ note.lesson_plan.subject }}</td>
+                        <td>{{ note.for_class }}</td>
+                        <td>{{ note.title }}</td>
+                        <td>{{ note. }}</td>
+                        <td><a href="#">Download</a></td>
+                        <td><span id="edit">Edit</span><span id="del">Delete</span></td>
+                    {% endfor  %}
                 </tr>
             </table>
         </div>    

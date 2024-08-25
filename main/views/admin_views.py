@@ -3,6 +3,7 @@ from django.forms.models import BaseModelForm
 from django.http.response import JsonResponse
 from typing import Any
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.mixins import UserPassesTestMixin
 from django.db.models.query import QuerySet
 from django.urls import reverse_lazy
 from django.utils.decorators import method_decorator
