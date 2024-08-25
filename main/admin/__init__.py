@@ -1,5 +1,5 @@
 from django.contrib import admin
-from ..models import User
+from ..models import User, School, AcademicSession, LessonPlan, ClassNote, SchoolClass, Student, Subject, Teacher
 
 
 class UserAdmin(admin.ModelAdmin):
@@ -10,7 +10,7 @@ class UserAdmin(admin.ModelAdmin):
         "role",
         "gender",
         "is_active",
-        "is_teacher",
+        # "is_teacher",
         "is_student",
         "is_admin",
     ]
@@ -20,7 +20,7 @@ class UserAdmin(admin.ModelAdmin):
         "last_name",
         "email",
         "is_active",
-        "is_teacher",
+        # "is_teacher",
         "is_student",
         "is_admin",
     ]
@@ -32,5 +32,13 @@ class UserAdmin(admin.ModelAdmin):
 
 
 admin.site.register(User, UserAdmin)
+admin.site.register(School)
+admin.site.register(AcademicSession)
+admin.site.register(Teacher)
+admin.site.register(Student)
+admin.site.register(Subject)
+admin.site.register(SchoolClass)
+admin.site.register(ClassNote)
+admin.site.register(LessonPlan)
 # admin.site.register(Student)
 # admin.site.register(Parent)

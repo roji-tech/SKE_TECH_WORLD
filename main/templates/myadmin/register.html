@@ -6,6 +6,19 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Sign Up</title>
+
+    <!-- Include jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <!-- Include the jQuery Toast Plugin CSS -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/jquery-toast-plugin/1.3.2/jquery.toast.min.css"
+    />
+
+    <!-- Include the jQuery Toast Plugin JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-toast-plugin/1.3.2/jquery.toast.min.js"></script>
+
     <script
       type="module"
       src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"
@@ -59,7 +72,7 @@
 
             <div class="inputbox">
               <ion-icon name="lock-closed-outline"></ion-icon>
-              <input type="password" required />
+              <input type="password" name="retype_password" required />
               <label>Retype Password</label>
             </div>
 
@@ -110,24 +123,10 @@
 
             <div class="register">
               <p>
-                Already have an account? <a href="{% url 'admin-login' %}">Login</a>
+                Already have an account?
+                <a href="{% url 'admin-login' %}">Login</a>
               </p>
             </div>
-
-            {% if messages.first %}
-            <div
-              class="alert alert-{{ messages.first.tags }} alert-dismissible fade show"
-              role="alert"
-            >
-              {{ messages.first }}
-              <button
-                type="button"
-                class="btn-close"
-                data-bs-dismiss="alert"
-                aria-label="Close"
-              ></button>
-            </div>
-            {% endif %}
           </form>
         </div>
       </div>
@@ -135,6 +134,73 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
+      function validateEmail(email) {
+        const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        return emailPattern.test(email);
+      }
+
+      function validatePasswords(password, retypePassword) {
+        return password === retypePassword;
+      }
+
+      function validateFormData(formData) {
+        const requiredFields = [
+          "username",
+          "first_name",
+          "last_name",
+          "email",
+          "password",
+          "school_name",
+          "school_email",
+          "school_phone",
+          "school_address",
+        ];
+
+        for (let field of requiredFields) {
+          if (!formData.get(field)) {
+            showErrorToast(`${field.replace("_", " ")} is required.`);
+            return false;
+          }
+        }
+
+        if (!validateEmail(formData.get("email"))) {
+          showErrorToast("Invalid email format.");
+          return false;
+        }
+
+        if (
+          !validatePasswords(
+            formData.get("password"),
+            formData.get("retype_password")
+          )
+        ) {
+          showErrorToast("Passwords do not match.");
+          return false;
+        }
+
+        return true;
+      }
+
+      function showSuccessToast() {
+        window.$.toast({
+          heading: "Sign Up Success",
+          text: "You have successfully registered your school",
+          showHideTransition: "slide",
+          icon: "success",
+          position: "top-right",
+        });
+      }
+
+      function showErrorToast(msg) {
+        window.$.toast({
+          heading: "Sign Up Error",
+          text: msg,
+          showHideTransition: "slide",
+          icon: "error",
+          position: "top-right",
+        });
+      }
+
       function submitForm() {
         const form = document.getElementById("registerForm");
         const formData = new FormData(form);
@@ -142,29 +208,36 @@
           'input[name="csrfmiddlewaretoken"]'
         ).value;
 
-        console.log();
+        // Custom validation
+        if (!validateFormData(formData)) {
+          return; // Stop submission if validation fails
+        }
 
         fetch(form.dataset.action, {
           method: "POST",
           body: formData,
           headers: {
-            "X-CSRFToken": csrfToken, // Replace with actual CSRF token value
+            "X-CSRFToken": csrfToken,
           },
         })
           .then((response) => {
             if (!response.ok) {
               throw new Error("Network response was not ok");
             }
-            console.log(response);
             return response.json();
           })
           .then((data) => {
-            // Handle success response, e.g., show success message or redirect
-            console.log("Success:", data);
+            if (data.status) {
+              showSuccessToast();
+              setTimeout(() => {
+                window.location.href = "/admin/login/";
+              }, 4000);
+            } else {
+              showErrorToast("Registration failed. Please try again.");
+            }
           })
           .catch((error) => {
-            // Handle error, e.g., show error message
-            console.error("Error:", error);
+            showErrorToast(error.message);
           });
       }
     </script>
