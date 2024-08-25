@@ -10,7 +10,7 @@ class UserAdmin(admin.ModelAdmin):
         "role",
         "gender",
         "is_active",
-        "is_teacher",
+        # "is_teacher",
         "is_student",
         "is_admin",
     ]
@@ -20,7 +20,7 @@ class UserAdmin(admin.ModelAdmin):
         "last_name",
         "email",
         "is_active",
-        "is_teacher",
+        # "is_teacher",
         "is_student",
         "is_admin",
     ]

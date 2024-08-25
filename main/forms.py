@@ -40,7 +40,8 @@ class AcademicSessionForm(forms.ModelForm):
 class ClassForm(forms.ModelForm):
     class Meta:
         model = SchoolClass
-        fields = ['name', 'academic_session', 'class_teacher', 'division']
+        fields = ['name', 'academic_session',
+                  'class_teacher', 'division', 'category']
         # widgets = {SchoolClass
         #     'start_date': forms.DateInput(attrs={'type': 'date', "id": "start_date"}),
         #     'end_date': forms.DateInput(attrs={'type': 'date', "id": "end_date"}),

@@ -96,6 +96,20 @@ class Division(models.Model):
         return self.name
 
 
+class SchoolCategory(models.Model):
+    """_summary_
+        # e.g., "Science", "Art", "Commercial"
+
+        Returns:
+            _type_: _description_
+    """
+
+    name = models.CharField(max_length=10, unique=True)
+
+    def __str__(self):
+        return self.name
+
+
 class SchoolClass(models.Model):
     CLASS_CHOICES = [
         ('KG1', 'Kindergarten 1'),
@@ -120,9 +134,11 @@ class SchoolClass(models.Model):
     academic_session = models.ForeignKey(
         AcademicSession, on_delete=models.CASCADE, related_name='classes')
     class_teacher = models.ForeignKey(
-        User, on_delete=models.SET_NULL, null=True, limit_choices_to={'is_teacher': True})
+        User, on_delete=models.SET_NULL, null=True, blank=True, limit_choices_to={'role': "teacher"})
     division = models.ForeignKey(
-        Division, on_delete=models.CASCADE, related_name='classes')
+        Division, on_delete=models.SET_NULL, related_name='classes', blank=True, null=True)
+    category = models.ForeignKey(
+        SchoolCategory, on_delete=models.SET_NULL, blank=True, null=True)
 
     def __str__(self):
         return f"{self.get_name_display()} ({self.academic_session.name})"
@@ -131,7 +147,16 @@ class SchoolClass(models.Model):
         unique_together = ('academic_session', 'name', 'division')
 
     def __str__(self):
-        return f"{self.name} {self.division.name} ({self.academic_session.name})"
+        try:
+            return f"{self.name} {self.division.name if self.division else ''} ({self.academic_session.name})"
+        except:
+            return f"{self.name}({self.academic_session.name})"
+
+    @staticmethod
+    def get_school_classes(request):
+        user = request.user
+        school = School.objects.filter(owner=user).first()
+        return SchoolClass.objects.filter(academic_session__school=school)
 
 
 class Student(models.Model):
@@ -142,13 +167,10 @@ class Student(models.Model):
     admission_date = models.DateField(default=date.today)
     student_class = models.ForeignKey(
         SchoolClass, on_delete=models.CASCADE, related_name='students', null=True, blank=True)
-    gender = models.CharField(max_length=10, choices=[
-                              ('Male', 'Male'), ('Female', 'Female')])
 
     academic_year = models.ForeignKey(
         AcademicSession, on_delete=models.CASCADE, null=True, blank=True)  # e.g., 2023/2024
     reg_no = models.CharField(max_length=20, unique=True)
-    picture = models.URLField()
 
     # def save(self, *args, **kwargs):
     #     # Automatically generate student_id with school_id as prefix

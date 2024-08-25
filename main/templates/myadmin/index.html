@@ -12,7 +12,8 @@
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet">
-    <link rel="stylesheet" href="{% static 'css/myadmin/styles.css' %}">
+
+    <link type="text/css" rel="stylesheet" href="{% static 'css/myadmin/styles.css' %}">
 
   </head>
   <body>
@@ -23,7 +24,7 @@
       <!-- End Header -->
 
       <!-- Sidebar -->
-      {% include 'myadmin/_sidebar.html' %}
+      {% include 'myadmin/_admin_sidebar.html' %}
       <!-- End Sidebar -->
 
       <!-- Main -->

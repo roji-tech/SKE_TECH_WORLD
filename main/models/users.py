@@ -25,19 +25,25 @@ class User(AbstractUser):
 
     role = models.CharField(max_length=10, choices=ROLE_CHOICES)
     gender = models.CharField(max_length=1, choices=GENDER_CHOICES)
+    image = models.URLField(blank=True, null=True)
 
+    @property
     def is_superadmin(self):
         return self.role == "superadmin"
 
+    @property
     def is_owner(self):
         return self.role == "owner"
 
+    @property
     def is_admin(self):
         return self.role in ["admin", "owner"]
 
+    @property
     def is_teacher(self):
         return self.role == "teacher"
 
+    @property
     def is_student(self):
         return self.role == "student"
 

@@ -1,3 +1,4 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 
@@ -5,7 +6,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Add Academic Session</title>
-  <link rel="stylesheet" href="session.css" />
+
   <style>
     /* Add some basic styles for the overlay */
     .overlay {
@@ -69,6 +70,9 @@
 
     .add-division {
       padding-left: 20px;
+
+      display: flex;
+      justify-content: space-between;
     }
 
     .add-division p {
@@ -228,6 +232,9 @@
   <div class="container">
     <div class="add-division">
       <p><span id="plus"></span>Add Academic Session</p>
+      <p>
+        <a href="{% url 'myadmin' %}">Home</a>
+      </p>
     </div>
 
     <div class="contents">

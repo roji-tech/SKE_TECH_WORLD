@@ -163,7 +163,7 @@ class AdminsHelp(View):
 # ACADEMIC SESSION
 @admin_is_authenticated()
 class ListSession(ListView):
-    template_name = "myadmin/academicsession_list.html"
+    template_name = "myadmin/list_sessions.html"
     context_object_name = 'academic_sessions'
 
     def get_queryset(self):
@@ -211,7 +211,7 @@ class AddSession(View):
                 messages.success(
                     request, 'Academic session added successfully!')
                 # Redirect to a relevant page
-                return redirect('/admin/list-sessions/')
+                return redirect('/admin/sessions/')
             else:
                 print(request.POST)
                 print('Error adding academic session. Please try again.')
@@ -257,35 +257,64 @@ class DeleteSession(DeleteView):
 # CLASSES
 class ClassListView(ListView):
     model = SchoolClass
-    template_name = 'myadmin/classes_list.html'
+    template_name = 'myadmin/class/list.html'
     context_object_name = 'classes'
+
+    def get_queryset(self):
+        return SchoolClass.get_school_classes(request=self.request)
 
 
 class ClassDetailView(DetailView):
     model = SchoolClass
-    template_name = 'myadmin/class_detail.html'
+    template_name = 'myadmin/detail.html'
     context_object_name = 'class'
+
+    def get_queryset(self):
+        return SchoolClass.get_school_classes(request=self.request)
 
 
 class ClassCreateView(CreateView):
     model = SchoolClass
-    template_name = 'myadmin/add_class.html'
+    template_name = 'myadmin/class/add_class.html'
     form_class = ClassForm
     success_url = reverse_lazy('list-classes')
-    
+
+    # def get(self, request, *args, **kwargs):
+    #     self.object = None
+    #     context = self.get_context_data(**kwargs)
+    #     # return render(request, self.template_name)
+    #     kwargs.setdefault("content_type", self.content_type)
+    #     return self.response_class(
+    #         request=self.request,
+    #         template=self.get_template_names(),
+    #         context=context,
+    #         using=self.template_engine,
+    #         **kwargs,
+    #     )
+
+    def post(self, request, *args, **kwargs):
+        self.object = None
+        return super().post(request, *args, **kwargs)
 
 
 class ClassUpdateView(UpdateView):
     model = SchoolClass
-    template_name = 'myadmin/schoolclass_form.html'
+    template_name = 'myadmin/class/edit.html'
     fields = ['name', 'academic_session', 'class_teacher', 'division']
     success_url = reverse_lazy('list-classes')
+    form_class = ClassForm
+
+    def get_queryset(self):
+        return SchoolClass.get_school_classes(request=self.request)
 
 
 class ClassDeleteView(DeleteView):
     model = SchoolClass
-    template_name = 'myadmin/schoolclass_confirm_delete.html'
+    template_name = 'myadmin/confirm_delete.html'
     success_url = reverse_lazy('list-classes')
+
+    def get_queryset(self):
+        return SchoolClass.get_school_classes(request=self.request)
 
 
 # TERMS
