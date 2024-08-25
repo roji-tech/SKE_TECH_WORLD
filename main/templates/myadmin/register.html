@@ -1,0 +1,172 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sign Up</title>
+    <script
+      type="module"
+      src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"
+    ></script>
+    <script
+      nomodule
+      src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"
+    ></script>
+
+    <link rel="stylesheet" href="{% static 'css/myadmin/register.css' %}" />
+  </head>
+
+  <body>
+    <section>
+      <div class="form-box">
+        <div class="form-value">
+          <form id="registerForm" data-action="/admin/register/" method="POST">
+            {% csrf_token %}
+
+            <h2>Register</h2>
+
+            <div class="inputbox">
+              <ion-icon name="person-outline"></ion-icon>
+              <input type="text" name="username" required />
+              <label>Username</label>
+            </div>
+
+            <div class="inputbox">
+              <ion-icon name="person-outline"></ion-icon>
+              <input type="text" name="first_name" required />
+              <label>First Name</label>
+            </div>
+
+            <div class="inputbox">
+              <ion-icon name="person-outline"></ion-icon>
+              <input type="text" name="last_name" required />
+              <label>Last Name</label>
+            </div>
+
+            <div class="inputbox">
+              <ion-icon name="person-outline"></ion-icon>
+              <input type="email" name="email" required />
+              <label>Email</label>
+            </div>
+
+            <div class="inputbox">
+              <ion-icon name="lock-closed-outline"></ion-icon>
+              <input type="password" name="password" required />
+              <label>Password</label>
+            </div>
+
+            <div class="inputbox">
+              <ion-icon name="lock-closed-outline"></ion-icon>
+              <input type="password" required />
+              <label>Retype Password</label>
+            </div>
+
+            <div class="inputbox">
+              <ion-icon name="layers-outline"></ion-icon>
+              <select required name="gender">
+                <option value="" disabled selected></option>
+                <option value="M">Male</option>
+                <option value="F">Female</option>
+              </select>
+              <label>Gender</label>
+            </div>
+
+            <h2>School Info</h2>
+
+            <div class="inputbox">
+              <ion-icon name="person-outline"></ion-icon>
+              <input type="text" name="school_name" required />
+              <label>School Name</label>
+            </div>
+
+            <div class="inputbox">
+              <ion-icon name="person-outline"></ion-icon>
+              <input type="text" name="school_email" required />
+              <label>School Email</label>
+            </div>
+
+            <div class="inputbox">
+              <ion-icon name="person-outline"></ion-icon>
+              <input type="text" name="school_phone" required />
+              <label>School Phone</label>
+            </div>
+
+            <div class="inputbox">
+              <ion-icon name="person-outline"></ion-icon>
+              <input type="text" name="school_address" required />
+              <label>School Address</label>
+            </div>
+
+            <div class="forget">
+              <label><input type="checkbox" />Remember Me</label>
+              <a href="#">Forgot Password?</a>
+            </div>
+
+            <button type="button" onclick="submitForm()">
+              Register My School
+            </button>
+
+            <div class="register">
+              <p>
+                Already have an account? <a href="{% url 'admin-login' %}">Login</a>
+              </p>
+            </div>
+
+            {% if messages.first %}
+            <div
+              class="alert alert-{{ messages.first.tags }} alert-dismissible fade show"
+              role="alert"
+            >
+              {{ messages.first }}
+              <button
+                type="button"
+                class="btn-close"
+                data-bs-dismiss="alert"
+                aria-label="Close"
+              ></button>
+            </div>
+            {% endif %}
+          </form>
+        </div>
+      </div>
+    </section>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+      function submitForm() {
+        const form = document.getElementById("registerForm");
+        const formData = new FormData(form);
+        const csrfToken = document.querySelector(
+          'input[name="csrfmiddlewaretoken"]'
+        ).value;
+
+        console.log();
+
+        fetch(form.dataset.action, {
+          method: "POST",
+          body: formData,
+          headers: {
+            "X-CSRFToken": csrfToken, // Replace with actual CSRF token value
+          },
+        })
+          .then((response) => {
+            if (!response.ok) {
+              throw new Error("Network response was not ok");
+            }
+            console.log(response);
+            return response.json();
+          })
+          .then((data) => {
+            // Handle success response, e.g., show success message or redirect
+            console.log("Success:", data);
+          })
+          .catch((error) => {
+            // Handle error, e.g., show error message
+            console.error("Error:", error);
+          });
+      }
+    </script>
+  </body>
+</html>
