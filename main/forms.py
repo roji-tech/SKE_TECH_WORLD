@@ -42,6 +42,14 @@ class ClassForm(forms.ModelForm):
         model = SchoolClass
         fields = ['name', 'academic_session',
                   'class_teacher', 'division', 'category']
+
+    def __init__(self, *args, **kwargs):
+        # Assuming that you pass the `school` object when initializing the form
+        school = kwargs.pop('school', None)
+        super(ClassForm, self).__init__(*args, **kwargs)
+
+        self.fields['academic_session'].queryset = AcademicSession.get_school_sessions(self.request)
+
         # widgets = {SchoolClass
         #     'start_date': forms.DateInput(attrs={'type': 'date', "id": "start_date"}),
         #     'end_date': forms.DateInput(attrs={'type': 'date', "id": "end_date"}),

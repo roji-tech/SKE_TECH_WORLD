@@ -279,6 +279,9 @@ class ClassCreateView(CreateView):
     form_class = ClassForm
     success_url = reverse_lazy('list-classes')
 
+    def get_queryset(self):
+        return SchoolClass.get_school_classes(request=self.request)
+
     # def get(self, request, *args, **kwargs):
     #     self.object = None
     #     context = self.get_context_data(**kwargs)
