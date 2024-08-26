@@ -13,7 +13,7 @@ SECRET_KEY = 'django-insecure-&b=mem0=8mv&qa#79t3h6mnn2*@p!iaaf1bu!@6!$prx+2828f
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["*"]
 
 
 ROOT_URLCONF = 'CONFIG.urls'
