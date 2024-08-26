@@ -239,13 +239,11 @@ class GmeetClass(models.Model):
 
 
 class LessonPlan(models.Model):
-    term = models.ForeignKey(
-        Term, on_delete=models.CASCADE, related_name='lesson_plans')
+    school_class = models.ForeignKey(SchoolClass, on_delete=models.CASCADE)
     subject = models.ForeignKey(
         Subject, on_delete=models.CASCADE, related_name='lesson_plans')
-    title = models.CharField(max_length=255)
-    content = models.TextField()
-    created_at = models.DateTimeField(auto_now_add=True)
+    uploaded_by = models.ForeignKey(User, on_delete=models.CASCADE, related_name='uploaded_files')
+    uploaded_file = models.FileField(upload_to='uploads/%Y/%m/%d/')
 
     def __str__(self):
         return f"{self.subject.name} - {self.term.academic_session.name} ({self.term.name})"

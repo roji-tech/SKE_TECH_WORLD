@@ -16,7 +16,7 @@
 
 from django import forms
 
-from main.models.models import SchoolClass
+from main.models.models import GmeetClass, LessonPlan, SchoolClass
 from .models import AcademicSession
 
 
@@ -61,3 +61,21 @@ class ClassForm(forms.ModelForm):
         #     'name': forms.TextInput(attrs={'type': 'text', "id": "name", "placeholder": "2024-2025 ( optional )"}),
         #     # 'next_session_begins': forms.DateInput(attrs={'type': 'date'}),
         # }
+
+class GoogleMeetForm(forms.ModelForm):
+    class Meta:
+        model = GmeetClass
+        fields = ['subject', 'description', 'start_time', 'gmeet_link', 'created_by']
+        widgets = {
+        'start_time': forms.DateTimeInput(attrs={'type': 'datetime-local'}),
+    }
+        labels = {
+            'subject': 'Meeting Title',
+            'start_time': 'Date and Time',
+            'created_by': 'Created By',
+        }
+
+class LessonPlanForm(forms.ModelForm):
+    class Meta:
+        model = LessonPlan
+        fields = ['id', 'school_class', 'subject', 'uploaded_by', 'uploaded_file']
