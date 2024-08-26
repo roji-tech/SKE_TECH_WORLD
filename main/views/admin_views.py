@@ -13,7 +13,7 @@ from django.contrib import messages
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 
 from main.models.users import OWNER, User
-from main.models.models import AcademicSession, School, Term, SchoolClass, Division
+from main.models.models import AcademicSession, School, SchoolSettings, Student, Subject, Teacher, Term, SchoolClass, Division
 from django.contrib.auth import authenticate, login
 
 # FORMS
@@ -256,6 +256,8 @@ class DeleteSession(DeleteView):
 # CLASSES
 # CLASSES
 # CLASSES
+# CLASSES
+# CLASSES
 class ClassListView(ListView):
     model = SchoolClass
     template_name = 'myadmin/class/list.html'
@@ -346,6 +348,45 @@ class ClassDeleteView(DeleteView):
         return form_class(request=self.request, **self.get_form_kwargs())
 
 
+# CLASS DIVISIONS
+# CLASS DIVISIONS
+# CLASS DIVISIONS
+# CLASS DIVISIONS
+# CLASS DIVISIONS
+class DivisionListView(ListView):
+    model = Division
+    template_name = 'myadmin/division_list.html'
+    context_object_name = 'divisions'
+
+
+class DivisionDetailView(DetailView):
+    model = Division
+    template_name = 'myadmin/division_detail.html'
+    context_object_name = 'division'
+
+
+class DivisionCreateView(CreateView):
+    model = Division
+    template_name = 'myadmin/division_form.html'
+    fields = ['name']
+    success_url = reverse_lazy('division-list')
+
+
+class DivisionUpdateView(UpdateView):
+    model = Division
+    template_name = 'myadmin/division_form.html'
+    fields = ['name']
+    success_url = reverse_lazy('division-list')
+
+
+class DivisionDeleteView(DeleteView):
+    model = Division
+    template_name = 'myadmin/division_confirm_delete.html'
+    success_url = reverse_lazy('division-list')
+
+
+# TERMS
+# TERMS
 # TERMS
 # TERMS
 # TERMS
@@ -383,36 +424,153 @@ class TermDeleteView(DeleteView):
     success_url = reverse_lazy('term-list')
 
 
-# CLASS DIVISIONS
-# CLASS DIVISIONS
-# CLASS DIVISIONS
-class DivisionListView(ListView):
-    model = Division
-    template_name = 'myadmin/division_list.html'
-    context_object_name = 'divisions'
+# SUBJECTS
+# SUBJECTS
+# SUBJECTS
+# SUBJECTS
+# SUBJECTS
+# SUBJECTS
+class SubjectListView(ListView):
+    model = Subject
+    template_name = 'myadmin/subject/subjects_list.html'
+    context_object_name = 'subjects'
 
 
-class DivisionDetailView(DetailView):
-    model = Division
-    template_name = 'myadmin/division_detail.html'
-    context_object_name = 'division'
+class SubjectDetailView(DetailView):
+    model = Subject
+    template_name = 'myadmin/subject/subject_detail.html'
+    context_object_name = 'subject'
 
 
-class DivisionCreateView(CreateView):
-    model = Division
-    template_name = 'myadmin/division_form.html'
+class SubjectCreateView(CreateView):
+    model = Subject
+    template_name = 'myadmin/subject/subject_create.html'
     fields = ['name']
-    success_url = reverse_lazy('division-list')
+    success_url = reverse_lazy('list-subjects')
 
 
-class DivisionUpdateView(UpdateView):
-    model = Division
-    template_name = 'myadmin/division_form.html'
+class SubjectUpdateView(UpdateView):
+    model = Subject
+    template_name = 'myadmin/subject/subject_edit.html'
     fields = ['name']
-    success_url = reverse_lazy('division-list')
+    success_url = reverse_lazy('list-subjects')
 
 
-class DivisionDeleteView(DeleteView):
-    model = Division
-    template_name = 'myadmin/division_confirm_delete.html'
-    success_url = reverse_lazy('division-list')
+class SubjectDeleteView(DeleteView):
+    model = Subject
+    template_name = 'myadmin/subject/subject_delete.html'
+    success_url = reverse_lazy('list-subjects')
+
+
+# STUDENTS
+# STUDENTS
+# STUDENTS
+# STUDENTS
+# STUDENTS
+# STUDENTS
+class StudentListView(ListView):
+    model = Student
+    template_name = 'myadmin/student/students_list.html'
+    context_object_name = 'students'
+
+
+class StudentDetailView(DetailView):
+    model = Student
+    template_name = 'myadmin/student/student_detail.html'
+    context_object_name = 'student'
+
+
+class StudentCreateView(CreateView):
+    model = Student
+    template_name = 'myadmin/student/student_create.html'
+    fields = ['name']
+    success_url = reverse_lazy('list-subjects')
+
+
+class StudentUpdateView(UpdateView):
+    model = Student
+    template_name = 'myadmin/student/student_edit.html'
+    fields = ['name']
+    success_url = reverse_lazy('list-subjects')
+
+
+class StudentDeleteView(DeleteView):
+    model = Student
+    template_name = 'myadmin/student/student_delete.html'
+    success_url = reverse_lazy('list-subjects')
+
+
+# TEACHERS
+# TEACHERS
+# TEACHERS
+# TEACHERS
+# TEACHERS
+# TEACHERS
+class TeacherListView(ListView):
+    model = Teacher
+    template_name = 'myadmin/teacher/teachers_list.html'
+    context_object_name = 'teachers'
+
+
+class TeacherDetailView(DetailView):
+    model = Teacher
+    template_name = 'myadmin/teacher/teacher_detail.html'
+    context_object_name = 'teacher'
+
+
+class TeacherCreateView(CreateView):
+    model = Teacher
+    template_name = 'myadmin/teacher/teacher_create.html'
+    fields = ['name']
+    success_url = reverse_lazy('list-teachers')
+
+
+class TeacherUpdateView(UpdateView):
+    model = Teacher
+    template_name = 'myadmin/teacher/teacher_edit.html'
+    fields = ['name']
+    success_url = reverse_lazy('list-teachers')
+
+
+class TeacherDeleteView(DeleteView):
+    model = Teacher
+    template_name = 'myadmin/teacher/teacher_delete.html'
+    success_url = reverse_lazy('list-teachers')
+
+
+# SETTINGS
+# SETTINGS
+# SETTINGS
+# SETTINGS
+# SETTINGS
+# SETTINGS
+class SettingsListView(ListView):
+    model = SchoolSettings
+    template_name = 'myadmin/settings/settingss_list.html'
+    context_object_name = 'settings'
+
+
+class SettingsDetailView(DetailView):
+    model = SchoolSettings
+    template_name = 'myadmin/settings/settings_detail.html'
+    context_object_name = 'setting'
+
+
+class SettingsCreateView(CreateView):
+    model = SchoolSettings
+    template_name = 'myadmin/settings/settings_create.html'
+    fields = ['name']
+    success_url = reverse_lazy('list-settings')
+
+
+class SettingsUpdateView(UpdateView):
+    model = SchoolSettings
+    template_name = 'myadmin/settings/settings_edit.html'
+    fields = ['name']
+    success_url = reverse_lazy('list-settings')
+
+
+class SettingsDeleteView(DeleteView):
+    model = SchoolSettings
+    template_name = 'myadmin/settings/settings_delete.html'
+    success_url = reverse_lazy('list-settings')

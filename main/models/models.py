@@ -326,15 +326,7 @@ class Result(models.Model):
         return self.score + ca_score
 
 
-# class Setting(models.Model):
-#     key = models.CharField(max_length=100, unique=True)
-#     value = models.CharField(max_length=200)
-
-#     def __str__(self):
-#         return self.key
-
-
-class Settings(models.Model):
+class SchoolSettings(models.Model):
     school = models.OneToOneField(
         School, on_delete=models.CASCADE, related_name='settings')
     grading_system = models.TextField()  # e.g., "A: 90-100, B: 80-89, ..."
@@ -342,6 +334,14 @@ class Settings(models.Model):
 
     def __str__(self):
         return f"Settings for {self.school.name}"
+
+
+# class SettingItem(models.Model):
+#     key = models.CharField(max_length=100, unique=True)
+#     value = models.CharField(max_length=200)
+
+#     def __str__(self):
+#         return self.key
 
 
 class Library(models.Model):
