@@ -1,15 +1,9 @@
-from django.db import models
-from .users import User
-from django.utils.crypto import get_random_string
-
-
-from django.db import models
-from django.contrib.auth.models import User
+from django.contrib.auth import get_user_model
 from datetime import date
 
-
-from django.contrib.auth import get_user_model
-
+from django.utils.crypto import get_random_string
+from .users import User
+from django.db import models
 
 User = get_user_model()
 
@@ -96,18 +90,18 @@ class Division(models.Model):
         return self.name
 
 
-class SchoolCategory(models.Model):
-    """_summary_
-        # e.g., "Science", "Art", "Commercial"
+# class SchoolCategory(models.Model):
+#     """_summary_
+#         # e.g., "Science", "Art", "Commercial"
 
-        Returns:
-            _type_: _description_
-    """
+#         Returns:
+#             _type_: _description_
+#     """
 
-    name = models.CharField(max_length=10, unique=True)
+#     name = models.CharField(max_length=10, unique=True)
 
-    def __str__(self):
-        return self.name
+#     def __str__(self):
+#         return self.name
 
 
 class SchoolClass(models.Model):
@@ -129,6 +123,12 @@ class SchoolClass(models.Model):
         ('SS3', 'Senior Secondary 3'),
     ]
 
+    CLASS_CATEGORIES = (
+        ("ART", "Art Class"),
+        ("SCIENCE", "Science Class"),
+        ("COMMERCIAL", "Commercial Class"),
+    )
+
     # school = models.ForeignKey(School, on_delete=models.CASCADE, related_name='classes')
     name = models.CharField(max_length=4, choices=CLASS_CHOICES)
     academic_session = models.ForeignKey(
@@ -137,8 +137,10 @@ class SchoolClass(models.Model):
         User, on_delete=models.SET_NULL, null=True, blank=True, limit_choices_to={'role': "teacher"})
     division = models.ForeignKey(
         Division, on_delete=models.SET_NULL, related_name='classes', blank=True, null=True)
-    category = models.ForeignKey(
-        SchoolCategory, on_delete=models.SET_NULL, blank=True, null=True)
+    category = models.CharField(
+        max_length=12, choices=CLASS_CATEGORIES, blank=True, null=True)
+    # category = models.ForeignKey(
+    #     SchoolCategory, on_delete=models.SET_NULL, blank=True, null=True)
 
     def __str__(self):
         return f"{self.get_name_display()} ({self.academic_session.name})"
@@ -228,31 +230,34 @@ class Subject(models.Model):
 class GmeetClass(models.Model):
     subject = models.ForeignKey(
         Subject, on_delete=models.CASCADE, related_name='gmeet_classes')
+    description = models.TextField()
     gmeet_link = models.URLField()
     start_time = models.DateTimeField()
     end_time = models.DateTimeField()
+    created_by = models.ForeignKey(User, on_delete=models.CASCADE, )
 
     def __str__(self):
         return f"{self.subject.name} - {self.subject.school_class.name} ({self.start_time})"
 
 
 class LessonPlan(models.Model):
-    term = models.ForeignKey(
-        Term, on_delete=models.CASCADE, related_name='lesson_plans')
+    school_class = models.ForeignKey(SchoolClass, on_delete=models.CASCADE)
     subject = models.ForeignKey(
         Subject, on_delete=models.CASCADE, related_name='lesson_plans')
-    title = models.CharField(max_length=255)
-    content = models.TextField()
-    created_at = models.DateTimeField(auto_now_add=True)
+    uploaded_by = models.ForeignKey(
+        User, on_delete=models.CASCADE, related_name='uploaded_files')
+    uploaded_file = models.FileField(upload_to='uploads/%Y/%m/%d/')
 
     def __str__(self):
-        return f"{self.subject.name} - {self.term.academic_session.name} ({self.term.name})"
+        return f"{self.uploaded_file.name} uploaded by {self.uploaded_by.username}"
 
 
 class ClassNote(models.Model):
     lesson_plan = models.ForeignKey(
         LessonPlan, on_delete=models.CASCADE, related_name='class_notes')
     title = models.CharField(max_length=255)
+    for_class = models.ForeignKey(
+        SchoolClass, on_delete=models.CASCADE, related_name='+')
     content = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
     attachment = models.URLField()
@@ -326,15 +331,7 @@ class Result(models.Model):
         return self.score + ca_score
 
 
-# class Setting(models.Model):
-#     key = models.CharField(max_length=100, unique=True)
-#     value = models.CharField(max_length=200)
-
-#     def __str__(self):
-#         return self.key
-
-
-class Settings(models.Model):
+class SchoolSettings(models.Model):
     school = models.OneToOneField(
         School, on_delete=models.CASCADE, related_name='settings')
     grading_system = models.TextField()  # e.g., "A: 90-100, B: 80-89, ..."
@@ -342,6 +339,14 @@ class Settings(models.Model):
 
     def __str__(self):
         return f"Settings for {self.school.name}"
+
+
+# class SettingItem(models.Model):
+#     key = models.CharField(max_length=100, unique=True)
+#     value = models.CharField(max_length=200)
+
+#     def __str__(self):
+#         return self.key
 
 
 class Library(models.Model):

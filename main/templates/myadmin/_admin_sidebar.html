@@ -60,16 +60,8 @@
         Teachers
       </a>
       <ul class="dropdown-menu">
-        <li>
-          <a href="/john's assignment/employee/employeedata.html"
-            >Add Teachers</a
-          >
-        </li>
-        <li>
-          <a href="/john's assignment/employee/teachers List.html"
-            >List Teachers</a
-          >
-        </li>
+        <li><a href="{% url 'add-teacher' %}">Add Teacher</a></li>
+        <li><a href="{% url 'list-teachers' %}">All Teachers</a></li>
       </ul>
     </li>
     <li class="sidebar-list-item">
@@ -78,12 +70,7 @@
         G-meet Classes
       </a>
       <ul class="dropdown-menu">
-        <li>
-          <a href="/updated/gmeet/gmeet.html">Upload Google Meet Classes</a>
-        </li>
-        <li>
-          <a href="/updated/gmeet/uploadgmeet.html">Edit Google Meet Classes</a>
-        </li>
+        <li><a href="{% url 'list-gmeets' %}">All G-meet Classes</a></li>
       </ul>
     </li>
     <li class="sidebar-list-item">
@@ -92,12 +79,7 @@
         Lesson Plan
       </a>
       <ul class="dropdown-menu">
-        <li>
-          <a href="/updated/lessonplan/lessonNote.html">Upload Lesson Plan</a>
-        </li>
-        <li>
-          <a href="/updated/lessonplan/lessonNoteList.html">Lesson Plan List</a>
-        </li>
+        <li><a href="{% url 'list-lesson_plans' %}">Lesson Plan List</a></li>
       </ul>
     </li>
     <li class="sidebar-list-item">
@@ -106,8 +88,7 @@
         Notes
       </a>
       <ul class="dropdown-menu">
-        <li><a href="/updated/note/uploadNote.html">Add Notes</a></li>
-        <li><a href="/updated/note/TeachersNote.html">Notes list</a></li>
+        <li><a href="{% url 'list-notes' %}">Notes List</a></li>
       </ul>
     </li>
     <li class="sidebar-list-item">
