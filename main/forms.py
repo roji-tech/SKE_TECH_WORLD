@@ -1,8 +1,5 @@
-from .models import AcademicSession
-from main.models.models import SchoolClass
 from django import forms
-
-# from .models.profiles import Teacher
+from main.models.models import AcademicSession, SchoolClass, GmeetClass, LessonPlan
 
 
 # class TeachersForm(forms.ModelForm):

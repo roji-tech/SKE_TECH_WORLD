@@ -124,9 +124,9 @@ class SchoolClass(models.Model):
     ]
 
     CLASS_CATEGORIES = (
-        ("A", "Art Class"),
-        ("S", "Science Class"),
-        ("C", "Commercial Class"),
+        ("ART", "Art Class"),
+        ("SCIENCE", "Science Class"),
+        ("COMMERCIAL", "Commercial Class"),
     )
 
     # school = models.ForeignKey(School, on_delete=models.CASCADE, related_name='classes')
@@ -138,7 +138,7 @@ class SchoolClass(models.Model):
     division = models.ForeignKey(
         Division, on_delete=models.SET_NULL, related_name='classes', blank=True, null=True)
     category = models.CharField(
-        max_length=1, choices=CLASS_CATEGORIES, blank=True, null=True)
+        max_length=12, choices=CLASS_CATEGORIES, blank=True, null=True)
     # category = models.ForeignKey(
     #     SchoolCategory, on_delete=models.SET_NULL, blank=True, null=True)
 

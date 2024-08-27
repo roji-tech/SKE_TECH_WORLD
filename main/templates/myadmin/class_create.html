@@ -23,7 +23,6 @@
       form p {
         display: flex;
         gap: 10px;
-
       }
 
       select {
@@ -38,8 +37,11 @@
         <p><span id="plus"></span>Add Class</p>
       </div>
       <div class="contents">
-        <form>
+        <form method="post">
+          {% csrf_token %}
+          
           {{ form.as_p }}
+          <button type="submit">Submit</button>
         </form>
       </div>
       <div class="function-btn">
