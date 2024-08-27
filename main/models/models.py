@@ -246,7 +246,7 @@ class LessonPlan(models.Model):
     uploaded_file = models.FileField(upload_to='uploads/%Y/%m/%d/')
 
     def __str__(self):
-        return f"{self.subject.name} - {self.term.academic_session.name} ({self.term.name})"
+        return f"{self.uploaded_file.name} uploaded by {self.uploaded_by.username}"
 
 
 class ClassNote(models.Model):

@@ -41,13 +41,19 @@ def edit_gmeet(request, pk):
 """LessonPlan Views"""
 def upload_lesson_plan(request, pk):
     lesson_plan = get_object_or_404(LessonPlan, pk=pk)
-    if request.method == "POST":
-        form = LessonPlanForm(request.POST, instance=lesson_plan)
-        if form.is_valid():
-            form.save()
-            messages.success(request, 'Lesson plan updated successfully')
-    return render(request, 'teachers/lessonplan/edit-lesson-note.html', {'form' : form, "lesson_plan" : lesson_plan})
+    if request.method == 'POST':
 
+        form = LessonPlanForm(request.POST, request.FILES, instance=lesson_plan)
+        if form.is_valid():
+            lesson_plan_instance = form.save(commit=False)
+            lesson_plan_instance.uploaded_by = request.user
+            lesson_plan_instance.save()
+            return redirect('lessons_lists')
+    else:
+
+        form = LessonPlanForm(instance=lesson_plan)
+        return render(request, 'teachers/lessonplan/edit-lesson-note.html', {'form': form, 'lesson_plan': lesson_plan})
+            
 
 
 def lessons_list(request):

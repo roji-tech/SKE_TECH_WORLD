@@ -79,3 +79,7 @@ class LessonPlanForm(forms.ModelForm):
     class Meta:
         model = LessonPlan
         fields = ['id', 'school_class', 'subject', 'uploaded_by', 'uploaded_file']
+        widgets = {
+                'uploaded_file': forms.ClearableFileInput(attrs={'class': 'input'}),
+                'school_class': forms.Select(attrs={'class': 'input'}),
+            }
