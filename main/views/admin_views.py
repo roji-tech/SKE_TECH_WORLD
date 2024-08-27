@@ -350,10 +350,6 @@ class ClassDeleteView(DeleteView):
     def get_queryset(self):
         return SchoolClass.get_school_classes(request=self.request)
 
-    def get_form(self, form_class=None):
-        if form_class is None:
-            form_class = self.get_form_class()
-        return form_class(request=self.request, **self.get_form_kwargs())
 
 
 # CLASS DIVISIONS

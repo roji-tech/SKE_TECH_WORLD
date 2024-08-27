@@ -20,7 +20,8 @@ urlpatterns = [
 
     path('admin/', AdminsHome.as_view(), name='myadmin'),
 
-    path('admin/register/', RegisterAndRegisterSchool.as_view(), name='register-school'),
+    path('admin/register/', RegisterAndRegisterSchool.as_view(),
+         name='register-school'),
 
     path('admin/login/', AdminLogin.as_view(), name='admin-login'),
 
@@ -134,4 +135,3 @@ urlpatterns = [
 
 
 ]
-

@@ -289,8 +289,11 @@
               <td>{{class.category}}</td>
 
               <td>
-                <a href="{% url "update-class" class.pk %}"><button class="btn-btn">Edit</button></a
-                ><a
+                <a href="{% url 'update-class' class.pk %}">
+                  <button class="btn-btn">Edit</button>
+                </a>
+                <a
+                  href="{% url 'delete-class' class.pk %}"
                   class="btn-btn-1 remove-btn"
                   data-class="JSS1"
                   data-division="A"
@@ -569,7 +572,7 @@
     <!-- delete end -->
 
     <script>
-      document.querySelectorAll(".remove-btn").forEach((button) => {
+      document.querySelectorAll(".remove-btn_").forEach((button) => {
         button.addEventListener("click", function () {
           const className = this.getAttribute("data-class");
           const division = this.getAttribute("data-division");
