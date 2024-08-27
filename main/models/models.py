@@ -129,6 +129,12 @@ class SchoolClass(models.Model):
         ('SS3', 'Senior Secondary 3'),
     ]
 
+    CLASS_CATEGORIES = (
+        ("A", "Art Class"),
+        ("S", "Science Class"),
+        ("C", "Commercial Class"),
+    )
+
     # school = models.ForeignKey(School, on_delete=models.CASCADE, related_name='classes')
     name = models.CharField(max_length=4, choices=CLASS_CHOICES)
     academic_session = models.ForeignKey(
@@ -137,8 +143,10 @@ class SchoolClass(models.Model):
         User, on_delete=models.SET_NULL, null=True, blank=True, limit_choices_to={'role': "teacher"})
     division = models.ForeignKey(
         Division, on_delete=models.SET_NULL, related_name='classes', blank=True, null=True)
-    category = models.ForeignKey(
-        SchoolCategory, on_delete=models.SET_NULL, blank=True, null=True)
+    category = models.CharField(
+        max_length=1, choices=CLASS_CATEGORIES, blank=True, null=True)
+    # category = models.ForeignKey(
+    #     SchoolCategory, on_delete=models.SET_NULL, blank=True, null=True)
 
     def __str__(self):
         return f"{self.get_name_display()} ({self.academic_session.name})"

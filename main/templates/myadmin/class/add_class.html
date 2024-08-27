@@ -7,6 +7,29 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Add Class</title>
     <link rel="stylesheet" href="{% static 'css/myadmin/class/edit.css' %}" />
+
+    <style>
+      .custom-select-class {
+        border: 2px solid #007bff;
+        padding: 8px;
+        border-radius: 4px;
+        width: 100%;
+      }
+
+      .custom-option-class {
+        font-weight: bold;
+      }
+
+      form p {
+        display: flex;
+        gap: 10px;
+
+      }
+
+      select {
+        width: 100%;
+      }
+    </style>
   </head>
   <body>
     <!-- Edit starts -->
@@ -16,139 +39,7 @@
       </div>
       <div class="contents">
         <form>
-          <p>
-            <label for="id_name">Name:</label>
-            <select name="name" class="class" required="" id="id_name">
-              <option value="" selected="">---------</option>
-
-              <option value="KG1">Kindergarten 1</option>
-
-              <option value="KG2">Kindergarten 2</option>
-
-              <option value="KG3">Kindergarten 3</option>
-
-              <option value="PRY1">Primary 1</option>
-
-              <option value="PRY2">Primary 2</option>
-
-              <option value="PRY3">Primary 3</option>
-
-              <option value="PRY4">Primary 4</option>
-
-              <option value="PRY5">Primary 5</option>
-
-              <option value="PRY6">Primary 6</option>
-
-              <option value="JS1">Junior Secondary 1</option>
-
-              <option value="JS2">Junior Secondary 2</option>
-
-              <option value="JS3">Junior Secondary 3</option>
-
-              <option value="SS1">Senior Secondary 1</option>
-
-              <option value="SS2">Senior Secondary 2</option>
-
-              <option value="SS3">Senior Secondary 3</option>
-            </select>
-          </p>
-
-          <p>
-            <label for="id_academic_session">Academic session:</label>
-            <select
-              name="academic_session"
-              required=""
-              id="id_academic_session"
-            >
-              <option value="" selected="">---------</option>
-
-              <option value="10">2024-2025 (Lamlad)</option>
-            </select>
-          </p>
-
-          <p>
-            <label for="id_class_teacher">Class teacher:</label>
-            <select name="class_teacher" id="id_class_teacher">
-              <option value="" selected="">---------</option>
-            </select>
-          </p>
-
-          <p>
-            <label for="id_division">Division:</label>
-            <select name="division" id="id_division">
-              <option value="" selected="">---------</option>
-            </select>
-          </p>
-
-          <p>
-            <label for="id_category">Category:</label>
-            <select name="category" id="id_category">
-              <option value="" selected="">---------</option>
-            </select>
-          </p>
-          <div class="inline-f">
-            <label for="Class" class="class">Class</label>
-            <select id="class-select" class="input">
-              <option value="Class 1">Class 1</option>
-              <option value="Class 2">Class 2</option>
-              <option value="Class 3">Class 3</option>
-              <option value="Other">Other</option>
-            </select>
-          </div>
-
-          <div class="inline-f">
-            <label for="Department" class="class">Division Name</label>
-            <input
-              type="text"
-              id="Division Name"
-              placeholder="Enter Division Name"
-              class="input"
-              required=""
-            />
-          </div>
-        </form>
-
-        <form>
-          {% comment %} {{ form.as_p }} {% endcomment %}
-          <div class="inline-f">
-            <label for="Class" class="class">Class</label>
-            <select id="class-select" class="input">
-              <option value="Class 1">Class 1</option>
-              <option value="Class 2">Class 2</option>
-              <option value="Class 3">Class 3</option>
-              <option value="Other">Other</option>
-            </select>
-          </div>
-          <div class="inline-f" id="other-class-container">
-            <label for="OtherClass" class="class">Class Name</label>
-            <input type="text" id="other-class" class="input" />
-          </div>
-
-          <div class="inline-f">
-            <label for="Department" class="class">Division Name</label>
-            <input
-              type="text"
-              id="Division Name"
-              placeholder="Enter Division Name"
-              class="input"
-              required
-            />
-          </div>
-          <div class="inline-f-container">
-            <div class="inline-f"></div>
-            <div class="inline-f">
-              <label for="class type" class="class-type" id="class-type1"
-                >Class Type</label
-              >
-              <select class="input-2">
-                <option value="">Class Type</option>
-                <option value="sciences">Sciences</option>
-                <option value="arts">Arts</option>
-                <option value="humanities">Humanities</option>
-                <option value="commerce">Commerce</option>
-              </select>
-            </div>
-          </div>
+          {{ form.as_p }}
         </form>
       </div>
       <div class="function-btn">
