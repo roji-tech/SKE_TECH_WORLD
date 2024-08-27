@@ -1,15 +1,9 @@
-from django.db import models
-from .users import User
-from django.utils.crypto import get_random_string
-
-
-from django.db import models
-from django.contrib.auth.models import User
+from django.contrib.auth import get_user_model
 from datetime import date
 
-
-from django.contrib.auth import get_user_model
-
+from django.utils.crypto import get_random_string
+from .users import User
+from django.db import models
 
 User = get_user_model()
 
@@ -96,18 +90,18 @@ class Division(models.Model):
         return self.name
 
 
-class SchoolCategory(models.Model):
-    """_summary_
-        # e.g., "Science", "Art", "Commercial"
+# class SchoolCategory(models.Model):
+#     """_summary_
+#         # e.g., "Science", "Art", "Commercial"
 
-        Returns:
-            _type_: _description_
-    """
+#         Returns:
+#             _type_: _description_
+#     """
 
-    name = models.CharField(max_length=10, unique=True)
+#     name = models.CharField(max_length=10, unique=True)
 
-    def __str__(self):
-        return self.name
+#     def __str__(self):
+#         return self.name
 
 
 class SchoolClass(models.Model):
@@ -236,31 +230,34 @@ class Subject(models.Model):
 class GmeetClass(models.Model):
     subject = models.ForeignKey(
         Subject, on_delete=models.CASCADE, related_name='gmeet_classes')
+    description = models.TextField()
     gmeet_link = models.URLField()
     start_time = models.DateTimeField()
     end_time = models.DateTimeField()
+    created_by = models.ForeignKey(User, on_delete=models.CASCADE, )
 
     def __str__(self):
         return f"{self.subject.name} - {self.subject.school_class.name} ({self.start_time})"
 
 
 class LessonPlan(models.Model):
-    term = models.ForeignKey(
-        Term, on_delete=models.CASCADE, related_name='lesson_plans')
+    school_class = models.ForeignKey(SchoolClass, on_delete=models.CASCADE)
     subject = models.ForeignKey(
         Subject, on_delete=models.CASCADE, related_name='lesson_plans')
-    title = models.CharField(max_length=255)
-    content = models.TextField()
-    created_at = models.DateTimeField(auto_now_add=True)
+    uploaded_by = models.ForeignKey(
+        User, on_delete=models.CASCADE, related_name='uploaded_files')
+    uploaded_file = models.FileField(upload_to='uploads/%Y/%m/%d/')
 
     def __str__(self):
-        return f"{self.subject.name} - {self.term.academic_session.name} ({self.term.name})"
+        return f"{self.uploaded_file.name} uploaded by {self.uploaded_by.username}"
 
 
 class ClassNote(models.Model):
     lesson_plan = models.ForeignKey(
         LessonPlan, on_delete=models.CASCADE, related_name='class_notes')
     title = models.CharField(max_length=255)
+    for_class = models.ForeignKey(
+        SchoolClass, on_delete=models.CASCADE, related_name='+')
     content = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
     attachment = models.URLField()

@@ -1,3 +1,7 @@
+from .models import AcademicSession
+from main.models.models import SchoolClass
+from django import forms
+
 # from .models.profiles import Teacher
 
 
@@ -12,12 +16,6 @@
 #       "department" : forms.Select(),
 #       'specifications' : forms.Textarea(attrs={'rows' : 4})
 #     }
-
-
-from django import forms
-
-from main.models.models import SchoolClass
-from .models import AcademicSession
 
 
 class AcademicSessionForm(forms.ModelForm):
@@ -75,4 +73,30 @@ class ClassForm(forms.ModelForm):
                 'style': 'background-color: #f5f5f5; color: #333;',  # Custom inline styles
                 'data-custom-attribute': 'example',  # Add custom data attributes if needed
             }),
+        }
+
+
+class GoogleMeetForm(forms.ModelForm):
+    class Meta:
+        model = GmeetClass
+        fields = ['subject', 'description',
+                  'start_time', 'gmeet_link', 'created_by']
+        widgets = {
+            'start_time': forms.DateTimeInput(attrs={'type': 'datetime-local'}),
+        }
+        labels = {
+            'subject': 'Meeting Title',
+            'start_time': 'Date and Time',
+            'created_by': 'Created By',
+        }
+
+
+class LessonPlanForm(forms.ModelForm):
+    class Meta:
+        model = LessonPlan
+        fields = ['id', 'school_class', 'subject',
+                  'uploaded_by', 'uploaded_file']
+        widgets = {
+            'uploaded_file': forms.ClearableFileInput(attrs={'class': 'input'}),
+            'school_class': forms.Select(attrs={'class': 'input'}),
         }

@@ -1,10 +1,11 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Upload Google Meet</title>
-    <link rel="stylesheet" href="{% static 'teachers/css/uploadgmeet.css' %}">
+    <link rel="stylesheet" href="{% static 'teachers/uploadgmeet/css/uploadgmeet.css' %}">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500&display=swap" rel="stylesheet">
 </head>
 <body>
@@ -53,13 +54,14 @@
                 
                 <tr>
                     {% for meet in gmeets %}
-                    <td>1</td>
-                    <td>Biology</td>
-                    <td>Just Text</td>
-                    <td>1-1-43</td>
-                    <td>DEMO TEACHERS</td>
-                    <td>link</td>
-                    <td><span class="edit-action">Edit</span><span class="delete-action">Delete</span></td>
+                        <td>{{ meet.id }}</td>
+                        <td>{{ meet.subject }}</td>
+                        <td>{{ meet.description }}</td>
+                        <td>{{ meet.start_date }}</td>
+                        <td>{{ meet.created_by }}</td>
+                        <td>{{ meet.gmeet_link }}</td>
+                        <td><span class="edit-action">Edit</span><span class="delete-action">Delete</span></td>
+                    {% endfor %}
                 </tr>
         
                 <!-- Additional rows can be added here -->
