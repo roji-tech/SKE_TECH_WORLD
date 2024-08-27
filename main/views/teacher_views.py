@@ -80,7 +80,7 @@ def list_continous_assessment(request):
     assessments = ContinuousAssessment.objects.filter(uploaded_by=request.user.teacher)
     return render(request, 'teachers/homework/homework.html', {'assessments' : assessments})
 
-def add_continous_assessnent(request):
+def add_continous_assessment(request):
     if request.method == 'POST':
         form = ContinuousAssessmentForm(request.POST, request.FILES)
         if form.is_valid():
