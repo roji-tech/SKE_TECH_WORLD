@@ -1,4 +1,5 @@
-# from .models.profiles import Teacher
+from django import forms
+from main.models.models import AcademicSession, SchoolClass, GmeetClass, LessonPlan, Subject
 
 
 # class TeachersForm(forms.ModelForm):
@@ -12,12 +13,6 @@
 #       "department" : forms.Select(),
 #       'specifications' : forms.Textarea(attrs={'rows' : 4})
 #     }
-
-
-from django import forms
-
-from main.models.models import ContinuousAssessment, GmeetClass, LessonPlan, SchoolClass
-from .models import AcademicSession
 
 
 class AcademicSessionForm(forms.ModelForm):
@@ -35,6 +30,20 @@ class AcademicSessionForm(forms.ModelForm):
             'name': forms.TextInput(attrs={'type': 'text', "id": "name", "placeholder": "2024-2025 ( optional )"}),
             # 'next_session_begins': forms.DateInput(attrs={'type': 'date'}),
         }
+
+
+class CustomSelect(forms.widgets.Select):
+    def __init__(self, attrs=None, choices=()):
+        super().__init__(attrs, choices)
+
+    def create_option(self, name, value, label, selected, index, subindex=None, attrs=None):
+        option_dict = super().create_option(name, value, label, selected,
+                                            index, subindex=subindex, attrs=attrs)
+        # Customize the `option` elements
+        option_dict['attrs']['class'] = 'custom-option-class'
+        # Example of inline styles for options
+        option_dict['attrs']['style'] = 'color: blue;'
+        return option_dict
 
 
 class ClassForm(forms.ModelForm):
@@ -55,49 +64,46 @@ class ClassForm(forms.ModelForm):
             self.fields['academic_session'].queryset = AcademicSession.get_school_sessions(
                 self.request)
 
-        # widgets = {SchoolClass
-        #     'start_date': forms.DateInput(attrs={'type': 'date', "id": "start_date"}),
-        #     'end_date': forms.DateInput(attrs={'type': 'date', "id": "end_date"}),
-        #     'name': forms.TextInput(attrs={'type': 'text', "id": "name", "placeholder": "2024-2025 ( optional )"}),
-        #     # 'next_session_begins': forms.DateInput(attrs={'type': 'date'}),
-        # }
+        widgets = {
+            'school_class': CustomSelect(attrs={
+                'class': 'custom-select-class',  # Add your custom class
+                'style': 'background-color: #f5f5f5; color: #333;',  # Custom inline styles
+                'data-custom-attribute': 'example',  # Add custom data attributes if needed
+            }),
+        }
+
+
+class SubjectForm(forms.ModelForm):
+    class Meta:
+        model = Subject
+        fields = ['school_class', 'name']
+        widgets = {
+            'school_class': forms.Select(attrs={'class': 'input', 'placeholder': 'Select'}),
+            'name': forms.TextInput(attrs={'class': 'input', 'placeholder': 'Enter Subject Name'}),
+        }
+
 
 class GoogleMeetForm(forms.ModelForm):
     class Meta:
         model = GmeetClass
-        fields = ['subject', 'description', 'start_time', 'gmeet_link', 'created_by']
+        fields = ['subject', 'description',
+                  'start_time', 'gmeet_link', 'created_by']
         widgets = {
-        'start_time': forms.DateTimeInput(attrs={'type': 'datetime-local'}),
-    }
+            'start_time': forms.DateTimeInput(attrs={'type': 'datetime-local'}),
+        }
         labels = {
             'subject': 'Meeting Title',
             'start_time': 'Date and Time',
             'created_by': 'Created By',
         }
 
+
 class LessonPlanForm(forms.ModelForm):
     class Meta:
         model = LessonPlan
-        fields = ['id', 'school_class', 'subject', 'uploaded_by', 'uploaded_file']
+        fields = ['id', 'school_class', 'subject',
+                  'uploaded_by', 'uploaded_file']
         widgets = {
-                'uploaded_file': forms.ClearableFileInput(attrs={'class': 'input'}),
-                'school_class': forms.Select(attrs={'class': 'input'}),
-            }
-    
-class ContinuousAssessmentForm(forms.ModelForm):
-    class Meta:
-        model = ContinuousAssessment
-        fields = ['subject', 'file', 'student', 'name', 'score']
-        widgets = {
-            'subject': forms.Select(attrs={'class': 'form-control'}),
-            'file': forms.ClearableFileInput(attrs={'class': 'form-control-file'}),
-            'student': forms.Select(attrs={'class': 'form-control'}),
-            'name': forms.TextInput(attrs={'class': 'form-control'}),
-            'score': forms.NumberInput(attrs={'class': 'form-control', 'min': 0, 'max': 100}),
+            'uploaded_file': forms.ClearableFileInput(attrs={'class': 'input'}),
+            'school_class': forms.Select(attrs={'class': 'input'}),
         }
-
-    def clean_score(self):
-        score = self.cleaned_data.get('score')
-        if not (0 <= score <= 100):
-            raise forms.ValidationError("Score must be between 0 and 100.")
-        return score
