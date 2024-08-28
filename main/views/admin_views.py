@@ -403,7 +403,11 @@ class SubjectListView(ListView):
     context_object_name = 'subjects'
 
     def get_queryset(self):
-        return Subject.get_school_subjects(request=self.request)
+        queryset = Subject.get_school_subjects(request=self.request)
+        class_id = self.request.GET.get('class_id')
+        if class_id:
+            queryset = queryset.filter(school_class_id=class_id)
+        return queryset
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -457,6 +461,9 @@ class SubjectUpdateView(UpdateView):
     template_name = 'myadmin/subject/subject_edit.html'
     fields = ['name']
     success_url = reverse_lazy('list-subjects')
+
+    fields = ['name', 'school_class']  # Adjust these fields according to your Subject model
+    context_object_name = 'subject'
 
     def get_queryset(self):
         return Subject.get_school_subjects(request=self.request)
