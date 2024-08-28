@@ -1,18 +1,30 @@
 from django import forms
-from main.models.models import AcademicSession, SchoolClass, GmeetClass, LessonPlan, Subject
+from main.models.models import (
+    AcademicSession, SchoolClass,
+    GmeetClass, LessonPlan, Subject,
+    User, Teacher, Student
+)
 
 
-# class TeachersForm(forms.ModelForm):
-#   email = forms.EmailField()
+class UserForm(forms.ModelForm):
+    password = forms.CharField(widget=forms.PasswordInput)
 
-#   class Meta:
-#     model = Teacher
-#     fields =  ['name', 'email', 'gender', 'department', 'subjects', 'pictures', 'specifications']
-#     widgets = {
-#       'gender' : forms.Select(),
-#       "department" : forms.Select(),
-#       'specifications' : forms.Textarea(attrs={'rows' : 4})
-#     }
+    class Meta:
+        model = User
+        fields = ['username', 'first_name', 'last_name', 'email', 'password']
+
+
+class StudentForm(forms.ModelForm):
+    class Meta:
+        model = Student
+        fields = ['student_id', 'date_of_birth', 'admission_date',
+                  'student_class', 'academic_year', 'reg_no']
+
+
+class TeacherForm(forms.ModelForm):
+    class Meta:
+        model = Teacher
+        fields = ['school']
 
 
 class AcademicSessionForm(forms.ModelForm):
