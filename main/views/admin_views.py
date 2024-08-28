@@ -402,21 +402,34 @@ class SubjectListView(ListView):
     template_name = 'myadmin/subject/subjects_list.html'
     context_object_name = 'subjects'
 
+    def get_queryset(self):
+        return Subject.get_school_subjects(request=self.request)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        # Add the list of classes to the context
+        context['school_classes'] = SchoolClass.get_school_classes(
+            request=self.request)
+        return context
+
 
 class SubjectDetailView(DetailView):
     model = Subject
     template_name = 'myadmin/subject/subject_detail.html'
     context_object_name = 'subject'
 
+    def get_queryset(self):
+        return Subject.get_school_subjects(request=self.request)
+
 
 class SubjectCreateView(CreateView):
     model = Subject
     fields = ['name', 'school_class',]
     success_url = reverse_lazy('list-subjects')
-
-
-# class SubjectCreateView(View):
     template_name = 'myadmin/subject/subject_create.html'
+
+    def get_queryset(self):
+        return Subject.get_school_subjects(request=self.request)
 
     # def get(self, request, *args, **kwargs):
     #     return render(request, self.template_name)
@@ -445,11 +458,17 @@ class SubjectUpdateView(UpdateView):
     fields = ['name']
     success_url = reverse_lazy('list-subjects')
 
+    def get_queryset(self):
+        return Subject.get_school_subjects(request=self.request)
+
 
 class SubjectDeleteView(DeleteView):
     model = Subject
     template_name = 'myadmin/subject/subject_delete.html'
     success_url = reverse_lazy('list-subjects')
+
+    def get_queryset(self):
+        return Subject.get_school_subjects(request=self.request)
 
 
 # STUDENTS

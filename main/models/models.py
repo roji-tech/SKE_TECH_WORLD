@@ -239,6 +239,26 @@ class Subject(models.Model):
     def __str__(self):
         return f"{self.name} - {self.school_class.name}"
 
+    @staticmethod
+    def get_school_subjects(request):
+        """Retrieves all subjects associated with the current user's school.
+
+        Args:
+            request (HttpRequest): The HTTP request object.
+
+        Returns:
+            QuerySet: A QuerySet of Subject objects.
+        """
+
+        user = request.user
+        school = School.objects.filter(owner=user).first()
+
+        if school:
+            return Subject.objects.filter(school_class__academic_session__school=school)
+        else:
+            # Return an empty QuerySet if the user doesn't belong to a school
+            return Subject.objects.none()
+
 
 class GmeetClass(models.Model):
     subject = models.ForeignKey(
