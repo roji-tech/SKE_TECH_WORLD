@@ -18,6 +18,7 @@ from django.contrib.auth import authenticate, login
 
 # FORMS
 from main.models.models import Subject
+from main.forms import UserForm
 from ..forms import AcademicSessionForm, ClassForm  # Assuming you have a form
 
 # from ..models.profiles import Teacher
@@ -192,8 +193,12 @@ class AddSession(View):
                 start_date = form.cleaned_data.get('start_date')
                 end_date = form.cleaned_data.get('end_date')
                 _name = form.cleaned_data.get("name")
-                school_name = _name if _name else f"{
-                    start_date.year}-{end_date.year}"
+                school_name = ""
+
+                if _name:
+                    school_name = _name
+                else:
+                    school_name = f"{start_date.year}-{end_date.year}"
                 print(start_date, end_date, _name, school_name, school)
 
                 # is_current = form.cleaned_data.get('is_current')
@@ -403,7 +408,11 @@ class SubjectListView(ListView):
     context_object_name = 'subjects'
 
     def get_queryset(self):
-        return Subject.get_school_subjects(request=self.request)
+        queryset = Subject.get_school_subjects(request=self.request)
+        class_id = self.request.GET.get('class_id')
+        if class_id:
+            queryset = queryset.filter(school_class_id=class_id)
+        return queryset
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -458,6 +467,10 @@ class SubjectUpdateView(UpdateView):
     fields = ['name']
     success_url = reverse_lazy('list-subjects')
 
+    # Adjust these fields according to your Subject model
+    fields = ['name', 'school_class']
+    context_object_name = 'subject'
+
     def get_queryset(self):
         return Subject.get_school_subjects(request=self.request)
 
@@ -494,6 +507,23 @@ class StudentCreateView(CreateView):
     template_name = 'myadmin/student/student_create.html'
     fields = ['name']
     success_url = reverse_lazy('list-subjects')
+
+    def form_valid(self, form):
+        user_form = UserForm(self.request.POST)
+
+        if user_form.is_valid():
+            user = user_form.save(commit=False)
+            user.set_password(user_form.cleaned_data['password'])
+            user.save()
+            form.instance.user = user
+            return super().form_valid(form)
+        else:
+            return self.form_invalid(form)
+
+    def get_context_data(self, **kwargs):
+        context = super(CreateView, self).get_context_data(**kwargs)
+        context['user_form'] = UserForm()
+        return context
 
 
 class StudentUpdateView(UpdateView):
