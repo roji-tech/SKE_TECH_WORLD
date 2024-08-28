@@ -26,7 +26,6 @@
       src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"
     ></script>
 
-    <link rel="stylesheet" href="subject.css" />
     <link
       rel="stylesheet"
       href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap"
@@ -523,6 +522,7 @@
         .getElementById("confirmCancel")
         .addEventListener("click", function () {
           document.getElementById("cancelOverlay").classList.remove("show");
+          window.location.href = "{% url 'list-subjects' %}";
         });
 
       document
