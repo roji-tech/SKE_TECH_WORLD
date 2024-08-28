@@ -76,11 +76,8 @@ def view_examination(request):
     return render(request, 'teachers/exam/examinations.html')
 
 """Assignments Views"""
-def list_continous_assessment(request):
-    assessments = ContinuousAssessment.objects.filter(uploaded_by=request.user.teacher)
-    return render(request, 'teachers/homework/homework.html', {'assessments' : assessments})
 
-def add_continous_assessment(request):
+def continous_assessment_view(request):
     if request.method == 'POST':
         form = ContinuousAssessmentForm(request.POST, request.FILES)
         if form.is_valid():
@@ -90,7 +87,10 @@ def add_continous_assessment(request):
             return redirect('assessment-list')
     else:
         form = ContinuousAssessmentForm()
-    return render(request, 'teachers/homework/homework.html', {'form' : form})
+
+    assessments = ContinuousAssessment.objects.filter(uploaded_by=request.user.teacher)
+
+    return render(request, 'teachers/homework/homework.html', {'form' : form, 'assessments': assessments})
 
 def edit_continous_assessnent(request, pk):
     assessment = ContinuousAssessment.objects.get(uploaded_by=request.user.teacher, pk=pk)

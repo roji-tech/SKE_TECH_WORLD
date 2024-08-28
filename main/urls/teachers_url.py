@@ -9,4 +9,6 @@ urlpatterns = [
 
     path('teachers/upload-lesson/', views.upload_lesson_plan, name='upload_lesson_plan'),
     path('teachers/lessons-lists/', views.lessons_list, name='lessons_lists'),
+
+    path('teachers/add-assessment/', views.continous_assessment_view, name='continous-assessment'),
 ]
