@@ -357,48 +357,6 @@ class ClassDeleteView(DeleteView):
         return form_class(request=self.request, **self.get_form_kwargs())
 
 
-# CLASS DIVISIONS
-# CLASS DIVISIONS
-# CLASS DIVISIONS
-# CLASS DIVISIONS
-# CLASS DIVISIONS
-@admin_is_authenticated()
-class DivisionListView(ListView):
-    model = Division
-    template_name = 'myadmin/division_list.html'
-    context_object_name = 'divisions'
-
-
-@admin_is_authenticated()
-class DivisionDetailView(DetailView):
-    model = Division
-    template_name = 'myadmin/division_detail.html'
-    context_object_name = 'division'
-
-
-@admin_is_authenticated()
-class DivisionCreateView(CreateView):
-    model = Division
-    template_name = 'myadmin/division_form.html'
-    fields = ['name']
-    success_url = reverse_lazy('division-list')
-
-
-@admin_is_authenticated()
-class DivisionUpdateView(UpdateView):
-    model = Division
-    template_name = 'myadmin/division_form.html'
-    fields = ['name']
-    success_url = reverse_lazy('division-list')
-
-
-@admin_is_authenticated()
-class DivisionDeleteView(DeleteView):
-    model = Division
-    template_name = 'myadmin/division_confirm_delete.html'
-    success_url = reverse_lazy('division-list')
-
-
 # TERMS
 # TERMS
 # TERMS
