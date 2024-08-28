@@ -4,6 +4,7 @@ from datetime import date
 from django.utils.crypto import get_random_string
 from .users import User
 from django.db import models
+import string
 
 User = get_user_model()
 
@@ -83,11 +84,16 @@ class Term(models.Model):
         return f"{self.name} ({self.academic_session.name})"
 
 
-class Division(models.Model):
-    name = models.CharField(max_length=10, unique=True)  # e.g., "A", "B", "C"
+# class Division(models.Model):
+#     DIVISION_CHOICES = [(letter, letter) for letter in string.ascii_uppercase]
 
-    def __str__(self):
-        return self.name
+#     name = models.CharField(
+#         max_length=10, unique=True,
+#         choices=DIVISION_CHOICES
+#     )  # e.g., "A", "B", "C"
+
+#     def __str__(self):
+#         return self.name
 
 
 # class SchoolCategory(models.Model):
@@ -129,14 +135,20 @@ class SchoolClass(models.Model):
         ("COMMERCIAL", "Commercial Class"),
     )
 
+    DIVISION_CHOICES = [(letter, letter) for letter in string.ascii_uppercase]
+
     # school = models.ForeignKey(School, on_delete=models.CASCADE, related_name='classes')
     name = models.CharField(max_length=4, choices=CLASS_CHOICES)
     academic_session = models.ForeignKey(
         AcademicSession, on_delete=models.CASCADE, related_name='classes')
     class_teacher = models.ForeignKey(
         User, on_delete=models.SET_NULL, null=True, blank=True, limit_choices_to={'role': "teacher"})
-    division = models.ForeignKey(
-        Division, on_delete=models.SET_NULL, related_name='classes', blank=True, null=True)
+    division = models.CharField(
+        max_length=10,  blank=True, null=True,
+        choices=DIVISION_CHOICES
+    )  # e.g., "A", "B", "C"
+    # division = models.ForeignKey(
+    #     Division, on_delete=models.SET_NULL, related_name='classes', blank=True, null=True)
     category = models.CharField(
         max_length=12, choices=CLASS_CATEGORIES, blank=True, null=True)
     # category = models.ForeignKey(
@@ -218,13 +230,34 @@ class Subject(models.Model):
     school_class = models.ForeignKey(
         SchoolClass, on_delete=models.CASCADE, related_name='subjects')
     name = models.CharField(max_length=100)
-    teacher = models.ForeignKey(Teacher, on_delete=models.SET_NULL, null=True)
+    teacher = models.ForeignKey(
+        Teacher, on_delete=models.SET_NULL, null=True, blank=True)
 
     class Meta:
         unique_together = ('school_class', 'name')
 
     def __str__(self):
         return f"{self.name} - {self.school_class.name}"
+
+    @staticmethod
+    def get_school_subjects(request):
+        """Retrieves all subjects associated with the current user's school.
+
+        Args:
+            request (HttpRequest): The HTTP request object.
+
+        Returns:
+            QuerySet: A QuerySet of Subject objects.
+        """
+
+        user = request.user
+        school = School.objects.filter(owner=user).first()
+
+        if school:
+            return Subject.objects.filter(school_class__academic_session__school=school)
+        else:
+            # Return an empty QuerySet if the user doesn't belong to a school
+            return Subject.objects.none()
 
 
 class GmeetClass(models.Model):

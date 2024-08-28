@@ -28,6 +28,10 @@
       select {
         width: 100%;
       }
+
+      button {
+        cursor: pointer;
+      }
     </style>
   </head>
   <body>
@@ -38,15 +42,14 @@
       </div>
       <div class="contents">
         <form method="post">
-          {% csrf_token %}
-          
-          {{ form.as_p }}
-          <button type="submit">Submit</button>
+          {% csrf_token %} {{ form.as_p }}
+          <div class="function-btn">
+            <button type="submit" id="add">Add</button>
+            <a href="{% url 'list-classes' %}">
+              <button id="cancel" type="button">Cancel</button>
+            </a>
+          </div>
         </form>
-      </div>
-      <div class="function-btn">
-        <button id="add">Save</button>
-        <button id="cancel">Cancel</button>
       </div>
     </div>
     <!-- Edit ends -->
@@ -84,13 +87,6 @@
         });
 
       document
-        .getElementById("add")
-        .addEventListener("click", function (event) {
-          event.preventDefault();
-          document.getElementById("updateModal").style.display = "block";
-        });
-
-      document
         .getElementById("cancel")
         .addEventListener("click", function (event) {
           event.preventDefault();
@@ -116,7 +112,7 @@
         .addEventListener("click", function () {
           // Add your cancel logic here
           document.getElementById("cancelModal").style.display = "none";
-          alert("You have left the edit page");
+          window.location.href = "{% url 'list-classes' %}";
         });
 
       document

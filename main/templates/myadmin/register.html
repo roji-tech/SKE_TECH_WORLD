@@ -201,7 +201,7 @@
         });
       }
 
-      function submitForm() {
+      async function submitForm() {
         const form = document.getElementById("registerForm");
         const formData = new FormData(form);
         const csrfToken = document.querySelector(
@@ -213,7 +213,7 @@
           return; // Stop submission if validation fails
         }
 
-        fetch(form.dataset.action, {
+        await fetch(form.dataset.action, {
           method: "POST",
           body: formData,
           headers: {

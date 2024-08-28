@@ -1,5 +1,5 @@
-from django import forms
-from main.models.models import AcademicSession, SchoolClass, GmeetClass, LessonPlan
+ from django import forms
+from main.models.models import AcademicSession, SchoolClass, GmeetClass, LessonPlan, Subject
 
 
 # class TeachersForm(forms.ModelForm):
@@ -70,6 +70,16 @@ class ClassForm(forms.ModelForm):
                 'style': 'background-color: #f5f5f5; color: #333;',  # Custom inline styles
                 'data-custom-attribute': 'example',  # Add custom data attributes if needed
             }),
+        }
+
+
+class SubjectForm(forms.ModelForm):
+    class Meta:
+        model = Subject
+        fields = ['school_class', 'name']
+        widgets = {
+            'school_class': forms.Select(attrs={'class': 'input', 'placeholder': 'Select'}),
+            'name': forms.TextInput(attrs={'class': 'input', 'placeholder': 'Enter Subject Name'}),
         }
 
 

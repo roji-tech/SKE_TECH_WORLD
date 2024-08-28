@@ -1,131 +1,133 @@
+{% load static %}
+
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Edit Page</title>
-    <link rel="stylesheet" href="edit.css">
-</head>
-<body>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Update Class</title>
+    <link rel="stylesheet" href="{% static 'css/myadmin/class/edit.css' %}" />
+
+    <style>
+      .custom-select-class {
+        border: 2px solid #007bff;
+        padding: 8px;
+        border-radius: 4px;
+        width: 100%;
+      }
+
+      .custom-option-class {
+        font-weight: bold;
+      }
+
+      form p {
+        display: flex;
+        gap: 10px;
+      }
+
+      select {
+        width: 100%;
+      }
+
+      button {
+        cursor: pointer;
+      }
+    </style>
+  </head>
+  <body>
     <!-- Edit starts -->
     <div class="container">
-        <div class="add-division">
-            <p><span id="plus"></span>Edit Class</p> 
-        </div>
-        <div class="contents">
-            <form>   
-                <div class="inline-f">
-                    <label for="Class" class="class">Class</label>
-                    <select id="class-select" class="input">
-                        <option value="Class 1">Class 1</option>
-                        <option value="Class 2">Class 2</option>
-                        <option value="Class 3">Class 3</option>
-                        <option value="Other">Other</option>
-                    </select>
-                </div>
-                <div class="inline-f" id="other-class-container">
-                    <label for="OtherClass" class="class">Class Name</label>
-                    <input type="text" id="other-class" class="input">
-                </div>
-                <div class="inline-f">
-                    <label for="Division Name" class="class">Division Name</label>
-                    <select class="input">
-                        <option value="select division">Select division</option>
-                        <option value="(A)">(A)</option>
-                        <option value="(B)">(B)</option>
-                        <option value="(C)">(C)</option>
-                        <option value="(D)">(D)</option>
-                    </select>
-                </div>
-                <div class="inline-f-container">
-                    <div class="inline-f">
-                     
-                    </div>
-                    <div class="inline-f">
-                        <label for="class type" class="class-type" id="class-type1">Class Type</label>
-                        <select class="input-2">
-                            <option value="class type">Class Type</option>
-                            <option value="sciences">Sciences</option>
-                            <option value="arts">Arts</option>
-                            <option value="humanities">Humanities</option>
-                            <option value="commerce">Commerce</option>
-                        </select>
-                    </div>
-                </div>
-            </form> 
-        </div>
-        <div class="function-btn">
-            <button id="add">Update</button>
-            <button id="cancel">Cancel</button>
-        </div>
+      <div class="add-division">
+        <p><span id="plus"></span>Update Class</p>
+      </div>
+      <div class="contents">
+        <form method="post">
+          {% csrf_token %} {{ form.as_p }}
+          <div class="function-btn">
+            <button type="submit" id="add">Update</button>
+            <a href="{% url 'list-classes' %}">
+              <button id="cancel" type="button">Cancel</button>
+            </a>
+          </div>
+        </form>
+      </div>
     </div>
     <!-- Edit ends -->
 
     <!-- Update Confirmation Modal -->
     <div id="updateModal" class="modal">
-        <div class="modal-content">
-            <p>Are you sure you want to update?</p>
-            <button id="confirmUpdate">Yes</button>
-            <button id="closeUpdateModal">No</button>
-        </div>
+      <div class="modal-content">
+        <p>Are you sure you want to Add this class?</p>
+        <button id="confirmUpdate">Yes</button>
+        <button id="closeUpdateModal">No</button>
+      </div>
     </div>
 
     <!-- Cancel Confirmation Modal -->
     <div id="cancelModal" class="modal">
-        <div class="modal-content">
-            <p>Are you sure you want to leave?</p>
-            <button id="confirmCancel">Yes</button>
-            <button id="closeCancelModal">No</button>
-        </div>
+      <div class="modal-content">
+        <p>Are you sure you want to leave?</p>
+        <button id="confirmCancel">Yes</button>
+        <button id="closeCancelModal">No</button>
+      </div>
     </div>
 
     <script>
-        document.getElementById('class-select').addEventListener('change', function () {
-            var otherClassContainer = document.getElementById('other-class-container');
-            if (this.value === 'Other') {
-                otherClassContainer.style.display = 'flex';
-            } else {
-                otherClassContainer.style.display = 'none';
-            }
+      document
+        .getElementById("class-select")
+        .addEventListener("change", function () {
+          var otherClassContainer = document.getElementById(
+            "other-class-container"
+          );
+          if (this.value === "Other") {
+            otherClassContainer.style.display = "flex";
+          } else {
+            otherClassContainer.style.display = "none";
+          }
         });
 
-        document.getElementById('add').addEventListener('click', function (event) {
-            event.preventDefault();
-            document.getElementById('updateModal').style.display = 'block';
+      document
+        .getElementById("cancel")
+        .addEventListener("click", function (event) {
+          event.preventDefault();
+          document.getElementById("cancelModal").style.display = "block";
         });
 
-        document.getElementById('cancel').addEventListener('click', function (event) {
-            event.preventDefault();
-            document.getElementById('cancelModal').style.display = 'block';
+      document
+        .getElementById("confirmUpdate")
+        .addEventListener("click", function () {
+          // Add your update logic here
+          document.getElementById("updateModal").style.display = "none";
+          alert("Class updated successfully");
         });
 
-        document.getElementById('confirmUpdate').addEventListener('click', function () {
-            // Add your update logic here
-            document.getElementById('updateModal').style.display = 'none';
-            alert('Class updated successfully');
+      document
+        .getElementById("closeUpdateModal")
+        .addEventListener("click", function () {
+          document.getElementById("updateModal").style.display = "none";
         });
 
-        document.getElementById('closeUpdateModal').addEventListener('click', function () {
-            document.getElementById('updateModal').style.display = 'none';
+      document
+        .getElementById("confirmCancel")
+        .addEventListener("click", function () {
+          // Add your cancel logic here
+          document.getElementById("cancelModal").style.display = "none";
+          window.location.href = "{% url 'list-classes' %}";
         });
 
-        document.getElementById('confirmCancel').addEventListener('click', function () {
-            // Add your cancel logic here
-            document.getElementById('cancelModal').style.display = 'none';
-            alert('You have left the edit page');
+      document
+        .getElementById("closeCancelModal")
+        .addEventListener("click", function () {
+          document.getElementById("cancelModal").style.display = "none";
         });
 
-        document.getElementById('closeCancelModal').addEventListener('click', function () {
-            document.getElementById('cancelModal').style.display = 'none';
-        });
-
-        window.onclick = function(event) {
-            if (event.target == document.getElementById('updateModal')) {
-                document.getElementById('updateModal').style.display = 'none';
-            } else if (event.target == document.getElementById('cancelModal')) {
-                document.getElementById('cancelModal').style.display = 'none';
-            }
+      window.onclick = function (event) {
+        if (event.target == document.getElementById("updateModal")) {
+          document.getElementById("updateModal").style.display = "none";
+        } else if (event.target == document.getElementById("cancelModal")) {
+          document.getElementById("cancelModal").style.display = "none";
         }
+      };
     </script>
-</body>
+  </body>
 </html>

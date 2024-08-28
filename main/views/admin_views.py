@@ -1,3 +1,4 @@
+from django.http import JsonResponse
 from django.db import IntegrityError
 from django.forms.models import BaseModelForm
 from django.http.response import JsonResponse
@@ -12,11 +13,11 @@ from django.views import View
 from django.contrib import messages
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 
-from main.models.users import OWNER, User
-from main.models.models import AcademicSession, School, SchoolSettings, Student, Subject, Teacher, Term, SchoolClass, Division
+from main.models import User, AcademicSession, School, SchoolSettings, Student, Subject, Teacher, Term, SchoolClass
 from django.contrib.auth import authenticate, login
 
 # FORMS
+from main.models.models import Subject
 from ..forms import AcademicSessionForm, ClassForm  # Assuming you have a form
 
 # from ..models.profiles import Teacher
@@ -24,7 +25,7 @@ from ..forms import AcademicSessionForm, ClassForm  # Assuming you have a form
 
 
 def admin_is_authenticated(*args):
-    print(args)
+    # print(args)
     return method_decorator(login_required(login_url="/admin/login/"), name='dispatch')
 
 
@@ -403,6 +404,8 @@ class DivisionDeleteView(DeleteView):
 # TERMS
 # TERMS
 # TERMS
+# TERMS
+# TERMS
 class TermListView(ListView):
     model = Term
     template_name = 'myadmin/term_list.html'
@@ -448,18 +451,54 @@ class SubjectListView(ListView):
     template_name = 'myadmin/subject/subjects_list.html'
     context_object_name = 'subjects'
 
+    def get_queryset(self):
+        return Subject.get_school_subjects(request=self.request)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        # Add the list of classes to the context
+        context['school_classes'] = SchoolClass.get_school_classes(
+            request=self.request)
+        return context
+
 
 class SubjectDetailView(DetailView):
     model = Subject
     template_name = 'myadmin/subject/subject_detail.html'
     context_object_name = 'subject'
 
+    def get_queryset(self):
+        return Subject.get_school_subjects(request=self.request)
+
 
 class SubjectCreateView(CreateView):
     model = Subject
-    template_name = 'myadmin/subject/subject_create.html'
-    fields = ['name']
+    fields = ['name', 'school_class',]
     success_url = reverse_lazy('list-subjects')
+    template_name = 'myadmin/subject/subject_create.html'
+
+    def get_queryset(self):
+        return Subject.get_school_subjects(request=self.request)
+
+    # def get(self, request, *args, **kwargs):
+    #     return render(request, self.template_name)
+
+    def post(self, request, *args, **kwargs):
+        data = request.POST
+        school_class_id = data.get('school_class')
+        subject_names = data.getlist('subject')
+        print(data, school_class_id, subject_names)
+        # print(dir(request.POST))
+
+        # Get the SchoolClass instance
+        school_class = SchoolClass.objects.get(id=school_class_id)
+
+        # Create Subject instances
+        for name in subject_names:
+            if not Subject.objects.filter(school_class=school_class, name=name).exists():
+                Subject.objects.create(school_class=school_class, name=name)
+
+        return JsonResponse({'status': True, 'message': 'Subjects added successfully!'})
 
 
 class SubjectUpdateView(UpdateView):
@@ -468,11 +507,17 @@ class SubjectUpdateView(UpdateView):
     fields = ['name']
     success_url = reverse_lazy('list-subjects')
 
+    def get_queryset(self):
+        return Subject.get_school_subjects(request=self.request)
+
 
 class SubjectDeleteView(DeleteView):
     model = Subject
     template_name = 'myadmin/subject/subject_delete.html'
     success_url = reverse_lazy('list-subjects')
+
+    def get_queryset(self):
+        return Subject.get_school_subjects(request=self.request)
 
 
 # STUDENTS
