@@ -25,7 +25,7 @@ def add_gmeet(request):
         form = GoogleMeetForm()
     return render(request, 'teachers/gmeet/gmeet.html', {'form' : form})
 
-def edit_gmeet(request, pk):
+def teachers_edit_gmeet(request, pk):
     gmeets = get_object_or_404(GmeetClass, pk=pk)
     if request.method == "POST":
         form = GoogleMeetForm(request.POST, instance=gmeets)

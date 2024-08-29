@@ -89,12 +89,12 @@
             <li>
               <a href="/others/index.html" class="nav__link">Dashboard</a>
             </li>
-            <li><a href="Library.html" class="nav__link">Library</a></li>
+            <li><a href="{% url 'library' %}" class="nav__link">Library</a></li>
             <li>
-              <a href="/others/Notes.html" class="nav__link">Class-Notes</a>
+              <a href="{% url 'students_class_notes' %}" class="nav__link">Class-Notes</a>
             </li>
             <li>
-              <a href="/others/gmeet.html" class="nav__link">G-meet Classes</a>
+              <a href="{% url 'google_meets_classes' %}" class="nav__link">G-meet Classes</a>
             </li>
             <li>
               <a href="/login form/e-exam.html" class="nav__link">E-Exam</a>
@@ -276,7 +276,7 @@
         data-aos-once="true"
         class="service-card notification-container"
       >
-        <a href="Notes.html" class="card-link">
+        <a href="{% url 'students_class_notes' %}" class="card-link">
           <div class="inner">
             <div class="icon"><i data-feather="menu"></i></div>
             <div class="content-1">
@@ -285,7 +285,7 @@
                 Access and download class notes for various subjects.
               </p>
               <div class="notification-dot"></div>
-              <a class="read-more-button" href="Notes.html"
+              <a class="read-more-button" href="{% url 'students_class_notes' %}"
                 ><i class="fas fa-arrow-right"></i
               ></a>
             </div>
@@ -300,7 +300,7 @@
         data-aos-once="true"
         class="service-card notification-container"
       >
-        <a href="Notes.html" class="card-link">
+        <a href="{% url 'students_class_notes' %}" class="card-link">
           <div class="inner">
             <div class="icon"><i data-feather="menu"></i></div>
             <div class="content-1">
@@ -312,7 +312,7 @@
               <div class="random-number light-mode" id="books-uploaded-number">
                 17
               </div>
-              <a class="read-more-button" href="Notes.html"
+              <a class="read-more-button" href="{% url 'students_class_notes' %}"
                 ><i class="fas fa-arrow-right"></i
               ></a>
             </div>
