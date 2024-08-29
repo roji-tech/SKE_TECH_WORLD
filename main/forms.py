@@ -1,6 +1,6 @@
 from django import forms
 from main.models.models import (
-    AcademicSession, SchoolClass,
+    AcademicSession, ContinuousAssessment, SchoolClass,
     GmeetClass, LessonPlan, Subject,
     User, Teacher, Student
 )
@@ -117,5 +117,17 @@ class LessonPlanForm(forms.ModelForm):
                   'uploaded_by', 'uploaded_file']
         widgets = {
             'uploaded_file': forms.ClearableFileInput(attrs={'class': 'input'}),
-            'school_class': forms.Select(attrs={'class': 'input'}),
+            'school_clas': forms.Select(attrs={'class': 'input'}),
+        }
+
+class ContinuousAssessmentForm(forms.ModelForm):
+    class Meta:
+        model = ContinuousAssessment
+        fields = ['subject', 'file', 'student', 'name', 'score']
+        widgets = {
+            'subject': forms.Select(attrs={'class': 'form-control'}),
+            'file': forms.ClearableFileInput(attrs={'class': 'form-control-file'}),
+            'student': forms.Select(attrs={'class': 'form-control'}),
+            'name': forms.TextInput(attrs={'class': 'form-control'}),
+            'score': forms.NumberInput(attrs={'class': 'form-control', 'min': 0, 'max': 100}),
         }

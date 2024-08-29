@@ -4,8 +4,30 @@ from django.shortcuts import get_object_or_404, redirect, render
 from django.views import View
 from django.views.generic import ListView
 
-from main.forms import GoogleMeetForm, LessonPlanForm
-from main.models.models import GmeetClass, LessonPlan
+from main.forms import ContinuousAssessmentForm, GoogleMeetForm, LessonPlanForm
+from main.models.models import GmeetClass, LessonPlan, ContinuousAssessment
+
+
+class TeacherLogin(View):
+    def get(self, request, *args, **kwargs):
+        return render(request, "teachers/teacher-login.html")
+
+    def post(self, request, *args, **kwargs):
+        print(request.POST)
+        username = request.POST.get('username')
+        password = request.POST.get('password')
+
+        user = authenticate(request, username=username, password=password)
+        print(user, username, password)
+
+        if user is not None:
+            print(user)
+            login(request, user)
+            return redirect('myadmin')
+        else:
+            messages.error(request, 'Invalid username or password')
+
+        return render(request, "myadmin/login.html")
 
 
 class TeachersHome(View):
@@ -13,7 +35,10 @@ class TeachersHome(View):
         # Custom logic here
         return render(request, "teachers/index.html")
 
+
 """Google Meet Views"""
+
+
 def add_gmeet(request):
     if request.method == "POST":
         form = GoogleMeetForm(request.POST)
@@ -23,7 +48,8 @@ def add_gmeet(request):
             return redirect('teachers')
     else:
         form = GoogleMeetForm()
-    return render(request, 'teachers/gmeet/gmeet.html', {'form' : form})
+    return render(request, 'teachers/gmeet/gmeet.html', {'form': form})
+
 
 def edit_gmeet(request, pk):
     gmeets = get_object_or_404(GmeetClass, pk=pk)
@@ -31,19 +57,24 @@ def edit_gmeet(request, pk):
         form = GoogleMeetForm(request.POST, instance=gmeets)
         if form.is_valid():
             form.save()
-            messages.success(request, 'Google Meet Session updated successfully')
+            messages.success(
+                request, 'Google Meet Session updated successfully')
             return redirect('teachers')
-        
+
     else:
         form = GoogleMeetForm(instance=gmeets)
-    return render(request, 'teachers/gmeet/uploadgmeet.html',  {'form' : form, "gmeets" : gmeets})
+    return render(request, 'teachers/gmeet/uploadgmeet.html',  {'form': form, "gmeets": gmeets})
+
 
 """LessonPlan Views"""
+
+
 def upload_lesson_plan(request, pk):
     lesson_plan = get_object_or_404(LessonPlan, pk=pk)
     if request.method == 'POST':
 
-        form = LessonPlanForm(request.POST, request.FILES, instance=lesson_plan)
+        form = LessonPlanForm(request.POST, request.FILES,
+                              instance=lesson_plan)
         if form.is_valid():
             lesson_plan_instance = form.save(commit=False)
             lesson_plan_instance.uploaded_by = request.user
@@ -53,33 +84,73 @@ def upload_lesson_plan(request, pk):
 
         form = LessonPlanForm(instance=lesson_plan)
         return render(request, 'teachers/lessonplan/edit-lesson-note.html', {'form': form, 'lesson_plan': lesson_plan})
-            
 
 
 def lessons_list(request):
     lesson_plans = LessonPlan.objects.all()
-    return render(request, 'teachers/notes/lessonNoteList.html', {'lesson_plans' : lesson_plans})
+    return render(request, 'teachers/notes/lessonNoteList.html', {'lesson_plans': lesson_plans})
+
 
 """Library"""
+
+
 def library(request):
     return render(request, 'teachers/library/library.html')
 
+
 """Notes Views"""
+
+
 def add_notes(request):
     return render(request, 'teachers/notes/TeachersNote.html')
+
 
 def upload_notes(request):
     return render(request, 'teachers/notes/uploadNote.html')
 
+
 """Examination Views"""
+
+
 def view_examination(request):
     return render(request, 'teachers/exam/examinations.html')
 
+
 """Assignments Views"""
+
+def continous_assessment_view(request):
+    if request.method == 'POST':
+        form = ContinuousAssessmentForm(request.POST, request.FILES)
+        if form.is_valid():
+            assessment = form.save(commit=False)
+            assessment.uploaded_by = request.user.teacher
+            assessment.save()
+            return redirect('assessment-list')
+    else:
+        form = ContinuousAssessmentForm()
+
+    assessments = ContinuousAssessment.objects.filter(uploaded_by=request.user.teacher)
+
+    return render(request, 'teachers/homework/homework.html', {'form' : form, 'assessments': assessments})
+
+def edit_continous_assessnent(request, pk):
+    assessment = ContinuousAssessment.objects.get(uploaded_by=request.user.teacher, pk=pk)
+    if request.method == 'POST':
+        form = ContinuousAssessmentForm(request.POST, request.FILES, instance=assessment)
+        if form.is_valid():
+            form.save()
+            return redirect('assessment-list')
+    else:
+        form = ContinuousAssessmentForm()
+    return render(request, 'teachers/homework/homework.html', {'form' : form, 'assessment' : assessment})
+
+
 def add_assignments(request):
     return render(request, 'teachers/homework/homework.html')
 
 
 """results Views"""
+
+
 def results_list(request):
     return render(request, 'teachers/results/results.html')

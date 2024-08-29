@@ -1,10 +1,11 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Settings</title>
-    <link rel="stylesheet" href="settings.css">
+    <link rel="stylesheet" href="{% static 'css/settings/settings.css' %}">
 </head>
 <body>
     <div class="sidebar">
@@ -420,6 +421,6 @@
     
         <!-- ... other sections ... -->
     </div>
-    <script src="/updated/settings/js/script.js"></script>
+    <script src="{% static 'js/settings/script.js' %}"></script>
 </body>
 </html>

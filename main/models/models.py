@@ -320,6 +320,7 @@ class Examination(models.Model):
 class ContinuousAssessment(models.Model):
     subject = models.ForeignKey(
         Subject, on_delete=models.CASCADE, related_name='continuous_assessments')
+    file = models.FileField(upload_to='assessment/%Y/%m/%d/')
     student = models.ForeignKey(
         Student, on_delete=models.CASCADE, related_name='continuous_assessments')
     name = models.CharField(max_length=100)
