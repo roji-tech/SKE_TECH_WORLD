@@ -1,8 +1,10 @@
 from django.urls import path
+from main.views.teacher_views import TeacherLogin
 from .. import views
 
 urlpatterns = [
     path('teachers/', views.TeachersHome.as_view(), name='teachers'),
+    path('teachers/login/', views.TeacherLogin.as_view(), name='teacher-login'),
 
     path('teachers/add-gmeet/', views.add_gmeet, name='add_gmeet'),
     path('teachers/edit-gmeet/', views.edit_gmeet, name='edit_gmeet'),
