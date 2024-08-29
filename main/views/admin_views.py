@@ -1,3 +1,4 @@
+import logging
 from django.http import JsonResponse
 from django.db import IntegrityError
 from django.forms.models import BaseModelForm
@@ -25,6 +26,10 @@ from ..forms import AcademicSessionForm, ClassForm  # Assuming you have a form
 # from ..forms import TeachersForm
 
 
+# Set up a logger for the application
+logger = logging.getLogger(__name__)
+
+
 def admin_is_authenticated(*args):
     # print(args)
     return method_decorator(login_required(login_url="/admin/login/"), name='dispatch')
@@ -42,47 +47,6 @@ class RegisterAndRegisterSchool(View):
         return render(request, "myadmin/register.html")
 
     def post(self, request, *args, **kwargs):
-        print(request.POST)
-        username = request.POST.get('username')
-        first_name = request.POST.get('first_name')
-        last_name = request.POST.get('last_name')
-        email = request.POST.get('email')
-        password = request.POST.get('password')
-        gender = request.POST.get('gender')
-        school_name = request.POST.get('school_name')
-        school_phone = request.POST.get('school_phone')
-        school_email = request.POST.get('school_email')
-        print(username, first_name, last_name, email, password,
-              gender, school_email, school_name, school_phone)
-
-        if all((first_name, last_name, email, password, gender)):
-            try:
-                owner = User(username=username, first_name=first_name, last_name=last_name,
-                             email=email, gender=gender, role=OWNER)
-                owner.set_password(password)
-                owner.save()
-                school = School(name=school_name, owner=owner,
-                                phone=school_phone, email=school_email)
-                school.save()
-
-                messages.success(request, f"Account created successfuly.")
-                return JsonResponse({
-                    "status": True
-                })
-
-            except Exception as e:
-                print(e)
-                messages.error(
-                    request, f"Error, please fill all fields correctly."
-                )
-        else:
-            messages.error(
-                request, f"Please fill all fields correctly."
-            )
-
-        return render(request, "myadmin/register.html")
-
-    def post(self, request, *args, **kwargs):
         try:
             # Extract POST data
             username = request.POST.get('username')
@@ -95,21 +59,14 @@ class RegisterAndRegisterSchool(View):
             school_phone = request.POST.get('school_phone')
             school_email = request.POST.get('school_email')
 
-            # Log the extracted data for debugging
-            print(
-                f"""Received data: {username}, {first_name},
-                {last_name}, {email}, {password}, {gender},
-                {school_name}, {school_phone}, {school_email}"""
-            )
-
             # Validate the received data
-            if not all((username, first_name, last_name, email, password, gender, school_name, school_phone, school_email)):
+            if not all([username, first_name, last_name, email, password, gender, school_name, school_phone, school_email]):
                 messages.error(request, "Please fill all fields correctly.")
                 return JsonResponse({"status": False, "message": "Please fill all fields correctly."})
 
             # Create the User
             owner = User(username=username, first_name=first_name,
-                         last_name=last_name, email=email, gender=gender, role=OWNER)
+                         last_name=last_name, email=email, gender=gender, role="owner")
             owner.set_password(password)
             owner.save()
 
@@ -122,14 +79,24 @@ class RegisterAndRegisterSchool(View):
             messages.success(request, "Account created successfully.")
             return JsonResponse({"status": True, "message": "Account created successfully."})
 
-        except Exception as e:
-            # Log the exception
-            print(f"Error creating account: {str(e)}")
+        except ValueError as ve:
+            # Handle specific ValueErrors (e.g., invalid data types)
+            logger.error(f"ValueError encountered: {str(ve)}")
+            messages.error(request, "Invalid input provided.")
+            return JsonResponse({"status": False, "message": "Invalid input provided."})
 
-            # Error message
+        except IntegrityError as ie:
+            # Handle database integrity errors (e.g., unique constraint violations)
+            logger.error(f"IntegrityError encountered: {str(ie)}")
             messages.error(
-                request, "Error creating account. Please try again."
-            )
+                request, "This username or email is already in use.")
+            return JsonResponse({"status": False, "message": "This username or email is already in use."})
+
+        except Exception as e:
+            # Log the generic exception for further analysis
+            logger.exception(f"Unexpected error occurred: {str(e)}")
+            messages.error(
+                request, "Error creating account. Please try again.")
             return JsonResponse({"status": False, "message": "Error creating account. Please try again."})
 
 

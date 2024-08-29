@@ -233,7 +233,9 @@
                 window.location.href = "/admin/login/";
               }, 4000);
             } else {
-              showErrorToast("Registration failed. Please try again.");
+              showErrorToast(
+                data.message || "Registration failed. Please try again."
+              );
             }
           })
           .catch((error) => {
