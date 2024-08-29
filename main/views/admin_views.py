@@ -105,20 +105,40 @@ class AdminLogin(View):
         return render(request, "myadmin/login.html")
 
     def post(self, request, *args, **kwargs):
-        print(request.POST)
-        username = request.POST.get('username')
-        password = request.POST.get('password')
+        try:
+            # Extract POST data
+            username = request.POST.get('username')
+            password = request.POST.get('password')
 
-        user = authenticate(request, username=username, password=password)
-        print(user, username, password)
+            # Log the login attempt
+            logger.info(f"Login attempt for username: {username}")
 
-        if user is not None:
-            print(user)
-            login(request, user)
-            return redirect('myadmin')
-        else:
-            messages.error(request, 'Invalid username or password')
+            # Authenticate the user
+            user = authenticate(request, username=username, password=password)
+            logger.debug(f"Authenticated user: {
+                         user} for username: {username}")
 
+            if user is not None:
+                # If authentication is successful
+                login(request, user)
+                logger.info(f"User {username} logged in successfully.")
+                return redirect('myadmin')
+            else:
+                # If authentication fails
+                messages.error(request, 'Invalid username or password')
+                logger.warning(
+                    f"Failed login attempt for username: {username}")
+
+        except Exception as e:
+            # Log unexpected errors
+            logger.exception(
+                f'''Error occurred during login for username: {username}.
+                Error: {str(e)}'''
+            )
+            messages.error(
+                request, "An unexpected error occurred. Please try again later.")
+
+        # If login fails or an error occurs, re-render the login page with an error message
         return render(request, "myadmin/login.html")
 
 
