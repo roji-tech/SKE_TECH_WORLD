@@ -8,12 +8,37 @@ from main.forms import ContinuousAssessmentForm, GoogleMeetForm, LessonPlanForm
 from main.models.models import GmeetClass, LessonPlan, ContinuousAssessment
 
 
+class TeacherLogin(View):
+    def get(self, request, *args, **kwargs):
+        return render(request, "teachers/teacher-login.html")
+
+    def post(self, request, *args, **kwargs):
+        print(request.POST)
+        username = request.POST.get('username')
+        password = request.POST.get('password')
+
+        user = authenticate(request, username=username, password=password)
+        print(user, username, password)
+
+        if user is not None:
+            print(user)
+            login(request, user)
+            return redirect('myadmin')
+        else:
+            messages.error(request, 'Invalid username or password')
+
+        return render(request, "myadmin/login.html")
+
+
 class TeachersHome(View):
     def get(self, request, *args, **kwargs):
         # Custom logic here
         return render(request, "teachers/index.html")
 
+
 """Google Meet Views"""
+
+
 def add_gmeet(request):
     if request.method == "POST":
         form = GoogleMeetForm(request.POST)
@@ -23,7 +48,8 @@ def add_gmeet(request):
             return redirect('teachers')
     else:
         form = GoogleMeetForm()
-    return render(request, 'teachers/gmeet/gmeet.html', {'form' : form})
+    return render(request, 'teachers/gmeet/gmeet.html', {'form': form})
+
 
 def teachers_edit_gmeet(request, pk):
     gmeets = get_object_or_404(GmeetClass, pk=pk)
@@ -31,19 +57,24 @@ def teachers_edit_gmeet(request, pk):
         form = GoogleMeetForm(request.POST, instance=gmeets)
         if form.is_valid():
             form.save()
-            messages.success(request, 'Google Meet Session updated successfully')
+            messages.success(
+                request, 'Google Meet Session updated successfully')
             return redirect('teachers')
-        
+
     else:
         form = GoogleMeetForm(instance=gmeets)
-    return render(request, 'teachers/gmeet/uploadgmeet.html',  {'form' : form, "gmeets" : gmeets})
+    return render(request, 'teachers/gmeet/uploadgmeet.html',  {'form': form, "gmeets": gmeets})
+
 
 """LessonPlan Views"""
+
+
 def upload_lesson_plan(request, pk):
     lesson_plan = get_object_or_404(LessonPlan, pk=pk)
     if request.method == 'POST':
 
-        form = LessonPlanForm(request.POST, request.FILES, instance=lesson_plan)
+        form = LessonPlanForm(request.POST, request.FILES,
+                              instance=lesson_plan)
         if form.is_valid():
             lesson_plan_instance = form.save(commit=False)
             lesson_plan_instance.uploaded_by = request.user
@@ -53,27 +84,37 @@ def upload_lesson_plan(request, pk):
 
         form = LessonPlanForm(instance=lesson_plan)
         return render(request, 'teachers/lessonplan/edit-lesson-note.html', {'form': form, 'lesson_plan': lesson_plan})
-            
 
 
 def lessons_list(request):
     lesson_plans = LessonPlan.objects.all()
-    return render(request, 'teachers/notes/lessonNoteList.html', {'lesson_plans' : lesson_plans})
+    return render(request, 'teachers/notes/lessonNoteList.html', {'lesson_plans': lesson_plans})
+
 
 """Library"""
+
+
 def library(request):
     return render(request, 'teachers/library/library.html')
 
+
 """Notes Views"""
+
+
 def add_notes(request):
     return render(request, 'teachers/notes/TeachersNote.html')
+
 
 def upload_notes(request):
     return render(request, 'teachers/notes/uploadNote.html')
 
+
 """Examination Views"""
+
+
 def view_examination(request):
     return render(request, 'teachers/exam/examinations.html')
+
 
 """Assignments Views"""
 
@@ -104,7 +145,12 @@ def edit_continous_assessnent(request, pk):
     return render(request, 'teachers/homework/homework.html', {'form' : form, 'assessment' : assessment})
 
 
+def add_assignments(request):
+    return render(request, 'teachers/homework/homework.html')
+
 
 """results Views"""
+
+
 def results_list(request):
     return render(request, 'teachers/results/results.html')
