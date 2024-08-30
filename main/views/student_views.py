@@ -15,14 +15,9 @@ class StudentGoogleMeetListView(ListView):
     template_name = 'students/inner/students-gmeet-list.html'
     context_object_name = 'gmeets'
 
-    # def get_queryset(self, request):
-    #     return GmeetClass.objects.filter(student=self.request.user.student)
     
 class StudentClassNoteListView(ListView):
     model = ClassNote
     template_name = 'students/inner/students-class-note.html'
     context_object_name = 'notes'
 
-    # def get_queryset(self, request):
-    #     student = request.user.student
-    #     return ClassNote.objects.filter(student=student)
