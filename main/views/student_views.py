@@ -5,6 +5,29 @@ from django.views.generic import ListView
 
 from ..models.models import ClassNote, GmeetClass
 
+
+
+# class StudentsLogin(View):
+#     def get(self, request, *args, **kwargs):
+#         return render(request, "teachers/students-login.html")
+
+#     def post(self, request, *args, **kwargs):
+#         print(request.POST)
+#         username = request.POST.get('username')
+#         password = request.POST.get('password')
+
+#         user = authenticate(request, username=username, password=password)
+#         print(user, username, password)
+
+#         if user is not None:
+#             print(user)
+#             login(request, user)
+#             return redirect('myadmin')
+#         else:
+#             messages.error(request, 'Invalid username or password')
+
+#         return render(request, "myadmin/login.html")
+
 class StudentsHome(View):
     def get(self, request, *args, **kwargs):
         # Custom logic here
@@ -20,4 +43,6 @@ class StudentClassNoteListView(ListView):
     model = ClassNote
     template_name = 'students/inner/students-class-note.html'
     context_object_name = 'notes'
+
+
 
