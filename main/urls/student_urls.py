@@ -9,9 +9,9 @@ from main.views.student_views import StudentClassNoteListView, StudentGoogleMeet
 urlpatterns = [
     path('students/', StudentsHome.as_view(), name='students_home'),
 
-    path('view-library/', library, name='library'),
+    path('student/view-library/', library, name='library'),
 
-    path('view-google-classes/', StudentGoogleMeetListView.as_view(), name='google_meets_classes'),
+    path('students/view-google-classes/', StudentGoogleMeetListView.as_view(), name='google_meets_classes'),
 
     path('total-students/', StudentsHome.as_view(), name='total_students'),
 
