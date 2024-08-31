@@ -1,5 +1,6 @@
 MIDDLEWARE = [
     # 'django_tenants.middleware.main.TenantMainMiddleware',
+    'main.middleware.AppendSlashMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',

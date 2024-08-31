@@ -1,307 +1,530 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Add Teacher</title>
-    <link rel="stylesheet" href="employee.css">
+    <link rel="stylesheet" href="employee.css" />
+
     <style>
-        /* Overlay Styles */
-        .overlay {
-            display: none;
-            position: fixed;
-            z-index: 1000;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.5);
-            justify-content: center;
-            align-items: center;
-            opacity: 0;
-            transition: opacity 0.3s ease;
-        }
+      @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap");
 
-        .overlay.show {
-            display: flex;
-            opacity: 1;
-        }
+      * {
+        font-family: "Poppins", sans-serif;
+      }
 
-        .overlay-content {
-            background-color: #fefefe;
-            padding: 20px;
-            border-radius: 5px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
-            text-align: center;
-            position: relative;
-            transition: transform 0.3s ease;
-        }
+      body {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+        background: #f0f0f0;
+        margin: 0;
+      }
 
-        .overlay-content p {
-            font-size: 1.2em;
-            margin-bottom: 20px;
-        }
+      .container {
+        display: flex;
+        flex-direction: column;
+        width: 80%; /* Adjusted width to 60% */
+        background: #f8f7f7;
+        box-shadow: 0.1px 0.1px 0.3px rgba(0, 0, 0, 0.1);
+        z-index: 90;
+        max-width: 1000px; /* Added max-width to limit container size */
+        margin-top: 30px;
+        margin-bottom: 10px; /* Added margin-top for spacing */
+      }
 
-        .overlay-content button {
-            padding: 8px 20px;
-            margin: 0 5px;
-            cursor: pointer;
-            background-color: #1b94c3;
-            color: #fff;
-            border: none;
-            border-radius: 4px;
-        }
+      .add-division {
+        padding-left: 20px;
+      }
 
-        .overlay-content button:hover {
-            background-color: #03a73a;
-        }
+      .add-division p {
+        margin: 20px;
+        color: #03a73a;
+        font-weight: unset;
+        font-size: large;
+      }
 
-        .overlay .close {
-            position: absolute;
-            top: 10px;
-            right: 20px;
-            cursor: pointer;
-            font-size: 1.5em;
-        }
+      .contents {
+        display: flex;
+        flex-direction: column;
+        border-top: 1px solid #b5adad;
+        border-bottom: 1px solid #b5adad;
+        padding: 20px;
+        background: white;
+      }
 
-        .details-table {
-            width: 100%;
-            margin: 20px 0;
-            border-collapse: collapse;
-        }
+      .inline-f {
+        display: flex;
+        justify-content: space-between;
+        margin: 20px 0;
+      }
 
-        .details-table th, .details-table td {
-            border: 1px solid #ddd;
-            padding: 8px;
-            text-align: left;
-        }
+      .class {
+        font-size: larger;
+        width: 20%;
+        text-align: center;
+        display: flex;
+        justify-content: flex-end; /* Adjusted alignment */
+        align-items: center;
+      }
 
-        .details-table th {
-            background-color: #f2f2f2;
-        }
+      .input {
+        width: 70%;
+        height: 35px;
+        background: transparent;
+        border: 1px solid #b5adad;
+        padding: 5px; /* Added padding for input field */
+      }
 
-        .details-table img {
-            max-width: 100px;
-            height: auto;
-        }
+      input::placeholder {
+        font-size: large;
+      }
 
-        /* Success Overlay Styles */
-        .success-overlay {
-            color: rgba(3, 102, 3, 0.8);
-        }
+      .function-btn {
+        text-align: end;
+        padding: 2%;
+      }
 
-        .success-overlay .overlay-content {
-            background-color: #d4edda;
-            color:  rgba(3, 102, 3, 0.8);
-        }
+      #add,
+      #cancel {
+        padding: 10px 15px;
+        border-radius: 3px;
+        font-weight: 500;
+      }
 
-        .success-overlay .overlay-content p {
-            font-size: 1.5em;
-        }
+      #add {
+        background: #03a73a;
+        color: white;
+        border: 0;
+      }
 
-        .success-overlay .overlay-content button {
-            background-color: #28a745;
-        }
+      #cancel {
+        background: #fff;
+        border: 1px solid #b5adad;
+        margin-left: 10px; /* Added margin between buttons */
+      }
 
-        .success-overlay .overlay-content button:hover {
-            background-color: #218838;
-        }
+      abbr {
+        text-decoration: none;
+      }
+
+      /* Styling for image preview */
+      /* Styling for image preview */
+      #imagePreview {
+        position: absolute; /* Position the image absolutely */
+        top: 200px; /* Adjust top position to overlap with container */
+        left: 315px; /* Adjust right position to overlap with container */
+        border: 1px solid #ccc;
+        border-radius: 50%; /* Make the border circular */
+        overflow: hidden;
+        width: 120px; /* Set fixed width */
+        height: 120px; /* Set fixed height */
+        z-index: 10; /* Ensure image appears above container content */
+      }
+
+      #imagePreview img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover; /* Ensure the image covers the circle */
+      }
+      .input-1 {
+        width: 71.3%;
+        height: 45px;
+        background: transparent;
+        border: 1px solid #b5adad;
+        padding: 5px; /* Added padding for input field */
+      }
+
+      input-1::placeholder {
+        font-size: larger;
+      }
+      /* Styles for Popup Modal */
+      .popup {
+        display: none;
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background: white;
+        padding: 20px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        z-index: 1000;
+        text-align: center;
+      }
+
+      .popup-content {
+        margin-bottom: 10px;
+      }
+
+      .popup-buttons {
+        display: flex;
+        justify-content: center;
+        margin-top: 20px;
+      }
+
+      .popup-btn {
+        padding: 10px 20px;
+        margin: 0 10px;
+        border-radius: 5px;
+        cursor: pointer;
+        font-weight: bold;
+      }
+
+      .popup-btn-success {
+        background-color: #03a73a;
+        color: white;
+        border: none;
+      }
+
+      .popup-btn-cancel {
+        background-color: #fff;
+        color: #03a73a;
+        border: 1px solid #03a73a;
+      }
+
+      button {
+        cursor: pointer;
+      }
     </style>
-</head>
-<body>
 
-<!-- Teacher start -->
-<div class="container">
-    <div class="add-division">
+    <style>
+      /* Overlay Styles */
+      .overlay {
+        display: none;
+        position: fixed;
+        z-index: 1000;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5);
+        justify-content: center;
+        align-items: center;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+      }
+
+      .overlay.show {
+        display: flex;
+        opacity: 1;
+      }
+
+      .overlay-content {
+        background-color: #fefefe;
+        padding: 20px;
+        border-radius: 5px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+        text-align: center;
+        position: relative;
+        transition: transform 0.3s ease;
+      }
+
+      .overlay-content p {
+        font-size: 1.2em;
+        margin-bottom: 20px;
+      }
+
+      .overlay-content button {
+        padding: 8px 20px;
+        margin: 0 5px;
+        cursor: pointer;
+        background-color: #1b94c3;
+        color: #fff;
+        border: none;
+        border-radius: 4px;
+      }
+
+      .overlay-content button:hover {
+        background-color: #03a73a;
+      }
+
+      .overlay .close {
+        position: absolute;
+        top: 10px;
+        right: 20px;
+        cursor: pointer;
+        font-size: 1.5em;
+      }
+
+      .details-table {
+        width: 100%;
+        margin: 20px 0;
+        border-collapse: collapse;
+      }
+
+      .details-table th,
+      .details-table td {
+        border: 1px solid #ddd;
+        padding: 8px;
+        text-align: left;
+      }
+
+      .details-table th {
+        background-color: #f2f2f2;
+      }
+
+      .details-table img {
+        max-width: 100px;
+        height: auto;
+      }
+
+      /* Success Overlay Styles */
+      .success-overlay {
+        color: rgba(3, 102, 3, 0.8);
+      }
+
+      .success-overlay .overlay-content {
+        background-color: #d4edda;
+        color: rgba(3, 102, 3, 0.8);
+      }
+
+      .success-overlay .overlay-content p {
+        font-size: 1.5em;
+      }
+
+      .success-overlay .overlay-content button {
+        background-color: #28a745;
+      }
+
+      .success-overlay .overlay-content button:hover {
+        background-color: #218838;
+      }
+    </style>
+  </head>
+  <body>
+    {% include 'pages_header.html' %}
+
+    <!-- Teacher start -->
+    <div class="container">
+      <div class="add-division">
         <p>Add Teacher</p>
-    </div>
-    <div class="contents">
-        <form id="teacherForm">
-            <div class="inline-f">
-                <label for="Name" class="class">Name</label>
-                <input type="text" id="Name" placeholder="Enter Name" class="input" required>
-            </div>
-            <div class="inline-f">
-                <label for="Gender" class="class">Gender</label>
-                <select id="Gender" class="input-1" required>
-                    <option value="" disabled selected>Select Gender</option>
-                    <option value="Male">Male</option>
-                    <option value="Female">Female</option>
-                </select>
-            </div>
-            <div class="inline-f">
-                <label for="Department" class="class">Department</label>
-                <input type="text" id="Department" placeholder="Enter Department" class="input" required>
-            </div>
-            <div class="inline-f">
-                <label for="Email" class="class">Email</label>
-                <input type="email" id="Email" placeholder="Enter Email" class="input" required>
-            </div>
-            <div class="inline-f">
-                <label for="Password" class="class">Password</label>
-                <input type="password" id="Password" placeholder="Enter Password" class="input" required>
-            </div>
-            <div class="inline-f">
-                <label for="Picture" class="class">Picture</label>
-                <input type="file" id="Picture" onchange="previewImage(this);">
-                <div id="imagePreview"></div> <!-- Container for preview image -->
-            </div>
+      </div>
+
+      <div class="contents">
+        <form id="teacherForm" method="post">
+          {% csrf_token %}
+          <br />
+          <br />
+          <br />
+          {% for field in user_form %}
+          <div class="inline-f">
+            <label for="{{ field.id_for_label }}" class="class"
+              >{{ field.label }}</label
+            >
+            {{ field }} {% if field.errors %}
+            <div class="error">{{ field.errors }}</div>
+            {% endif %}
+          </div>
+          {% endfor %} {% for field in teacher_form %}
+          <div class="inline-f">
+            <label for="{{ field.id_for_label }}" class="class"
+              >{{ field.label }}</label
+            >
+            {{ field }} {% if field.errors %}
+            <div class="error">{{ field.errors }}</div>
+            {% endif %}
+          </div>
+          {% endfor %}
+
+          <div class="inline-f">
+            <label for="Picture" class="class">Picture</label>
+            <input type="file" id="Picture" onchange="previewImage(this);" />
+            <div id="imagePreview"></div>
+            <!-- Container for preview image -->
+          </div>
+
+          <button id="cancel" type="reset">Cancel</button>
         </form>
-    </div>
-    <div class="function-btn">
+      </div>
+      <div class="function-btn">
         <button id="add">Add</button>
         <button id="cancel">Cancel</button>
+      </div>
     </div>
-</div>
-<!-- Teacher end -->
+    <!-- Teacher end -->
 
-<!-- Update Confirmation Overlay -->
-<div id="updateOverlay" class="overlay">
-    <div class="overlay-content">
+    <!-- Update Confirmation Overlay -->
+    <div id="updateOverlay" class="overlay">
+      <div class="overlay-content">
         <span class="close">&times;</span>
         <p>Are you sure you want to add this Teacher?</p>
         <table class="details-table">
-            <tr>
-                <th>Name</th>
-                <td id="confirmName"></td>
-            </tr>
-            <tr>
-                <th>Gender</th>
-                <td id="confirmGender"></td>
-            </tr>
-            <tr>
-                <th>Department</th>
-                <td id="confirmDepartment"></td>
-            </tr>
-            <tr>
-                <th>Email</th>
-                <td id="confirmEmail"></td>
-            </tr>
-            <tr>
-                <th>Picture</th>
-                <td id="confirmPicture"></td>
-            </tr>
+          <tr>
+            <th>First Name</th>
+            <td id="confirmFirstName"></td>
+          </tr>
+          <tr>
+            <th>Surname</th>
+            <td id="confirmLastName"></td>
+          </tr>
+          <tr>
+            <th>Gender</th>
+            <td id="confirmGender"></td>
+          </tr>
+          <tr>
+            <th>Department</th>
+            <td id="confirmDepartment"></td>
+          </tr>
+          <tr>
+            <th>Email</th>
+            <td id="confirmEmail"></td>
+          </tr>
+          <tr>
+            <th>Phone</th>
+            <td id="confirmPhone"></td>
+          </tr>
+          <tr>
+            <th>Picture</th>
+            <td id="confirmPicture"></td>
+          </tr>
         </table>
         <button id="confirmUpdate">Yes</button>
         <button id="closeUpdateOverlay">No</button>
+      </div>
     </div>
-</div>
 
-<!-- Cancel Confirmation Overlay -->
-<div id="cancelOverlay" class="overlay">
-    <div class="overlay-content">
+    <!-- Cancel Confirmation Overlay -->
+    <div id="cancelOverlay" class="overlay">
+      <div class="overlay-content">
         <span class="close">&times;</span>
         <p>Are you sure you want to cancel?</p>
         <button id="confirmCancel">Yes</button>
         <button id="closeCancelOverlay">No</button>
+      </div>
     </div>
-</div>
 
-<!-- Success Overlay -->
-<div id="successOverlay" class="overlay success-overlay">
-    <div class="overlay-content">
+    <!-- Success Overlay -->
+    <div id="successOverlay" class="overlay success-overlay">
+      <div class="overlay-content">
         <span class="close">&times;</span>
         <p>Teacher added successfully!</p>
         <button id="closeSuccessOverlay">Close</button>
+      </div>
     </div>
-</div>
 
-<!-- Script for Image Preview and Overlay -->
-<script>
-    function previewImage(input) {
-        var preview = document.getElementById('imagePreview');
+    <!-- Script for Image Preview and Overlay -->
+    <script>
+      const teacherForm = document.getElementById("teacherForm");
+
+      function previewImage(input) {
+        var preview = document.getElementById("imagePreview");
         while (preview.firstChild) {
-            preview.removeChild(preview.firstChild);
+          preview.removeChild(preview.firstChild);
         }
         if (input.files && input.files[0]) {
-            var reader = new FileReader();
-            reader.onload = function(e) {
-                var img = document.createElement('img');
-                img.src = e.target.result;
-                img.style.maxWidth = '100%'; // Ensure image fits container
-                preview.appendChild(img);
-            };
-            reader.readAsDataURL(input.files[0]);
+          var reader = new FileReader();
+          reader.onload = function (e) {
+            var img = document.createElement("img");
+            img.src = e.target.result;
+            img.style.maxWidth = "100%"; // Ensure image fits container
+            preview.appendChild(img);
+          };
+          reader.readAsDataURL(input.files[0]);
         }
-    }
+      }
 
-    function populateConfirmationDetails() {
-        document.getElementById('confirmName').innerText = document.getElementById('Name').value;
-        document.getElementById('confirmGender').innerText = document.getElementById('Gender').value;
-        document.getElementById('confirmDepartment').innerText = document.getElementById('Department').value;
-        document.getElementById('confirmEmail').innerText = document.getElementById('Email').value;
+      function populateConfirmationDetails() {
+        document.getElementById("confirmFirstName").innerText =
+          document.getElementById("id_first_name").value;
+        document.getElementById("confirmLastName").innerText =
+          document.getElementById("id_last_name").value;
+        document.getElementById("confirmGender").innerText =
+          document.getElementById("id_gender").value;
+        document.getElementById("confirmPhone").innerText =
+          document.getElementById("id_phone").value;
+        document.getElementById("confirmDepartment").innerText =
+          document.getElementById("id_department").value;
+        document.getElementById("confirmEmail").innerText =
+          document.getElementById("id_email").value;
 
-        var pictureFile = document.getElementById('Picture').files[0];
-        var confirmPictureCell = document.getElementById('confirmPicture');
-        confirmPictureCell.innerHTML = ''; // Clear any existing content
+        var pictureFile = document.getElementById("Picture").files[0];
+        var confirmPictureCell = document.getElementById("confirmPicture");
+        confirmPictureCell.innerHTML = ""; // Clear any existing content
         if (pictureFile) {
-            var reader = new FileReader();
-            reader.onload = function(e) {
-                var img = document.createElement('img');
-                img.src = e.target.result;
-                img.style.maxWidth = '100px'; // Ensure image fits container
-                confirmPictureCell.appendChild(img);
-            };
-            reader.readAsDataURL(pictureFile);
+          var reader = new FileReader();
+          reader.onload = function (e) {
+            var img = document.createElement("img");
+            img.src = e.target.result;
+            img.style.maxWidth = "100px"; // Ensure image fits container
+            confirmPictureCell.appendChild(img);
+          };
+          reader.readAsDataURL(pictureFile);
         }
-    }
+      }
 
-    // Close the overlay when the user clicks on the close button (x)
-    var closeOverlay = document.querySelectorAll('.close');
-    closeOverlay.forEach(function(button) {
-        button.addEventListener('click', function() {
-            var overlay = button.closest('.overlay');
-            overlay.classList.remove('show');
+      // Close the overlay when the user clicks on the close button (x)
+      var closeOverlay = document.querySelectorAll(".close");
+      closeOverlay.forEach(function (button) {
+        button.addEventListener("click", function () {
+          var overlay = button.closest(".overlay");
+          overlay.classList.remove("show");
         });
-    });
+      });
 
-    // Close the overlay when the user clicks outside of it
-    window.addEventListener('click', function(event) {
-        var overlays = document.querySelectorAll('.overlay');
-        overlays.forEach(function(overlay) {
-            if (event.target === overlay) {
-                overlay.classList.remove('show');
-            }
+      // Close the overlay when the user clicks outside of it
+      window.addEventListener("click", function (event) {
+        var overlays = document.querySelectorAll(".overlay");
+        overlays.forEach(function (overlay) {
+          if (event.target === overlay) {
+            overlay.classList.remove("show");
+          }
         });
-    });
+      });
 
-    // Overlay for Add button
-    document.getElementById('add').addEventListener('click', function(event) {
-        event.preventDefault();
-        populateConfirmationDetails();
-        document.getElementById('updateOverlay').classList.add('show');
-    });
+      // Overlay for Add button
+      document
+        .getElementById("add")
+        .addEventListener("click", function (event) {
+          event.preventDefault();
+          populateConfirmationDetails();
+          document.getElementById("updateOverlay").classList.add("show");
+        });
 
-    // Overlay for Cancel button
-    document.getElementById('cancel').addEventListener('click', function(event) {
-        event.preventDefault();
-        document.getElementById('cancelOverlay').classList.add('show');
-    });
+      // Overlay for Cancel button
+      document
+        .getElementById("cancel")
+        .addEventListener("click", function (event) {
+          event.preventDefault();
+          document.getElementById("cancelOverlay").classList.add("show");
+        });
 
-    // Logic for update overlay
-    document.getElementById('confirmUpdate').addEventListener('click', function() {
-        document.getElementById('updateOverlay').classList.remove('show');
-        document.getElementById('successOverlay').classList.add('show');
-    });
+      // Logic for update overlay
+      document
+        .getElementById("confirmUpdate")
+        .addEventListener("click", function () {
+          document.getElementById("updateOverlay").classList.remove("show");
+          document.getElementById("successOverlay").classList.add("show");
+          teacherForm.submit();
+        });
 
-    document.getElementById('closeUpdateOverlay').addEventListener('click', function() {
-        document.getElementById('updateOverlay').classList.remove('show');
-    });
+      document
+        .getElementById("closeUpdateOverlay")
+        .addEventListener("click", function () {
+          document.getElementById("updateOverlay").classList.remove("show");
+        });
 
-    // Logic for cancel overlay
-    document.getElementById('confirmCancel').addEventListener('click', function() {
-        document.getElementById('cancelOverlay').classList.remove('show');
-    });
+      // Logic for cancel overlay
+      document
+        .getElementById("confirmCancel")
+        .addEventListener("click", function () {
+          document.getElementById("cancelOverlay").classList.remove("show");
+          teacherForm.reset();
+        });
 
-    document.getElementById('closeCancelOverlay').addEventListener('click', function() {
-        document.getElementById('cancelOverlay').classList.remove('show');
-    });
+      document
+        .getElementById("closeCancelOverlay")
+        .addEventListener("click", function () {
+          document.getElementById("cancelOverlay").classList.remove("show");
+        });
 
-    // Close the success overlay
-    document.getElementById('closeSuccessOverlay').addEventListener('click', function() {
-        document.getElementById('successOverlay').classList.remove('show');
-    });
-</script>
-
-</body>
+      // Close the success overlay
+      document
+        .getElementById("closeSuccessOverlay")
+        .addEventListener("click", function () {
+          document.getElementById("successOverlay").classList.remove("show");
+        });
+    </script>
+  </body>
 </html>

@@ -9,5 +9,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django_extensions',
 
+    'django_seed',
     'main',
+    'django_filters',
+
 ]

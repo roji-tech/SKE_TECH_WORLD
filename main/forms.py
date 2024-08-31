@@ -1,30 +1,152 @@
 from django import forms
 from main.models.models import (
-    AcademicSession, ContinuousAssessment, SchoolClass,
+    AcademicSession, SchoolClass,
     GmeetClass, LessonPlan, Subject,
     User, Teacher, Student
 )
 
 
-class UserForm(forms.ModelForm):
-    password = forms.CharField(widget=forms.PasswordInput)
+class TeacherForm(forms.ModelForm):
+    class Meta:
+        model = Teacher
+        fields = ['department']
 
+        widgets = {
+            'department': forms.TextInput(attrs={
+                'placeholder': 'Enter Department',
+                'class': 'input',
+                'required': 'required'
+            }),
+        }
+
+
+class TeacherUserForm(forms.ModelForm):
     class Meta:
         model = User
-        fields = ['username', 'first_name', 'last_name', 'email', 'password']
+        fields = ['first_name', 'last_name',
+                  'gender', 'email', "phone"]
+
+        widgets = {
+            'first_name': forms.TextInput(attrs={
+                'placeholder': 'Enter Name',
+                'class': 'input',
+                'required': 'required'
+            }),
+            'last_name': forms.TextInput(attrs={
+                'placeholder': 'Enter Name',
+                'class': 'input',
+                'required': 'required'
+            }),
+            'gender': forms.Select(attrs={
+                'class': 'input-1',
+                'required': 'required'
+            }, choices=[('', 'Select Gender'), ('M', 'Male'), ('F', 'Female')]),
+            'email': forms.EmailInput(attrs={
+                'placeholder': 'Enter Email',
+                'class': 'input',
+                'required': 'required'
+            }),
+            'phone': forms.TextInput(attrs={
+                'placeholder': 'Enter Email',
+                'class': 'input',
+            }),
+            # 'image': forms.ClearableFileInput(attrs={
+            #     'onchange': 'previewImage(this);'
+            # })
+        }
+
+    password = forms.CharField(
+        widget=forms.TextInput(attrs={
+            'placeholder': 'Enter Password',
+            'class': 'input',
+            'disabled': 'disabled',
+            'value': "Disabled: Teacher's Surname in lowercase is default"
+        }),
+        required=False
+    )
 
 
 class StudentForm(forms.ModelForm):
     class Meta:
         model = Student
-        fields = ['student_id', 'date_of_birth', 'admission_date',
-                  'student_class', 'academic_year', 'reg_no']
+        fields = [
+            'student_id',
+            'date_of_birth',
+            'admission_date',
+            'student_class',
+            'academic_year',
+            'reg_no'
+        ]
+        widgets = {
+            'student_id': forms.TextInput(attrs={
+                'placeholder': 'Enter Student ID',
+                'class': 'input',
+                'required': 'required'
+            }),
+            'date_of_birth': forms.DateInput(attrs={
+                'placeholder': 'YYYY-MM-DD',
+                'class': 'input',
+                'required': 'required'
+            }),
+            'admission_date': forms.DateInput(attrs={
+                'placeholder': 'YYYY-MM-DD',
+                'class': 'input',
+                'required': 'required'
+            }),
+            'student_class': forms.Select(attrs={
+                'class': 'input-1',
+                'required': 'required'
+            }),
+            'academic_year': forms.Select(attrs={
+                'class': 'input-1',
+                'required': 'required'
+            }),
+            'reg_no': forms.TextInput(attrs={
+                'placeholder': 'Enter Registration Number',
+                'class': 'input',
+                'required': 'required'
+            }),
+        }
 
 
-class TeacherForm(forms.ModelForm):
+class StudentUserForm(forms.ModelForm):
     class Meta:
-        model = Teacher
-        fields = ['school']
+        model = User
+        fields = ['first_name', 'last_name', 'gender', 'email']
+
+        widgets = {
+            'first_name': forms.TextInput(attrs={
+                'placeholder': 'Enter Name',
+                'class': 'input',
+                'required': 'required'
+            }),
+            'last_name': forms.TextInput(attrs={
+                'placeholder': 'Enter Name',
+                'class': 'input',
+                'required': 'required'
+            }),
+            'gender': forms.Select(attrs={
+                'class': 'input-1',
+                'required': 'required'
+            }, choices=[('', 'Select Gender'), ('M', 'Male'), ('F', 'Female')]),
+            'email': forms.EmailInput(attrs={
+                'placeholder': 'Enter Email',
+                'class': 'input',
+            }),
+            # 'image': forms.ClearableFileInput(attrs={
+            #     'onchange': 'previewImage(this);'
+            # })
+        }
+
+    password = forms.CharField(
+        widget=forms.TextInput(attrs={
+            'placeholder': 'Enter Password',
+            'class': 'input',
+            'disabled': 'disabled',
+            'value': "Disabled: Student's Surname in lowercase is default"
+        }),
+        required=False
+    )
 
 
 class AcademicSessionForm(forms.ModelForm):
@@ -120,14 +242,15 @@ class LessonPlanForm(forms.ModelForm):
             'school_clas': forms.Select(attrs={'class': 'input'}),
         }
 
-class ContinuousAssessmentForm(forms.ModelForm):
-    class Meta:
-        model = ContinuousAssessment
-        fields = ['subject', 'file', 'student', 'name', 'score']
-        widgets = {
-            'subject': forms.Select(attrs={'class': 'form-control'}),
-            'file': forms.ClearableFileInput(attrs={'class': 'form-control-file'}),
-            'student': forms.Select(attrs={'class': 'form-control'}),
-            'name': forms.TextInput(attrs={'class': 'form-control'}),
-            'score': forms.NumberInput(attrs={'class': 'form-control', 'min': 0, 'max': 100}),
-        }
+
+# class ContinuousAssessmentForm(forms.ModelForm):
+#     class Meta:
+#         model = ContinuousAssessment
+#         fields = ['subject', 'file', 'student', 'name', 'score']
+#         widgets = {
+#             'subject': forms.Select(attrs={'class': 'form-control'}),
+#             'file': forms.ClearableFileInput(attrs={'class': 'form-control-file'}),
+#             'student': forms.Select(attrs={'class': 'form-control'}),
+#             'name': forms.TextInput(attrs={'class': 'form-control'}),
+#             'score': forms.NumberInput(attrs={'class': 'form-control', 'min': 0, 'max': 100}),
+#         }

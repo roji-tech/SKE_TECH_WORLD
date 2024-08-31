@@ -2,26 +2,44 @@ from django.contrib.auth import get_user_model
 from datetime import date
 
 from django.utils.crypto import get_random_string
-from .users import User
+from .users import OWNER
 from django.db import models
 import string
 
 User = get_user_model()
 
 
+def get_year_from_date(date_string):
+    try:
+        year = int(date_string.split('-')[0])
+        return year
+    except (ValueError, IndexError):
+        # Handle cases where the date string is not in the expected format
+        raise ValueError(
+            "Invalid date format: '" + date_string + "'. Expected format 'YYYY-MM-DD'."
+        )
+
+
 class School(models.Model):
     # class School(models.Model):
-    name = models.CharField(max_length=255)
+    name = models.CharField(max_length=50)
     owner = models.OneToOneField(
-        User, on_delete=models.CASCADE, related_name='owned_school')
+        User, on_delete=models.CASCADE, related_name='school')
     address = models.TextField(default="")
     phone = models.CharField(max_length=15)
     email = models.EmailField()
     logo = models.URLField(default="")
     created_at = models.DateTimeField(auto_now_add=True)
+    short_name = models.CharField(max_length=6, null=True, blank=True)
 
     def __str__(self):
         return self.name
+
+    @staticmethod
+    def get_user_school(user: User):
+        if user.role == OWNER:
+            return School.objects.filter(owner=user).first()
+        return user.school
 
 
 class AcademicSession(models.Model):
@@ -43,25 +61,35 @@ class AcademicSession(models.Model):
 
     def save(self, *args, **kwargs):
         if not self.name:  # Set the name only if it's not already set
-            self.name = f"{self.start_date.year}-{self.end_date.year}"
+            try:
+                self.name = f"{self.start_date.year}-{self.end_date.year}"
+            except Exception as e:
+                year1 = get_year_from_date(self.start_date)
+                year2 = get_year_from_date(self.end_date)
+                self.name = f"{year1}-{year2}"
 
-        # Split the existing name to check if the years match
-        name_parts = self.name.split('-')
-        existing_start_year = int(name_parts[0])
-        existing_end_year = int(name_parts[1]) if len(
-            name_parts) > 1 else existing_start_year
+        # Attempt to split and convert the name parts to integers
+        try:
+            name_parts = self.name.split('-')
+            existing_start_year = int(name_parts[0])
+            existing_end_year = int(name_parts[1]) if len(
+                name_parts) > 1 else existing_start_year
 
-        # If both years are the same, update the name to just the year
-        if existing_start_year == existing_end_year:
-            self.name = str(existing_start_year)
+            # If both years are the same, update the name to just the year
+            if existing_start_year == existing_end_year:
+                self.name = str(existing_start_year)
+        except (ValueError, IndexError):
+            year1 = get_year_from_date(self.start_date)
+            year2 = get_year_from_date(self.end_date)
+            self.name = f"{year1}-{year2}"
 
-        super().save(*args, **kwargs)
+        super().save(*args, **kwargs)  # Corrected to call the parent class's save method
 
-    @staticmethod
-    def get_school_sessions(request):
-        user = request.user
-        school = School.objects.filter(owner=user).first()
-        return AcademicSession.objects.filter(school=school)
+        @staticmethod
+        def get_school_sessions(request):
+            user = request.user
+            school = School.objects.filter(owner=user).first()
+            return AcademicSession.objects.filter(school=school)
 
 
 class Term(models.Model):
@@ -84,30 +112,28 @@ class Term(models.Model):
         return f"{self.name} ({self.academic_session.name})"
 
 
-# class Division(models.Model):
-#     DIVISION_CHOICES = [(letter, letter) for letter in string.ascii_uppercase]
+class Teacher(models.Model):
+    user = models.OneToOneField(
+        User, on_delete=models.CASCADE, related_name='teacher_profile')
+    school = models.ForeignKey(
+        School, on_delete=models.CASCADE, related_name='teachers')
+    department = models.CharField(max_length=15, null=True, blank=True)
 
-#     name = models.CharField(
-#         max_length=10, unique=True,
-#         choices=DIVISION_CHOICES
-#     )  # e.g., "A", "B", "C"
+    def __str__(self):
+        return f"{self.department} - {self.user.full_name}"
 
-#     def __str__(self):
-#         return self.name
+    def get_school_teachers(request):
+        user = request.user
+        school = School.get_user_school(user)
+        return Teacher.objects.filter(school=school).select_related("user")
 
+    @property
+    def full_name(self):
+        return f"{self.user.full_name}"
 
-# class SchoolCategory(models.Model):
-#     """_summary_
-#         # e.g., "Science", "Art", "Commercial"
-
-#         Returns:
-#             _type_: _description_
-#     """
-
-#     name = models.CharField(max_length=10, unique=True)
-
-#     def __str__(self):
-#         return self.name
+    @property
+    def phone(self):
+        return f"{self.user.phone}"
 
 
 class SchoolClass(models.Model):
@@ -142,17 +168,13 @@ class SchoolClass(models.Model):
     academic_session = models.ForeignKey(
         AcademicSession, on_delete=models.CASCADE, related_name='classes')
     class_teacher = models.ForeignKey(
-        User, on_delete=models.SET_NULL, null=True, blank=True, limit_choices_to={'role': "teacher"})
+        Teacher, on_delete=models.SET_NULL, null=True, blank=True, limit_choices_to={'user__role': "teacher"}, related_name="school_class")
     division = models.CharField(
         max_length=10,  blank=True, null=True,
         choices=DIVISION_CHOICES
     )  # e.g., "A", "B", "C"
-    # division = models.ForeignKey(
-    #     Division, on_delete=models.SET_NULL, related_name='classes', blank=True, null=True)
     category = models.CharField(
         max_length=12, choices=CLASS_CATEGORIES, blank=True, null=True)
-    # category = models.ForeignKey(
-    #     SchoolCategory, on_delete=models.SET_NULL, blank=True, null=True)
 
     def __str__(self):
         return f"{self.get_name_display()} ({self.academic_session.name})"
@@ -175,9 +197,14 @@ class SchoolClass(models.Model):
 
 
 class Student(models.Model):
+    reg_no = models.CharField(
+        max_length=20, null=True, blank=True, unique=True)
+    student_id = models.CharField(
+        max_length=20, unique=True, null=True, blank=True)
+    school = models.ForeignKey(
+        School, on_delete=models.CASCADE, related_name='students')
     user = models.OneToOneField(
         User, on_delete=models.CASCADE, related_name='student_profile')
-    student_id = models.CharField(max_length=20, primary_key=True, unique=True)
     date_of_birth = models.DateField()
     admission_date = models.DateField(default=date.today)
     student_class = models.ForeignKey(
@@ -185,14 +212,23 @@ class Student(models.Model):
 
     academic_year = models.ForeignKey(
         AcademicSession, on_delete=models.CASCADE, null=True, blank=True)  # e.g., 2023/2024
-    reg_no = models.CharField(max_length=20, unique=True)
 
-    # def save(self, *args, **kwargs):
-    #     # Automatically generate student_id with school_id as prefix
-    #     if not self.student_id:
-    #         school_id = self.school_class.school.id
-    #         self.student_id = f"{school_id}-{self.reg_no}"
-    #     super(StudentProfile, self).save(*args, **kwargs)
+    def get_school_students(request):
+        user = request.user
+        school = School.get_user_school(user)
+        return Student.objects.filter(school=school).select_related("user", "student_class").order_by("student_class")
+
+    @property
+    def full_name(self):
+        return f"{self.user.full_name}"
+
+    @property
+    def email(self):
+        return f"{self.user.email}"
+
+    @property
+    def klass(self):
+        return f"{self.student_class.name} {self.student_class.division}"
 
     @property
     def student_age(self):
@@ -204,26 +240,18 @@ class Student(models.Model):
         )
 
     def __str__(self):
-        return f"{self.id} - {self.user.get_full_name()}"
+        return f"{self.id} - {self.user.full_name}"
 
-    # def save(self, *args, **kwargs):
-    #     if not self.student_id:
-    #         # Pad the school ID to ensure a consistent format
-    #         school_id = str(self.school_class.school.id).zfill(4)
-    #         unique_suffix = get_random_string(
-    #             length=6, allowed_chars='0123456789')
-    #         self.student_id = f"{school_id}-{unique_suffix}"
-    #     super().save(*args, **kwargs)
+    @property
+    def full_name(self):
+        return f"{self.user.full_name}"
 
-
-class Teacher(models.Model):
-    user = models.OneToOneField(
-        User, on_delete=models.CASCADE, related_name='teacher_profile')
-    school = models.ForeignKey(
-        School, on_delete=models.CASCADE, related_name='teachers')
-
-    def __str__(self):
-        return self.user.get_full_name()
+    def save(self, *args, **kwargs):
+        if not self.student_id:  # Check if student_id is not set
+            self.student_id = f"STU-{self.admission_date.year}-{self.id}"
+            super().save(*args, **kwargs)  # Save first to get the ID
+        else:
+            super().save(*args, **kwargs)  # Save as usual if student_id is already set
 
 
 class Subject(models.Model):
@@ -231,7 +259,7 @@ class Subject(models.Model):
         SchoolClass, on_delete=models.CASCADE, related_name='subjects')
     name = models.CharField(max_length=100)
     teacher = models.ForeignKey(
-        Teacher, on_delete=models.SET_NULL, null=True, blank=True)
+        Teacher, on_delete=models.SET_NULL, null=True, blank=True, related_name="subjects")
 
     class Meta:
         unique_together = ('school_class', 'name')
@@ -288,8 +316,8 @@ class LessonPlan(models.Model):
 class ClassNote(models.Model):
     lesson_plan = models.ForeignKey(
         LessonPlan, on_delete=models.CASCADE, related_name='class_notes')
-    title = models.CharField(max_length=255)
-    for_class = models.ForeignKey(
+    title = models.CharField(max_length=50)
+    school_class = models.ForeignKey(
         SchoolClass, on_delete=models.CASCADE, related_name='+')
     content = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
@@ -297,72 +325,6 @@ class ClassNote(models.Model):
 
     def __str__(self):
         return f"Note for {self.lesson_plan.subject.name} ({self.lesson_plan.subject.school_class.name})"
-
-
-class Examination(models.Model):
-    subject = models.ForeignKey(
-        Subject, on_delete=models.CASCADE, related_name='examinations')
-    student = models.ForeignKey(
-        Student, on_delete=models.CASCADE, related_name='examinations')
-    term = models.ForeignKey(
-        Term, on_delete=models.CASCADE, related_name='examinations')
-    date = models.DateField()
-    # score = models.DecimalField(
-    #     max_digits=5, decimal_places=2)
-
-    def __str__(self):
-        return f"{self.subject.name} Exam - {self.term.name}"
-
-    class Meta:
-        unique_together = ('subject', 'term')
-
-
-class ContinuousAssessment(models.Model):
-    subject = models.ForeignKey(
-        Subject, on_delete=models.CASCADE, related_name='continuous_assessments')
-    file = models.FileField(upload_to='assessment/%Y/%m/%d/')
-    student = models.ForeignKey(
-        Student, on_delete=models.CASCADE, related_name='continuous_assessments')
-    name = models.CharField(max_length=100)
-    score = models.DecimalField(
-        max_digits=5, decimal_places=2)
-
-    class Meta:
-        unique_together = ('subject', 'student', 'name')
-
-    def __str__(self):
-        return f"{self.name} - {self.subject.name} - {self.student.user.get_full_name()}"
-
-
-class Score(models.Model):
-    student = models.ForeignKey("Student", on_delete=models.CASCADE)
-    examination = models.ForeignKey(Examination, on_delete=models.CASCADE)
-    score = models.IntegerField()
-
-    def __str__(self):
-        return f'{self.student.name} - {self.examination.subject.name}'
-
-
-class Result(models.Model):
-    examination = models.ForeignKey(
-        Examination, on_delete=models.CASCADE, related_name='results')
-    student = models.ForeignKey(
-        Student, on_delete=models.CASCADE, related_name='results')
-    # Score from the main exam
-    score = models.DecimalField(max_digits=5, decimal_places=2)
-    remarks = models.TextField(blank=True, null=True)
-
-    class Meta:
-        unique_together = ('examination', 'student')
-
-    def __str__(self):
-        return f"Result for {self.student.user.get_full_name()} - {self.examination.subject.name}"
-
-    def total_score_with_ca(self):
-        # Calculate the total score by adding exam score and all CA scores
-        ca_score = sum(ca.score for ca in self.student.continuous_assessments.filter(
-            subject=self.examination.subject))
-        return self.score + ca_score
 
 
 class SchoolSettings(models.Model):
@@ -381,28 +343,3 @@ class SchoolSettings(models.Model):
 
 #     def __str__(self):
 #         return self.key
-
-
-class Library(models.Model):
-    school = models.ForeignKey(
-        School, on_delete=models.CASCADE, related_name='library')
-    title = models.CharField(max_length=255)
-    author = models.CharField(max_length=255)
-    publication_date = models.DateField()
-    isbn = models.CharField(max_length=13, unique=True)
-    available_copies = models.IntegerField(default=1)
-
-    def __str__(self):
-        return self.title
-
-
-class LibraryBook(models.Model):
-    library = models.ForeignKey(
-        Library, on_delete=models.CASCADE, related_name="library")
-    title = models.CharField(max_length=200)
-    author = models.CharField(max_length=100)
-    isbn = models.CharField(max_length=13)
-    available_copies = models.IntegerField()
-
-    def __str__(self):
-        return self.title
