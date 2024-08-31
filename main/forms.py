@@ -60,7 +60,7 @@ class TeacherUserForm(forms.ModelForm):
             'placeholder': 'Enter Password',
             'class': 'input',
             'disabled': 'disabled',
-            'value': "Disabled: Teacher's Surname in lowercase"
+            'value': "Disabled: Teacher's Surname in lowercase is default"
         }),
         required=False
     )
@@ -143,7 +143,7 @@ class StudentUserForm(forms.ModelForm):
             'placeholder': 'Enter Password',
             'class': 'input',
             'disabled': 'disabled',
-            'value': "Disabled: Teacher's Surname in lowercase"
+            'value': "Disabled: Student's Surname in lowercase is default"
         }),
         required=False
     )

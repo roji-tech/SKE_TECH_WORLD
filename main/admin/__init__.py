@@ -46,13 +46,28 @@ class TeacherAdmin(admin.ModelAdmin):
     ]
 
 
+class StudentAdmin(admin.ModelAdmin):
+    list_display = [
+        "full_name", "email",
+        "id", "school", 'klass',
+        "student_class",
+    ]
+
+
+class ClassAdmin(admin.ModelAdmin):
+    list_display = [
+        "name", "division",
+        "category", "academic_session",
+    ]
+
+
 admin.site.register(User, UserAdmin)
 admin.site.register(School, SchoolAdmin)
 admin.site.register(AcademicSession)
 admin.site.register(Teacher, TeacherAdmin)
-admin.site.register(Student)
+admin.site.register(Student, StudentAdmin)
 admin.site.register(Subject)
-admin.site.register(SchoolClass)
+admin.site.register(SchoolClass, ClassAdmin)
 admin.site.register(ClassNote)
 admin.site.register(LessonPlan)
 # admin.site.register(Student)

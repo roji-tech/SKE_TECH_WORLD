@@ -16,8 +16,7 @@ def get_year_from_date(date_string):
     except (ValueError, IndexError):
         # Handle cases where the date string is not in the expected format
         raise ValueError(
-            f"Invalid date format: '{
-                date_string}'. Expected format 'YYYY-MM-DD'."
+            "Invalid date format: '" + date_string + "'. Expected format 'YYYY-MM-DD'."
         )
 
 
@@ -218,6 +217,18 @@ class Student(models.Model):
         user = request.user
         school = School.get_user_school(user)
         return Student.objects.filter(school=school).select_related("user", "student_class").order_by("student_class")
+
+    @property
+    def full_name(self):
+        return f"{self.user.full_name}"
+
+    @property
+    def email(self):
+        return f"{self.user.email}"
+
+    @property
+    def klass(self):
+        return f"{self.student_class.name} {self.student_class.division}"
 
     @property
     def student_age(self):
