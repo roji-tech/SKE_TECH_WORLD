@@ -40,12 +40,30 @@
         border-bottom: 1px solid #b5adad;
         padding: 1em 2em;
         background: #fff;
+
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
       }
 
       .sub-rows p {
         color: #525050;
         font-weight: 500;
         font-size: 1.2em;
+      }
+
+      .sub-rows a {
+        color: #525050;
+        font-weight: 500;
+        font-size: 1.2em;
+
+        background: #cccccc90;
+        padding: 5px 15px;
+        border-radius: 10px;
+      }
+
+      .sub-rows a:hover {
+        background: #cccccc30 !important;
       }
 
       .search-row {
@@ -196,6 +214,8 @@
     <div class="table-datas">
       <div class="sub-rows">
         <p>Subject Class List</p>
+
+        <a id="add_new" href="{% url 'add-subject' %}"> Add New Student </a>
       </div>
 
       <div class="search-row">
@@ -236,7 +256,7 @@
       <div class="table">
         <table>
           <thead>
-            <th>*</th>
+            <th>Reg No.</th>
             <th>Full Name</th>
             <th>Student Class</th>
             <th>Gender</th>
@@ -255,7 +275,14 @@
             <tr>
               <td>{{ student.reg_no }}</td>
               <td>{{ student.full_name }}</td>
-              <td>{{ student.student_class }}</td>
+              <td>{{ student.student_class.name }}</td>
+              <th>Gender</th>
+              <th>D.O.B</th>
+              <th>Divison</th>
+              <th>Reg No</th>
+              <th>Term</th>
+              <th>Acc Year</th>
+              <th>Picture</th>
 
               <td>{{ student.user.email }}</td>
               <td>

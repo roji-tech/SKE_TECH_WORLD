@@ -4,8 +4,8 @@ from ..models import User, School, AcademicSession, LessonPlan, ClassNote, Schoo
 
 class UserAdmin(admin.ModelAdmin):
     list_display = [
+        "id",
         "get_full_name",
-        # "username",
         "email",
         "role",
         "gender",

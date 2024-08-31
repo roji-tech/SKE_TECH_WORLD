@@ -9,6 +9,18 @@ import string
 User = get_user_model()
 
 
+def get_year_from_date(date_string):
+    try:
+        year = int(date_string.split('-')[0])
+        return year
+    except (ValueError, IndexError):
+        # Handle cases where the date string is not in the expected format
+        raise ValueError(
+            f"Invalid date format: '{
+                date_string}'. Expected format 'YYYY-MM-DD'."
+        )
+
+
 class School(models.Model):
     # class School(models.Model):
     name = models.CharField(max_length=50)
@@ -19,13 +31,13 @@ class School(models.Model):
     email = models.EmailField()
     logo = models.URLField(default="")
     created_at = models.DateTimeField(auto_now_add=True)
+    short_name = models.CharField(max_length=6, null=True, blank=True)
 
     def __str__(self):
         return self.name
 
     @staticmethod
     def get_user_school(user: User):
-        print(user, user.role, School.objects.filter(owner=user))
         if user.role == OWNER:
             return School.objects.filter(owner=user).first()
         return user.school
@@ -48,19 +60,7 @@ class AcademicSession(models.Model):
     is_current = models.BooleanField(default=False)
     max_exam_score = models.SmallIntegerField(default=60)
 
-    def get_year_from_date(self, date_string):
-        # Split the date string by hyphen and return the first part as an integer
-        try:
-            year = int(date_string.split('-')[0])
-            return year
-        except (ValueError, IndexError):
-            # Handle cases where the date string is not in the expected format
-            raise ValueError(f"Invalid date format: '{
-                             date_string}'. Expected format 'YYYY-MM-DD'.")
-
     def save(self, *args, **kwargs):
-        get_year_from_date = self.get_year_from_date
-
         if not self.name:  # Set the name only if it's not already set
             try:
                 self.name = f"{self.start_date.year}-{self.end_date.year}"
@@ -75,7 +75,7 @@ class AcademicSession(models.Model):
             existing_start_year = int(name_parts[0])
             existing_end_year = int(name_parts[1]) if len(
                 name_parts) > 1 else existing_start_year
-       
+
             # If both years are the same, update the name to just the year
             if existing_start_year == existing_end_year:
                 self.name = str(existing_start_year)
@@ -84,14 +84,13 @@ class AcademicSession(models.Model):
             year2 = get_year_from_date(self.end_date)
             self.name = f"{year1}-{year2}"
 
+        super().save(*args, **kwargs)  # Corrected to call the parent class's save method
 
-        self.save(*args, **kwargs)
-
-    @staticmethod
-    def get_school_sessions(request):
-        user = request.user
-        school = School.objects.filter(owner=user).first()
-        return AcademicSession.objects.filter(school=school)
+        @staticmethod
+        def get_school_sessions(request):
+            user = request.user
+            school = School.objects.filter(owner=user).first()
+            return AcademicSession.objects.filter(school=school)
 
 
 class Term(models.Model):
@@ -119,7 +118,7 @@ class Teacher(models.Model):
         User, on_delete=models.CASCADE, related_name='teacher_profile')
     school = models.ForeignKey(
         School, on_delete=models.CASCADE, related_name='teachers')
-    department = models.CharField(max_length=100, null=True, blank=True)
+    department = models.CharField(max_length=15, null=True, blank=True)
 
     def __str__(self):
         return f"{self.department} - {self.user.full_name}"
@@ -170,7 +169,7 @@ class SchoolClass(models.Model):
     academic_session = models.ForeignKey(
         AcademicSession, on_delete=models.CASCADE, related_name='classes')
     class_teacher = models.ForeignKey(
-        Teacher, on_delete=models.SET_NULL, null=True, blank=True, limit_choices_to={'role': "teacher"}, related_name="school_class")
+        Teacher, on_delete=models.SET_NULL, null=True, blank=True, limit_choices_to={'user__role': "teacher"}, related_name="school_class")
     division = models.CharField(
         max_length=10,  blank=True, null=True,
         choices=DIVISION_CHOICES
@@ -306,8 +305,8 @@ class LessonPlan(models.Model):
 class ClassNote(models.Model):
     lesson_plan = models.ForeignKey(
         LessonPlan, on_delete=models.CASCADE, related_name='class_notes')
-    title = models.CharField(max_length=255)
-    for_class = models.ForeignKey(
+    title = models.CharField(max_length=50)
+    school_class = models.ForeignKey(
         SchoolClass, on_delete=models.CASCADE, related_name='+')
     content = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
@@ -315,73 +314,6 @@ class ClassNote(models.Model):
 
     def __str__(self):
         return f"Note for {self.lesson_plan.subject.name} ({self.lesson_plan.subject.school_class.name})"
-
-
-class Examination(models.Model):
-    subject = models.ForeignKey(
-        Subject, on_delete=models.CASCADE, related_name='examinations')
-    student = models.ForeignKey(
-        Student, on_delete=models.CASCADE, related_name='examinations')
-    term = models.ForeignKey(
-        Term, on_delete=models.CASCADE, related_name='examinations')
-    date = models.DateField()
-    # score = models.DecimalField(
-    #     max_digits=5, decimal_places=2)
-
-    def __str__(self):
-        return f"{self.subject.name} Exam - {self.term.name}"
-
-    class Meta:
-        unique_together = ('subject', 'term')
-
-
-class ContinuousAssessment(models.Model):
-    subject = models.ForeignKey(
-        Subject, on_delete=models.CASCADE, related_name='continuous_assessments')
-    file = models.FileField(
-        upload_to='assessment/%Y/%m/%d/', null=True, blank=True)
-    student = models.ForeignKey(
-        Student, on_delete=models.CASCADE, related_name='continuous_assessments')
-    name = models.CharField(max_length=100)
-    score = models.DecimalField(
-        max_digits=5, decimal_places=2)
-
-    class Meta:
-        unique_together = ('subject', 'student', 'name')
-
-    def __str__(self):
-        return f"{self.name} - {self.subject.name} - {self.student.user.get_full_name()}"
-
-
-class Score(models.Model):
-    student = models.ForeignKey("Student", on_delete=models.CASCADE)
-    examination = models.ForeignKey(Examination, on_delete=models.CASCADE)
-    score = models.IntegerField()
-
-    def __str__(self):
-        return f'{self.student.name} - {self.examination.subject.name}'
-
-
-class Result(models.Model):
-    examination = models.ForeignKey(
-        Examination, on_delete=models.CASCADE, related_name='results')
-    student = models.ForeignKey(
-        Student, on_delete=models.CASCADE, related_name='results')
-    # Score from the main exam
-    score = models.DecimalField(max_digits=5, decimal_places=2)
-    remarks = models.TextField(blank=True, null=True)
-
-    class Meta:
-        unique_together = ('examination', 'student')
-
-    def __str__(self):
-        return f"Result for {self.student.user.get_full_name()} - {self.examination.subject.name}"
-
-    def total_score_with_ca(self):
-        # Calculate the total score by adding exam score and all CA scores
-        ca_score = sum(ca.score for ca in self.student.continuous_assessments.filter(
-            subject=self.examination.subject))
-        return self.score + ca_score
 
 
 class SchoolSettings(models.Model):
@@ -400,28 +332,3 @@ class SchoolSettings(models.Model):
 
 #     def __str__(self):
 #         return self.key
-
-
-class Library(models.Model):
-    school = models.ForeignKey(
-        School, on_delete=models.CASCADE, related_name='library')
-    title = models.CharField(max_length=255)
-    author = models.CharField(max_length=255)
-    publication_date = models.DateField()
-    isbn = models.CharField(max_length=13, unique=True)
-    available_copies = models.IntegerField(default=1)
-
-    def __str__(self):
-        return self.title
-
-
-class LibraryBook(models.Model):
-    library = models.ForeignKey(
-        Library, on_delete=models.CASCADE, related_name="library")
-    title = models.CharField(max_length=200)
-    author = models.CharField(max_length=100)
-    isbn = models.CharField(max_length=13)
-    available_copies = models.IntegerField()
-
-    def __str__(self):
-        return self.title
