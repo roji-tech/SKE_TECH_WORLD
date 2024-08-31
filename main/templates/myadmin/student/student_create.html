@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Add Teacher</title>
+    <title>Add Student</title>
     <link rel="stylesheet" href="employee.css" />
 
     <style>
@@ -296,14 +296,14 @@
   <body>
     {% include 'pages_header.html' %}
 
-    <!-- Teacher start -->
+    <!-- Stident start -->
     <div class="container">
       <div class="add-division">
-        <p>Add Teacher</p>
+        <p>Add Stident</p>
       </div>
 
       <div class="contents">
-        <form id="teacherForm" method="post">
+        <form id="studentForm" method="post">
           {% csrf_token %}
           <br />
           <br />
@@ -317,7 +317,7 @@
             <div class="error">{{ field.errors }}</div>
             {% endif %}
           </div>
-          {% endfor %} {% for field in teacher_form %}
+          {% endfor %} {% for field in student_form %}
           <div class="inline-f">
             <label for="{{ field.id_for_label }}" class="class"
               >{{ field.label }}</label
@@ -406,7 +406,7 @@
 
     <!-- Script for Image Preview and Overlay -->
     <script>
-      const teacherForm = document.getElementById("teacherForm");
+      const studentForm = document.getElementById("studentForm");
 
       function previewImage(input) {
         var preview = document.getElementById("imagePreview");
@@ -496,7 +496,7 @@
         .addEventListener("click", function () {
           document.getElementById("updateOverlay").classList.remove("show");
           document.getElementById("successOverlay").classList.add("show");
-          teacherForm.submit();
+          studentForm.submit();
         });
 
       document
@@ -510,7 +510,7 @@
         .getElementById("confirmCancel")
         .addEventListener("click", function () {
           document.getElementById("cancelOverlay").classList.remove("show");
-          teacherForm.reset();
+          studentForm.reset();
         });
 
       document

@@ -48,21 +48,44 @@ class AcademicSession(models.Model):
     is_current = models.BooleanField(default=False)
     max_exam_score = models.SmallIntegerField(default=60)
 
+    def get_year_from_date(self, date_string):
+        # Split the date string by hyphen and return the first part as an integer
+        try:
+            year = int(date_string.split('-')[0])
+            return year
+        except (ValueError, IndexError):
+            # Handle cases where the date string is not in the expected format
+            raise ValueError(f"Invalid date format: '{
+                             date_string}'. Expected format 'YYYY-MM-DD'.")
+
     def save(self, *args, **kwargs):
+        get_year_from_date = self.get_year_from_date
+
         if not self.name:  # Set the name only if it's not already set
-            self.name = f"{self.start_date.year}-{self.end_date.year}"
+            try:
+                self.name = f"{self.start_date.year}-{self.end_date.year}"
+            except Exception as e:
+                year1 = get_year_from_date(self.start_date)
+                year2 = get_year_from_date(self.end_date)
+                self.name = f"{year1}-{year2}"
 
-        # Split the existing name to check if the years match
-        name_parts = self.name.split('-')
-        existing_start_year = int(name_parts[0])
-        existing_end_year = int(name_parts[1]) if len(
-            name_parts) > 1 else existing_start_year
+        # Attempt to split and convert the name parts to integers
+        try:
+            name_parts = self.name.split('-')
+            existing_start_year = int(name_parts[0])
+            existing_end_year = int(name_parts[1]) if len(
+                name_parts) > 1 else existing_start_year
+       
+            # If both years are the same, update the name to just the year
+            if existing_start_year == existing_end_year:
+                self.name = str(existing_start_year)
+        except (ValueError, IndexError):
+            year1 = get_year_from_date(self.start_date)
+            year2 = get_year_from_date(self.end_date)
+            self.name = f"{year1}-{year2}"
 
-        # If both years are the same, update the name to just the year
-        if existing_start_year == existing_end_year:
-            self.name = str(existing_start_year)
 
-        super().save(*args, **kwargs)
+        self.save(*args, **kwargs)
 
     @staticmethod
     def get_school_sessions(request):
@@ -89,32 +112,6 @@ class Term(models.Model):
 
     def __str__(self):
         return f"{self.name} ({self.academic_session.name})"
-
-
-# class Division(models.Model):
-#     DIVISION_CHOICES = [(letter, letter) for letter in string.ascii_uppercase]
-
-#     name = models.CharField(
-#         max_length=10, unique=True,
-#         choices=DIVISION_CHOICES
-#     )  # e.g., "A", "B", "C"
-
-#     def __str__(self):
-#         return self.name
-
-
-# class SchoolCategory(models.Model):
-#     """_summary_
-#         # e.g., "Science", "Art", "Commercial"
-
-#         Returns:
-#             _type_: _description_
-#     """
-
-#     name = models.CharField(max_length=10, unique=True)
-
-#     def __str__(self):
-#         return self.name
 
 
 class Teacher(models.Model):
@@ -178,12 +175,8 @@ class SchoolClass(models.Model):
         max_length=10,  blank=True, null=True,
         choices=DIVISION_CHOICES
     )  # e.g., "A", "B", "C"
-    # division = models.ForeignKey(
-    #     Division, on_delete=models.SET_NULL, related_name='classes', blank=True, null=True)
     category = models.CharField(
         max_length=12, choices=CLASS_CATEGORIES, blank=True, null=True)
-    # category = models.ForeignKey(
-    #     SchoolCategory, on_delete=models.SET_NULL, blank=True, null=True)
 
     def __str__(self):
         return f"{self.get_name_display()} ({self.academic_session.name})"
@@ -206,11 +199,14 @@ class SchoolClass(models.Model):
 
 
 class Student(models.Model):
+    reg_no = models.CharField(
+        max_length=20, null=True, blank=True, unique=True)
+    student_id = models.CharField(
+        max_length=20, unique=True, null=True, blank=True)
     school = models.ForeignKey(
         School, on_delete=models.CASCADE, related_name='students')
     user = models.OneToOneField(
         User, on_delete=models.CASCADE, related_name='student_profile')
-    student_id = models.CharField(max_length=20, primary_key=True, unique=True)
     date_of_birth = models.DateField()
     admission_date = models.DateField(default=date.today)
     student_class = models.ForeignKey(
@@ -218,14 +214,11 @@ class Student(models.Model):
 
     academic_year = models.ForeignKey(
         AcademicSession, on_delete=models.CASCADE, null=True, blank=True)  # e.g., 2023/2024
-    reg_no = models.CharField(max_length=20, unique=True)
 
-    # def save(self, *args, **kwargs):
-    #     # Automatically generate student_id with school_id as prefix
-    #     if not self.student_id:
-    #         school_id = self.school_class.school.id
-    #         self.student_id = f"{school_id}-{self.reg_no}"
-    #     super(StudentProfile, self).save(*args, **kwargs)
+    def get_school_students(request):
+        user = request.user
+        school = School.get_user_school(user)
+        return Student.objects.filter(school=school).select_related("user", "student_class").order_by("student_class")
 
     @property
     def student_age(self):
@@ -243,14 +236,12 @@ class Student(models.Model):
     def full_name(self):
         return f"{self.user.full_name}"
 
-    # def save(self, *args, **kwargs):
-    #     if not self.student_id:
-    #         # Pad the school ID to ensure a consistent format
-    #         school_id = str(self.school_class.school.id).zfill(4)
-    #         unique_suffix = get_random_string(
-    #             length=6, allowed_chars='0123456789')
-    #         self.student_id = f"{school_id}-{unique_suffix}"
-    #     super().save(*args, **kwargs)
+    def save(self, *args, **kwargs):
+        if not self.student_id:  # Check if student_id is not set
+            self.student_id = f"STU-{self.admission_date.year}-{self.id}"
+            super().save(*args, **kwargs)  # Save first to get the ID
+        else:
+            super().save(*args, **kwargs)  # Save as usual if student_id is already set
 
 
 class Subject(models.Model):

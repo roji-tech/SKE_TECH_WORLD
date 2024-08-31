@@ -18,10 +18,12 @@
       }
 
       body {
+        overflow-x: hidden;
+
         display: flex;
+        flex-direction: column;
         justify-content: center;
         align-items: center;
-        flex-direction: column;
         background-color: #f8f8f8;
         padding: 20px;
       }
@@ -31,18 +33,37 @@
         width: 90%;
         background: #f8f7f788;
         margin-bottom: 10%;
+        max-width: 90%;
       }
 
       .sub-rows {
         border-bottom: 1px solid #b5adad;
         padding: 1em 2em;
         background: #fff;
+
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
       }
 
       .sub-rows p {
         color: #525050;
         font-weight: 500;
         font-size: 1.2em;
+      }
+
+      .sub-rows a {
+        color: #525050;
+        font-weight: 500;
+        font-size: 1.2em;
+
+        background: #cccccc90;
+        padding: 5px 15px;
+        border-radius: 10px;
+      }
+
+      .sub-rows a:hover {
+        background: #cccccc30 !important;
       }
 
       .search-row {
@@ -67,11 +88,20 @@
         font-size: 1em;
       }
 
+      .table {
+        max-width: 100%;
+        width: 100%;
+        overflow-x: auto;
+      }
+
       table {
         width: 100%;
         border-collapse: collapse;
         margin-top: 10px;
         background: #fff;
+        max-width: 100%;
+        padding: 50px;
+        min-width: max-content;
       }
 
       table,
@@ -176,12 +206,19 @@
       .search-row button:hover {
         background-color: #03a73a;
       }
+
+      #add_new {
+      }
     </style>
   </head>
   <body>
+    {% include 'pages_header.html' %}
+
     <div class="table-datas">
       <div class="sub-rows">
         <p>Teacher's List</p>
+
+        <a id="add_new" href="{% url 'add-teacher' %}"> Add New Teacher </a>
       </div>
 
       <div class="search-row">
@@ -219,53 +256,56 @@
         </form>
       </div>
 
-      <table>
-        <thead>
-          <th>Teacher's Name</th>
-          <th>Phone</th>
-          <th>Email</th>
-          <th>Picture</th>
-          <!-- New column for picture -->
-          <th>Department</th>
-          <th>Edit</th>
-          <th>Delete</th>
-        </thead>
+      <div class="table">
+        <table>
+          <thead>
+            <th>Teacher's Name</th>
+            <th>Phone</th>
+            <th>Email</th>
+            <th>Picture</th>
+            <!-- New column for picture -->
+            <th>Department</th>
+            <th>Edit</th>
+            <th>Delete</th>
+          </thead>
 
-        <tbody>
-          {% for teacher in teachers %}
-          <tr>
-            <td>{{ teacher.full_name }}</td>
-            <td>{{ teacher.user.phone }}</td>
+          <tbody>
+            {% for teacher in teachers %}
+            <tr>
+              <td>{{ teacher.full_name }}</td>
+              <td>{{ teacher.user.phone }}</td>
 
-            <td>{{ teacher.user.email }}</td>
-            <td>
-              {% if teacher.user.picture %}
-              <img
-                src="{{ teacher.user.picture.url }}"
-                alt="{{ teacher.full_name }}"
-                class="teacher-picture"
-              />
-              {% else %}
-              <img
-                src="{% static 'default_profile.png' %}"
-                alt="Default Picture"
-                class="teacher-picture"
-              />
-              {% endif %}
-            </td>
-            <td>{{ teacher.department }}</td>
+              <td>{{ teacher.user.email }}</td>
+              <td>
+                {% if teacher.user.picture %}
+                <img
+                  src="{{ teacher.user.picture.url }}"
+                  alt="{{ teacher.full_name }}"
+                  class="teacher-picture"
+                />
+                {% else %}
+                <img
+                  src="{% static 'images/default_profile.jpeg' %}"
+                  alt="Default Picture"
+                  class="teacher-picture"
+                  width="40px"
+                />
+                {% endif %}
+              </td>
+              <td>{{ teacher.department }}</td>
 
-            <td>
-              <a href="{% url 'update-teacher' teacher.pk %}">Edit 🔁</a>
-            </td>
-            <td>
-              <a href="{% url 'delete-teacher' teacher.pk %}"> Delete 🚮</a>
-            </td>
-          </tr>
-          {% endfor %}
-          <!-- Add more rows as needed -->
-        </tbody>
-      </table>
+              <td>
+                <a href="{% url 'update-teacher' teacher.pk %}">Edit 🔁</a>
+              </td>
+              <td>
+                <a href="{% url 'delete-teacher' teacher.pk %}"> Delete 🚮</a>
+              </td>
+            </tr>
+            {% endfor %}
+            <!-- Add more rows as needed -->
+          </tbody>
+        </table>
+      </div>
     </div>
   </body>
 </html>

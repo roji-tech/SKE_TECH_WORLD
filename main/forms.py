@@ -6,12 +6,6 @@ from main.models.models import (
 )
 
 
-class UserForm(forms.ModelForm):
-    class Meta:
-        model = User
-        fields = ['first_name', 'last_name', 'email', 'gender']
-
-
 class TeacherForm(forms.ModelForm):
     class Meta:
         model = Teacher
@@ -26,7 +20,7 @@ class TeacherForm(forms.ModelForm):
         }
 
 
-class UserTeacherForm(forms.ModelForm):
+class TeacherUserForm(forms.ModelForm):
     class Meta:
         model = User
         fields = ['first_name', 'last_name',
@@ -75,8 +69,84 @@ class UserTeacherForm(forms.ModelForm):
 class StudentForm(forms.ModelForm):
     class Meta:
         model = Student
-        fields = ['student_id', 'date_of_birth', 'admission_date',
-                  'student_class', 'academic_year', 'reg_no']
+        fields = [
+            'student_id',
+            'date_of_birth',
+            'admission_date',
+            'student_class',
+            'academic_year',
+            'reg_no'
+        ]
+        widgets = {
+            'student_id': forms.TextInput(attrs={
+                'placeholder': 'Enter Student ID',
+                'class': 'input',
+                'required': 'required'
+            }),
+            'date_of_birth': forms.DateInput(attrs={
+                'placeholder': 'YYYY-MM-DD',
+                'class': 'input',
+                'required': 'required'
+            }),
+            'admission_date': forms.DateInput(attrs={
+                'placeholder': 'YYYY-MM-DD',
+                'class': 'input',
+                'required': 'required'
+            }),
+            'student_class': forms.Select(attrs={
+                'class': 'input-1',
+                'required': 'required'
+            }),
+            'academic_year': forms.Select(attrs={
+                'class': 'input-1',
+                'required': 'required'
+            }),
+            'reg_no': forms.TextInput(attrs={
+                'placeholder': 'Enter Registration Number',
+                'class': 'input',
+                'required': 'required'
+            }),
+        }
+
+
+class StudentUserForm(forms.ModelForm):
+    class Meta:
+        model = User
+        fields = ['first_name', 'last_name', 'gender', 'email']
+
+        widgets = {
+            'first_name': forms.TextInput(attrs={
+                'placeholder': 'Enter Name',
+                'class': 'input',
+                'required': 'required'
+            }),
+            'last_name': forms.TextInput(attrs={
+                'placeholder': 'Enter Name',
+                'class': 'input',
+                'required': 'required'
+            }),
+            'gender': forms.Select(attrs={
+                'class': 'input-1',
+                'required': 'required'
+            }, choices=[('', 'Select Gender'), ('M', 'Male'), ('F', 'Female')]),
+            'email': forms.EmailInput(attrs={
+                'placeholder': 'Enter Email',
+                'class': 'input',
+            }),
+            # 'image': forms.ClearableFileInput(attrs={
+            #     'onchange': 'previewImage(this);'
+            # })
+        }
+
+    password = forms.CharField(
+        widget=forms.TextInput(attrs={
+            'placeholder': 'Enter Password',
+            'class': 'input',
+            'disabled': 'disabled',
+            'value': "Disabled: Teacher's Surname in lowercase"
+        }),
+        required=False
+    )
 
 
 class AcademicSessionForm(forms.ModelForm):
