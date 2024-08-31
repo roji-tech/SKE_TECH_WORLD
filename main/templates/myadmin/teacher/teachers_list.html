@@ -1,206 +1,271 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Teachers List List</title>
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap">
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap"
+    />
     <style>
-        * {
-            font-family: 'Poppins', sans-serif;
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+      * {
+        font-family: "Poppins", sans-serif;
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
 
-        body {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            flex-direction: column;
-            background-color: #f8f8f8;
-            padding: 20px;
-        }
+      body {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+        background-color: #f8f8f8;
+        padding: 20px;
+      }
 
-        .table-datas {
-            border: 1px solid #b5adad;
-            width: 90%;
-            background: #f8f7f788;
-            margin-bottom: 10%;
-        }
+      .table-datas {
+        border: 1px solid #b5adad;
+        width: 90%;
+        background: #f8f7f788;
+        margin-bottom: 10%;
+      }
 
-        .sub-rows {
-            border-bottom: 1px solid #b5adad;
-            padding: 1em 2em;
-            background: #fff;
-        }
+      .sub-rows {
+        border-bottom: 1px solid #b5adad;
+        padding: 1em 2em;
+        background: #fff;
+      }
 
-        .sub-rows p {
-            color: #525050;
-            font-weight: 500;
-            font-size: 1.2em;
-        }
+      .sub-rows p {
+        color: #525050;
+        font-weight: 500;
+        font-size: 1.2em;
+      }
 
-        .search-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 1em 2em;
-            background: #fff;
-        }
+      .search-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 1em 2em;
+        background: #fff;
+      }
 
-        .search-row span,
-        .search-row input {
-            border: 1px solid #b5adad;
-            border-radius: 3px;
-            padding: 5px;
-        }
+      .search-row span,
+      .search-row input {
+        border: 1px solid #b5adad;
+        border-radius: 3px;
+        padding: 5px;
+      }
 
-        .search-row input {
-            width: 50%;
-            height: 35px;
-            background: transparent;
-        }
+      select {
+        border: none;
+        padding: 5px;
+        outline: none;
+        font-size: 1em;
+      }
 
-        select {
-            border: none;
-            padding: 5px;
-            outline: none;
-            font-size: 1em;
-        }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 10px;
+        background: #fff;
+      }
 
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 10px;
-            background: #fff;
-        }
+      table,
+      th,
+      td {
+        border: 1px solid #b5adad;
+        padding: 1em;
+        text-align: center;
+      }
 
-        table, th, td {
-            border: 1px solid #b5adad;
-            padding: 1em;
-            text-align: center;
-        }
+      a {
+        text-decoration: none;
+        color: #1b94c3;
+      }
 
-        a {
-            text-decoration: none;
-            color: #1b94c3;
-        }
+      a:hover {
+        color: #03a73a;
+      }
 
-        a:hover {
-            color: #03a73a;
-        }
+      /* Overlay Styles */
+      .overlay {
+        display: none;
+        position: fixed;
+        z-index: 1000;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5);
+        justify-content: center;
+        align-items: center;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+      }
 
-        /* Overlay Styles */
-        .overlay {
-            display: none;
-            position: fixed;
-            z-index: 1000;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.5);
-            justify-content: center;
-            align-items: center;
-            opacity: 0;
-            transition: opacity 0.3s ease;
-        }
+      .overlay.show {
+        display: flex;
+        opacity: 1;
+      }
 
-        .overlay.show {
-            display: flex;
-            opacity: 1;
-        }
+      .overlay-content {
+        background-color: #fefefe;
+        padding: 20px;
+        border-radius: 5px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+        text-align: center;
+        position: relative;
+      }
 
-        .overlay-content {
-            background-color: #fefefe;
-            padding: 20px;
-            border-radius: 5px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
-            text-align: center;
-            position: relative;
-        }
+      .overlay-content p {
+        font-size: 1.2em;
+        margin-bottom: 20px;
+      }
 
-        .overlay-content p {
-            font-size: 1.2em;
-            margin-bottom: 20px;
-        }
+      .overlay-content button {
+        padding: 8px 20px;
+        margin: 0 5px;
+        cursor: pointer;
+        background-color: #1b94c3;
+        color: #fff;
+        border: none;
+        border-radius: 4px;
+      }
 
-        .overlay-content button {
-            padding: 8px 20px;
-            margin: 0 5px;
-            cursor: pointer;
-            background-color: #1b94c3;
-            color: #fff;
-            border: none;
-            border-radius: 4px;
-        }
+      .overlay-content button:hover {
+        background-color: #03a73a;
+      }
 
-        .overlay-content button:hover {
-            background-color: #03a73a;
-        }
+      .overlay .close {
+        position: absolute;
+        top: 10px;
+        right: 20px;
+        cursor: pointer;
+        font-size: 1.5em;
+      }
+      .student-picture {
+        width: 40px;
+        height: 40px;
+        object-fit: cover;
+        border-radius: 50%;
+        vertical-align: middle;
+      }
 
-        .overlay .close {
-            position: absolute;
-            top: 10px;
-            right: 20px;
-            cursor: pointer;
-            font-size: 1.5em;
-        }
-        .student-picture {
-            width: 40px;
-            height: 40px;
-            object-fit: cover;
-            border-radius: 50%;
-            vertical-align: middle;
-        }
+      .search-row form {
+        display: flex;
+        justify-content: center;
+        gap: 10px;
+        flex-basis: 100%;
+        align-items: center;
+      }
+      .search-row form input {
+        flex: 1;
+      }
+      .search-row button {
+        padding: 5px 10px;
+        background-color: #1b94c3;
+        color: #fff;
+        border: none;
+        border-radius: 3px;
+        cursor: pointer;
+      }
+      .search-row button:hover {
+        background-color: #03a73a;
+      }
     </style>
-</head>
-<body>
+  </head>
+  <body>
     <div class="table-datas">
-        <div class="sub-rows">
-            <p>Teacher's List</p>
-        </div>
+      <div class="sub-rows">
+        <p>Teacher's List</p>
+      </div>
 
-        <div class="search-row">
-            <span>
-                <select name="class" id="">
-                    <option value="10">10</option>
-                    <option value="9">9</option>
-                    <option value="8">8</option>
-                    <option value="7">7</option>
-                    <option value="6">6</option>
-                    <option value="5">5</option>
-                    <option value="4">4</option>
-                    <option value="3">3</option>
-                    <option value="2">2</option>
-                    <option value="1">1</option>
-                </select>
-            </span>
-            <input type="search" placeholder="Search">
-        </div>
+      <div class="search-row">
+        {% comment %}
+        <span>
+          <select name="class" id="">
+            <option value="10">10</option>
+            <option value="9">9</option>
+            <option value="8">8</option>
+            <option value="7">7</option>
+            <option value="6">6</option>
+            <option value="5">5</option>
+            <option value="4">4</option>
+            <option value="3">3</option>
+            <option value="2">2</option>
+            <option value="1">1</option>
+          </select>
+        </span>
+        {% endcomment %}
+        <form method="get" id="searchForm">
+          <input
+            type="search"
+            name="q"
+            placeholder="Search"
+            value="{{ request.GET.q }}"
+          />
+          {{ filter.form.as_p }}
+          <button type="submit">Search</button>
+          <button
+            type="button"
+            onclick="window.location.href='{% url 'list-teachers' %}'"
+          >
+            Reset
+          </button>
+        </form>
+      </div>
 
-        <table>
-            <tr>
-                <th>Teacher's Name</th>
-                <th>Department</th>
-                <th>Picture</th> <!-- New column for picture -->
-                <th>Edit</th>
-                <th>Delete</th>
-                <th>Edit</th>
-                <th>Delete</th>
-            </tr>
-            <tr>
-                <td>John Doe</td>
-                <td>Mathematics</td>
-                <td><img src="ball.jpeg" alt="John Doe" class="teacher-picture"></td> 
-                <td><a href="/john's assignment/employee/employeeProfile.html">Edit🔁</a></td>
-                <td>🚮</td>
-                <td><a href="/john's assignment/employee/employeeProfile.html">Edit🔁</a></td>
-                <td>🚮</td>
-            </tr>
-            <!-- Add more rows as needed -->
-        </table>
+      <table>
+        <thead>
+          <th>Teacher's Name</th>
+          <th>Phone</th>
+          <th>Email</th>
+          <th>Picture</th>
+          <!-- New column for picture -->
+          <th>Department</th>
+          <th>Edit</th>
+          <th>Delete</th>
+        </thead>
+
+        <tbody>
+          {% for teacher in teachers %}
+          <tr>
+            <td>{{ teacher.full_name }}</td>
+            <td>{{ teacher.user.phone }}</td>
+
+            <td>{{ teacher.user.email }}</td>
+            <td>
+              {% if teacher.user.picture %}
+              <img
+                src="{{ teacher.user.picture.url }}"
+                alt="{{ teacher.full_name }}"
+                class="teacher-picture"
+              />
+              {% else %}
+              <img
+                src="{% static 'default_profile.png' %}"
+                alt="Default Picture"
+                class="teacher-picture"
+              />
+              {% endif %}
+            </td>
+            <td>{{ teacher.department }}</td>
+
+            <td>
+              <a href="{% url 'update-teacher' teacher.pk %}">Edit 🔁</a>
+            </td>
+            <td>
+              <a href="{% url 'delete-teacher' teacher.pk %}"> Delete 🚮</a>
+            </td>
+          </tr>
+          {% endfor %}
+          <!-- Add more rows as needed -->
+        </tbody>
+      </table>
     </div>
-</body>
+  </body>
 </html>

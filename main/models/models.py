@@ -2,7 +2,7 @@ from django.contrib.auth import get_user_model
 from datetime import date
 
 from django.utils.crypto import get_random_string
-from .users import User
+from .users import OWNER
 from django.db import models
 import string
 
@@ -11,9 +11,9 @@ User = get_user_model()
 
 class School(models.Model):
     # class School(models.Model):
-    name = models.CharField(max_length=255)
+    name = models.CharField(max_length=50)
     owner = models.OneToOneField(
-        User, on_delete=models.CASCADE, related_name='owned_school')
+        User, on_delete=models.CASCADE, related_name='school')
     address = models.TextField(default="")
     phone = models.CharField(max_length=15)
     email = models.EmailField()
@@ -22,6 +22,13 @@ class School(models.Model):
 
     def __str__(self):
         return self.name
+
+    @staticmethod
+    def get_user_school(user: User):
+        print(user, user.role, School.objects.filter(owner=user))
+        if user.role == OWNER:
+            return School.objects.filter(owner=user).first()
+        return user.school
 
 
 class AcademicSession(models.Model):
@@ -110,6 +117,30 @@ class Term(models.Model):
 #         return self.name
 
 
+class Teacher(models.Model):
+    user = models.OneToOneField(
+        User, on_delete=models.CASCADE, related_name='teacher_profile')
+    school = models.ForeignKey(
+        School, on_delete=models.CASCADE, related_name='teachers')
+    department = models.CharField(max_length=100, null=True, blank=True)
+
+    def __str__(self):
+        return f"{self.department} - {self.user.full_name}"
+
+    def get_school_teachers(request):
+        user = request.user
+        school = School.get_user_school(user)
+        return Teacher.objects.filter(school=school).select_related("user")
+
+    @property
+    def full_name(self):
+        return f"{self.user.full_name}"
+
+    @property
+    def phone(self):
+        return f"{self.user.phone}"
+
+
 class SchoolClass(models.Model):
     CLASS_CHOICES = [
         ('KG1', 'Kindergarten 1'),
@@ -142,7 +173,7 @@ class SchoolClass(models.Model):
     academic_session = models.ForeignKey(
         AcademicSession, on_delete=models.CASCADE, related_name='classes')
     class_teacher = models.ForeignKey(
-        User, on_delete=models.SET_NULL, null=True, blank=True, limit_choices_to={'role': "teacher"})
+        Teacher, on_delete=models.SET_NULL, null=True, blank=True, limit_choices_to={'role': "teacher"}, related_name="school_class")
     division = models.CharField(
         max_length=10,  blank=True, null=True,
         choices=DIVISION_CHOICES
@@ -175,6 +206,8 @@ class SchoolClass(models.Model):
 
 
 class Student(models.Model):
+    school = models.ForeignKey(
+        School, on_delete=models.CASCADE, related_name='students')
     user = models.OneToOneField(
         User, on_delete=models.CASCADE, related_name='student_profile')
     student_id = models.CharField(max_length=20, primary_key=True, unique=True)
@@ -204,7 +237,11 @@ class Student(models.Model):
         )
 
     def __str__(self):
-        return f"{self.id} - {self.user.get_full_name()}"
+        return f"{self.id} - {self.user.full_name}"
+
+    @property
+    def full_name(self):
+        return f"{self.user.full_name}"
 
     # def save(self, *args, **kwargs):
     #     if not self.student_id:
@@ -216,22 +253,12 @@ class Student(models.Model):
     #     super().save(*args, **kwargs)
 
 
-class Teacher(models.Model):
-    user = models.OneToOneField(
-        User, on_delete=models.CASCADE, related_name='teacher_profile')
-    school = models.ForeignKey(
-        School, on_delete=models.CASCADE, related_name='teachers')
-
-    def __str__(self):
-        return self.user.get_full_name()
-
-
 class Subject(models.Model):
     school_class = models.ForeignKey(
         SchoolClass, on_delete=models.CASCADE, related_name='subjects')
     name = models.CharField(max_length=100)
     teacher = models.ForeignKey(
-        Teacher, on_delete=models.SET_NULL, null=True, blank=True)
+        Teacher, on_delete=models.SET_NULL, null=True, blank=True, related_name="subjects")
 
     class Meta:
         unique_together = ('school_class', 'name')
@@ -320,7 +347,8 @@ class Examination(models.Model):
 class ContinuousAssessment(models.Model):
     subject = models.ForeignKey(
         Subject, on_delete=models.CASCADE, related_name='continuous_assessments')
-    file = models.FileField(upload_to='assessment/%Y/%m/%d/')
+    file = models.FileField(
+        upload_to='assessment/%Y/%m/%d/', null=True, blank=True)
     student = models.ForeignKey(
         Student, on_delete=models.CASCADE, related_name='continuous_assessments')
     name = models.CharField(max_length=100)

@@ -5,7 +5,7 @@ from ..models import User, School, AcademicSession, LessonPlan, ClassNote, Schoo
 class UserAdmin(admin.ModelAdmin):
     list_display = [
         "get_full_name",
-        "username",
+        # "username",
         "email",
         "role",
         "gender",
@@ -13,9 +13,10 @@ class UserAdmin(admin.ModelAdmin):
         # "is_teacher",
         "is_student",
         "is_admin",
+        "is_teacher",
     ]
     search_fields = [
-        "username",
+        # "username",
         "first_name",
         "last_name",
         "email",
@@ -31,10 +32,24 @@ class UserAdmin(admin.ModelAdmin):
         verbose_name_plural = "Users"
 
 
+class SchoolAdmin(admin.ModelAdmin):
+    list_display = [
+        "name",
+        "id",
+    ]
+
+
+class TeacherAdmin(admin.ModelAdmin):
+    list_display = [
+        "full_name", "phone",
+        "id", "school",
+    ]
+
+
 admin.site.register(User, UserAdmin)
-admin.site.register(School)
+admin.site.register(School, SchoolAdmin)
 admin.site.register(AcademicSession)
-admin.site.register(Teacher)
+admin.site.register(Teacher, TeacherAdmin)
 admin.site.register(Student)
 admin.site.register(Subject)
 admin.site.register(SchoolClass)

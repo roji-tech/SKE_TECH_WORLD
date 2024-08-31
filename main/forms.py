@@ -7,11 +7,69 @@ from main.models.models import (
 
 
 class UserForm(forms.ModelForm):
-    password = forms.CharField(widget=forms.PasswordInput)
-
     class Meta:
         model = User
-        fields = ['username', 'first_name', 'last_name', 'email', 'password']
+        fields = ['first_name', 'last_name', 'email', 'gender']
+
+
+class TeacherForm(forms.ModelForm):
+    class Meta:
+        model = Teacher
+        fields = ['department']
+
+        widgets = {
+            'department': forms.TextInput(attrs={
+                'placeholder': 'Enter Department',
+                'class': 'input',
+                'required': 'required'
+            }),
+        }
+
+
+class UserTeacherForm(forms.ModelForm):
+    class Meta:
+        model = User
+        fields = ['first_name', 'last_name',
+                  'gender', 'email', "phone"]
+
+        widgets = {
+            'first_name': forms.TextInput(attrs={
+                'placeholder': 'Enter Name',
+                'class': 'input',
+                'required': 'required'
+            }),
+            'last_name': forms.TextInput(attrs={
+                'placeholder': 'Enter Name',
+                'class': 'input',
+                'required': 'required'
+            }),
+            'gender': forms.Select(attrs={
+                'class': 'input-1',
+                'required': 'required'
+            }, choices=[('', 'Select Gender'), ('M', 'Male'), ('F', 'Female')]),
+            'email': forms.EmailInput(attrs={
+                'placeholder': 'Enter Email',
+                'class': 'input',
+                'required': 'required'
+            }),
+            'phone': forms.TextInput(attrs={
+                'placeholder': 'Enter Email',
+                'class': 'input',
+            }),
+            # 'image': forms.ClearableFileInput(attrs={
+            #     'onchange': 'previewImage(this);'
+            # })
+        }
+
+    password = forms.CharField(
+        widget=forms.TextInput(attrs={
+            'placeholder': 'Enter Password',
+            'class': 'input',
+            'disabled': 'disabled',
+            'value': "Disabled: Teacher's Surname in lowercase"
+        }),
+        required=False
+    )
 
 
 class StudentForm(forms.ModelForm):
@@ -19,12 +77,6 @@ class StudentForm(forms.ModelForm):
         model = Student
         fields = ['student_id', 'date_of_birth', 'admission_date',
                   'student_class', 'academic_year', 'reg_no']
-
-
-class TeacherForm(forms.ModelForm):
-    class Meta:
-        model = Teacher
-        fields = ['school']
 
 
 class AcademicSessionForm(forms.ModelForm):
@@ -119,6 +171,7 @@ class LessonPlanForm(forms.ModelForm):
             'uploaded_file': forms.ClearableFileInput(attrs={'class': 'input'}),
             'school_clas': forms.Select(attrs={'class': 'input'}),
         }
+
 
 class ContinuousAssessmentForm(forms.ModelForm):
     class Meta:

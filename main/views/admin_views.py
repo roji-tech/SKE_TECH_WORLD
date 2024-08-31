@@ -1,3 +1,4 @@
+from django.db.models import Q
 import logging
 from django.http import JsonResponse
 from django.db import IntegrityError
@@ -9,7 +10,7 @@ from django.db.models.query import QuerySet
 from django.urls import reverse_lazy
 from django.utils.decorators import method_decorator
 from django.http import HttpResponse
-from django.shortcuts import redirect, render
+from django.shortcuts import render, get_object_or_404, redirect
 from django.views import View
 from django.contrib import messages
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
@@ -18,8 +19,8 @@ from main.models import User, AcademicSession, School, SchoolSettings, Student, 
 from django.contrib.auth import authenticate, login
 
 # FORMS
-from main.models.models import Subject
-from main.forms import UserForm
+from main.models.models import School, Subject, Teacher
+from main.forms import TeacherForm, UserForm, UserTeacherForm
 from ..forms import AcademicSessionForm, ClassForm  # Assuming you have a form
 
 # from ..models.profiles import Teacher
@@ -537,25 +538,94 @@ class TeacherListView(ListView):
     template_name = 'myadmin/teacher/teachers_list.html'
     context_object_name = 'teachers'
 
+    def get_queryset(self):
+        queryset = Teacher.get_school_teachers(request=self.request)
+
+        # Get search parameters
+        search_query = self.request.GET.get('q', '')
+        class_filter = self.request.GET.get('class', '')
+
+        if search_query:
+            queryset = queryset.filter(
+                Q(user__first_name__icontains=search_query) |
+                Q(user__last_name__icontains=search_query) |
+                Q(user__email__icontains=search_query) |
+                Q(department__icontains=search_query) |
+                Q(school_class__name__icontains=search_query)
+            )
+
+        if class_filter:
+            # Assuming you have a relation between Teacher and Class
+            # Adjust the filter according to your actual model relationships
+            queryset = queryset.filter(
+                subjects__school_class__name=class_filter
+            )
+
+        return queryset.distinct()
+
 
 class TeacherDetailView(DetailView):
-    model = Teacher
+    model = User
     template_name = 'myadmin/teacher/teacher_detail.html'
     context_object_name = 'teacher'
 
 
 class TeacherCreateView(CreateView):
-    model = Teacher
+    model = User
     template_name = 'myadmin/teacher/teacher_create.html'
-    fields = ['name']
+    fields = ['first_name', 'last_name']
     success_url = reverse_lazy('list-teachers')
+    form_class = TeacherForm
+
+    def get(self, request, *args, **kwargs):
+        user_form = UserTeacherForm()
+        teacher_form = TeacherForm()
+        return render(request, self.template_name, {'user_form': user_form, 'teacher_form': teacher_form})
+
+    def post(self, request, *args, **kwargs):
+        user_form = UserTeacherForm(request.POST)
+        teacher_form = TeacherForm(request.POST)
+        if user_form.is_valid() and teacher_form.is_valid():
+            user = user_form.save(commit=False)
+            user.role = 'teacher'
+            user.save()
+            teacher = teacher_form.save(commit=False)
+            teacher.user = user
+            teacher.school = School.get_user_school(request.user)
+            teacher.save()
+            messages.success(request, "Teacher created successfully!")
+            return redirect('list-teachers')
+        else:
+            print(user_form.errors)
+            print(teacher_form.errors)
+            # messages.error(request, {"teacher":  "Error creating teacher."})
+        return render(request, self.template_name, {'user_form': user_form, 'teacher_form': teacher_form})
 
 
 class TeacherUpdateView(UpdateView):
     model = Teacher
-    template_name = 'myadmin/teacher/teacher_edit.html'
-    fields = ['name']
+    template_name = 'myadmin/teacher/teacher_create.html'
+    form_class = UserTeacherForm
     success_url = reverse_lazy('list-teachers')
+
+    def get(self, request, pk, *args, **kwargs):
+        teacher = get_object_or_404(Teacher, pk=pk)
+        user_form = UserTeacherForm(instance=teacher.user)
+        teacher_form = TeacherForm(instance=teacher)
+        return render(request, self.template_name, {'user_form': user_form, 'teacher_form': teacher_form, 'teacher': teacher})
+
+    def post(self, request, pk, *args, **kwargs):
+        teacher = get_object_or_404(Teacher, pk=pk)
+        user_form = UserTeacherForm(request.POST, instance=teacher.user)
+        teacher_form = TeacherForm(request.POST, instance=teacher)
+        if user_form.is_valid() and teacher_form.is_valid():
+            user_form.save()
+            teacher_form.save()
+            messages.success(request, "Teacher updated successfully!")
+            return redirect('list-teachers')
+        else:
+            messages.error(request, "Error updating teacher.")
+        return render(request, self.template_name, {'user_form': user_form, 'teacher_form': teacher_form, 'teacher': teacher})
 
 
 class TeacherDeleteView(DeleteView):
@@ -563,6 +633,12 @@ class TeacherDeleteView(DeleteView):
     template_name = 'myadmin/teacher/teacher_delete.html'
     success_url = reverse_lazy('list-teachers')
 
+    def post(self, request, pk, *args, **kwargs):
+        teacher = get_object_or_404(Teacher, pk=pk)
+        teacher.user.delete()
+        teacher.delete()
+        messages.success(request, "Teacher deleted successfully!")
+        return redirect('list-teachers')
 
 # SETTINGS
 # SETTINGS
@@ -570,6 +646,8 @@ class TeacherDeleteView(DeleteView):
 # SETTINGS
 # SETTINGS
 # SETTINGS
+
+
 class SettingsListView(ListView):
     model = SchoolSettings
     template_name = 'myadmin/settings/settingss_list.html'

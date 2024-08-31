@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Delete Confirmation</title>
+    <link rel="stylesheet" href="styles.css" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: "Poppins", sans-serif;
+        background-color: #f4f4f4;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+      }
+
+      .confirmation-container {
+        background-color: rgba(0, 0, 0, 0.6);
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+
+      .confirmation-box {
+        background-color: #fff;
+        border-radius: 10px;
+        padding: 30px 40px;
+        text-align: center;
+        box-shadow: 0px 10px 30px rgba(0, 0, 0, 0.2);
+      }
+
+      .confirmation-box h1 {
+        font-size: 24px;
+        font-weight: 700;
+        color: #333;
+        margin-bottom: 20px;
+      }
+
+      .confirmation-box p {
+        font-size: 16px;
+        color: #777;
+        margin-bottom: 30px;
+      }
+
+      .confirmation-buttons {
+        display: flex;
+        justify-content: space-between;
+      }
+
+      .cancel-btn,
+      .delete-btn {
+        padding: 10px 20px;
+        font-size: 16px;
+        font-weight: 500;
+        border-radius: 5px;
+        border: none;
+        cursor: pointer;
+        width: 45%;
+      }
+
+      .cancel-btn {
+        background-color: #f1f1f1;
+        color: #555;
+        transition: background-color 0.3s ease;
+      }
+
+      .cancel-btn:hover {
+        background-color: #e0e0e0;
+      }
+
+      .delete-btn {
+        background-color: #ff4d4d;
+        color: #fff;
+        transition: background-color 0.3s ease;
+      }
+
+      .delete-btn:hover {
+        background-color: #ff3333;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="confirmation-container">
+      <form method="post" class="confirmation-box">
+        {% csrf_token %}
+        <h1>Are you sure you want to delete "{{ object }}"?</h1>
+        <p>
+          This action cannot be undone. Do you really want to delete this Teacher?
+        </p>
+        <div class="confirmation-buttons">
+          <a href="{% url 'list-sessions' %}">
+            <button class="cancel-btn">Cancel</button>
+          </a>
+          <button type="submit" class="delete-btn">Yes, delete</button>
+        </div>
+      </form>
+    </div>
+  </body>
+</html>
