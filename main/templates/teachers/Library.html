@@ -1,0 +1,78 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Library</title>
+    <link rel="stylesheet" href="{% static 'css/teachers/library.css ' %}">
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Library</h1>
+            
+        </div>
+        
+        <div class="content">
+            <div class="search-bar">
+                <select name="class">
+                    <option value="10">10</option>
+                    <option value="9">9</option>
+                    <option value="8">8</option>
+                    <option value="7">7</option>
+                    <option value="6">6</option>
+                    <option value="5">5</option>
+                    <option value="4">4</option>
+                    <option value="3">3</option>
+                    <option value="2">2</option>
+                    <option value="1">1</option>
+                </select>
+                <input type="search" placeholder="Search">
+            </div>
+
+            <div class="table">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>No.</th>
+                            <th>Image</th>
+                            <th>Title</th>
+                            <th>Uploaded By</th>
+                            <th>Download</th>
+                           
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>1</td>
+                            <td><img src="" alt="image"></td>
+                            <td>Truth Be Told</td>
+                            <td>DEMO TEACHERS</td>
+                            <td>Download</td>
+                            
+                        </tr>
+                    
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+   
+
+    <script>
+        const uploadButton = document.getElementById('upload');
+        const uploadOverlay = document.getElementById('uploadOverlay');
+        const closeOverlay = document.getElementById('closeOverlay');
+
+        uploadButton.addEventListener('click', function() {
+            uploadOverlay.style.display = 'block';
+        });
+
+        closeOverlay.addEventListener('click', function() {
+            uploadOverlay.style.display = 'none';
+        });
+    </script>
+</body>
+</html>

@@ -1,5 +1,6 @@
 from django.http import HttpResponse
 from django.contrib import messages
+from django.contrib.auth import authenticate, login
 from django.shortcuts import get_object_or_404, redirect, render
 from django.views import View
 from django.views.generic import ListView
@@ -95,7 +96,7 @@ def lessons_list(request):
 
 
 def library(request):
-    return render(request, 'teachers/library/library.html')
+    return render(request, 'teachers/Library.html')
 
 
 """Notes Views"""
