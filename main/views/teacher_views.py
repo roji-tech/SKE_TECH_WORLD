@@ -1,5 +1,6 @@
 from django.http import HttpResponse
 from django.contrib import messages
+from django.contrib.auth import authenticate, login
 from django.shortcuts import get_object_or_404, redirect, render
 from django.views import View
 from django.views.generic import ListView
@@ -51,7 +52,7 @@ def add_gmeet(request):
     return render(request, 'teachers/gmeet/gmeet.html', {'form': form})
 
 
-def edit_gmeet(request, pk):
+def teachers_edit_gmeet(request, pk):
     gmeets = get_object_or_404(GmeetClass, pk=pk)
     if request.method == "POST":
         form = GoogleMeetForm(request.POST, instance=gmeets)
@@ -95,7 +96,7 @@ def lessons_list(request):
 
 
 def library(request):
-    return render(request, 'teachers/library/library.html')
+    return render(request, 'teachers/Library.html')
 
 
 """Notes Views"""
