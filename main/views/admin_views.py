@@ -116,32 +116,33 @@ class AdminLogin(View):
     def post(self, request, *args, **kwargs):
         try:
             # Extract POST data
-            username = request.POST.get('username')
+            email = request.POST.get('email')
             password = request.POST.get('password')
 
             # Log the login attempt
-            logger.info(f"Login attempt for username: {username}")
+            logger.info(f"Login attempt for username: {email}")
 
             # Authenticate the user
-            user = authenticate(request, username=username, password=password)
+            user = authenticate(request, email=email, password=password)
             logger.debug(f"Authenticated user:" +
-                         user + f"for username: {username}")
+                         str(user) + f"for username: {email}")
 
             if user is not None:
                 # If authentication is successful
+                print("user logged in")
                 login(request, user)
-                logger.info(f"User {username} logged in successfully.")
+                logger.info(f"User {email} logged in successfully.")
                 return redirect('myadmin')
             else:
                 # If authentication fails
                 messages.error(request, 'Invalid username or password')
                 logger.warning(
-                    f"Failed login attempt for username: {username}")
+                    f"Failed login attempt for username: {email}")
 
         except Exception as e:
             # Log unexpected errors
             logger.exception(
-                f'''Error occurred during login for username: {username}.
+                f'''Error occurred during login for username: {email}.
                 Error: {str(e)}'''
             )
             messages.error(
