@@ -100,9 +100,9 @@ urlpatterns = [
 
     path("admin/gmeets/", GmeetListView.as_view(), name="list-gmeets"),
 
-    #     path("admin/teachers/", GmeetListView.as_view(), name="list-lesson_plans"),
+    path("admin/lesson-plans/", GmeetListView.as_view(), name="list-lesson_plans"),
 
-    #     path("admin/teachers/", GmeetListView.as_view(), name="list-notes"),
+    path("admin/notes/", GmeetListView.as_view(), name="list-notes"),
 
 
 ]
