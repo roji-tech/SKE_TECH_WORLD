@@ -1,6 +1,9 @@
 from .base import BASE_DIR
+import os
 
 STATIC_URL = '/static/'
+
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 # Directories for local static files (optional)
 STATICFILES_DIRS = [
