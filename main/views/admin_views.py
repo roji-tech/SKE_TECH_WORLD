@@ -117,8 +117,8 @@ class AdminLogin(View):
 
             # Authenticate the user
             user = authenticate(request, username=username, password=password)
-            logger.debug(f"Authenticated user: {
-                         user} for username: {username}")
+            logger.debug(f"Authenticated user:" +
+                         user + f"for username: {username}")
 
             if user is not None:
                 # If authentication is successful
