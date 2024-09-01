@@ -15,11 +15,11 @@ from django.views import View
 from django.contrib import messages
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 
-from main.models import User, AcademicSession, School, SchoolSettings, Student, Subject, Teacher, Term, SchoolClass
+from main.models import User, AcademicSession, School, SchoolSettings, Student, Subject, Teacher, Term, SchoolClass, STUDENT, TEACHER
 from django.contrib.auth import authenticate, login
 
 # FORMS
-from main.models.models import School, Student, Subject, Teacher
+from main.models.models import School, Student, Subject, Teacher, GmeetClass
 from main.forms import TeacherForm, StudentForm, TeacherUserForm, StudentUserForm
 from main.models.models import Student
 from ..forms import AcademicSessionForm, ClassForm  # Assuming you have a form
@@ -35,6 +35,13 @@ logger = logging.getLogger(__name__)
 def admin_is_authenticated(*args):
     # print(args)I
     return method_decorator(login_required(login_url="/admin/login/"), name='dispatch')
+
+
+class AddRequestToFormMixin(View):
+    def get_form(self, form_class=None):
+        if form_class is None:
+            form_class = self.get_form_class()
+        return form_class(request=self.request, **self.get_form_kwargs())
 
 
 @admin_is_authenticated()
@@ -117,7 +124,8 @@ class AdminLogin(View):
 
             # Authenticate the user
             user = authenticate(request, username=username, password=password)
-            logger.debug(f" Authenticated user: {user} for username: {username}")
+            logger.debug(f" Authenticated user: {
+                         user} for username: {username}")
 
             if user is not None:
                 # If authentication is successful
@@ -522,85 +530,83 @@ class StudentDetailView(DetailView):
     context_object_name = 'student'
 
 
-class StudentCreateView(CreateView):
-
-    # def form_valid(self, form):
-    #     user_form = UserForm(self.request.POST)
-
-    #     if user_form.is_valid():
-    #         user = user_form.save(commit=False)
-    #         user.set_password(user_form.cleaned_data['password'])
-    #         user.save()
-    #         form.instance.user = user
-    #         return super().form_valid(form)
-    #     else:
-    #         return self.form_invalid(form)
-
-    # def get_context_data(self, **kwargs):
-    #     context = super(CreateView, self).get_context_data(**kwargs)
-    #     context['user_form'] = UserForm()
-    #     return context
-
+class StudentCreateView(CreateView, AddRequestToFormMixin):
     model = User
     success_url = reverse_lazy('list-students')
-    form_class = TeacherForm
     template_name = 'myadmin/student/student_create.html'
 
     def get(self, request, *args, **kwargs):
         user_form = StudentUserForm()
-        student_form = StudentForm()
+        student_form = StudentForm(request=self.request)
+        print(student_form)
         return render(request, self.template_name, {'user_form': user_form, 'student_form': student_form})
 
     def post(self, request, *args, **kwargs):
-        user_form = TeacherUserForm(request.POST)
-        teacher_form = TeacherForm(request.POST)
-        if user_form.is_valid() and teacher_form.is_valid():
+        user_form = StudentUserForm(request.POST)
+        student_form = StudentForm(request.POST, request=self.request)
+
+        if user_form.is_valid() and student_form.is_valid():
             user = user_form.save(commit=False)
-            user.role = 'teacher'
+            user.role = STUDENT
             user.save()
-            teacher = teacher_form.save(commit=False)
-            teacher.user = user
-            teacher.school = School.get_user_school(request.user)
-            teacher.save()
-            messages.success(request, "Teacher created successfully!")
-            return redirect('list-teachers')
+            student = student_form.save(commit=False)
+            student.user = user
+            student.school = School.get_user_school(request.user)
+            student.save()
+            messages.success(request, "Student created successfully!")
+            return redirect(self.success_url)
         else:
             print(user_form.errors)
-            print(teacher_form.errors)
-            # messages.error(request, {"teacher":  "Error creating teacher."})
-        return render(request, self.template_name, {'user_form': user_form, 'teacher_form': teacher_form})
+            print(student_form.errors)
+        return render(
+            request,
+            self.template_name,
+            {'user_form': user_form, 'student_form': student_form}
+        )
+
+    def get_form(self, form_class=None):
+        if form_class is None:
+            form_class = self.get_form_class()
+        return form_class(request=self.request, **self.get_form_kwargs())
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs['request'] = self.request  # Pass the user to the form
+        return kwargs
+
+    def form_valid(self, form):
+        # If you need to set any additional data on the model before saving, do it here
+        form.instance.school = School.get_user_school(self.request.user)
+        return super().form_valid(form)
 
 
 class StudentUpdateView(UpdateView):
     model = Student
-    template_name = 'myadmin/teacher/teacher_create.html'
     form_class = StudentUserForm
-    success_url = reverse_lazy('list-teachers')
 
-    model = User
     success_url = reverse_lazy('list-students')
-    form_class = TeacherForm
     template_name = 'myadmin/student/student_create.html'
 
     def get(self, request, pk, *args, **kwargs):
         student = get_object_or_404(Student, pk=pk)
         user_form = StudentUserForm(instance=student.user)
-        student_form = StudentForm(instance=student)
-        return render(request, self.template_name, {'user_form': user_form, 'teacher_form': student_form, 'student': student})
+        student_form = StudentForm(instance=student, request=self.request)
+        return render(request, self.template_name, {'user_form': user_form, 'student_form': student_form, 'student': student})
 
     def post(self, request, pk, *args, **kwargs):
         student = get_object_or_404(Student, pk=pk)
-        user_form = TeacherUserForm(request.POST, instance=student.user)
-        student_form = TeacherForm(request.POST, instance=student)
+        user_form = StudentUserForm(request.POST, instance=student.user)
+        student_form = StudentForm(
+            request.POST, instance=student, request=self.request)
 
         if user_form.is_valid() and student_form.is_valid():
             user_form.save()
             student_form.save()
-            messages.success(request, "Teacher updated successfully!")
-            return redirect('list-teachers')
+            messages.success(request, "Student updated successfully!")
+            return redirect(self.success_url)
         else:
-            messages.error(request, "Error updating teacher.")
-        return render(request, self.template_name, {'user_form': user_form, 'teacher_form': student_form, 'teacher': student})
+            messages.error(request, "Error updating student.")
+        return render(request, self.template_name, {'user_form': user_form, 'student_form': student_form, 'student': student})
 
 
 class StudentDeleteView(DeleteView):
@@ -676,7 +682,7 @@ class TeacherCreateView(CreateView):
         teacher_form = TeacherForm(request.POST)
         if user_form.is_valid() and teacher_form.is_valid():
             user = user_form.save(commit=False)
-            user.role = 'teacher'
+            user.role = TEACHER
             user.save()
             teacher = teacher_form.save(commit=False)
             teacher.user = user
@@ -766,4 +772,44 @@ class SettingsUpdateView(UpdateView):
 class SettingsDeleteView(DeleteView):
     model = SchoolSettings
     template_name = 'myadmin/settings/settings_delete.html'
+    success_url = reverse_lazy('list-settings')
+
+
+# GOOGLE MEET CLASSES
+# GOOGLE MEET CLASSES
+# GOOGLE MEET CLASSES
+# GOOGLE MEET CLASSES
+# GOOGLE MEET CLASSES
+# GOOGLE MEET CLASSES
+
+
+class GmeetListView(ListView):
+    model = GmeetClass
+    template_name = 'myadmin/gmeet_list.html'
+    context_object_name = 'settings'
+
+
+class GmeetDetailView(DetailView):
+    model = GmeetClass
+    template_name = 'myadmin/gmeetdetail.html'
+    context_object_name = 'setting'
+
+
+class GmeetCreateView(CreateView):
+    model = GmeetClass
+    template_name = 'myadmin/gmeetcreate.html'
+    fields = ['name']
+    success_url = reverse_lazy('list-settings')
+
+
+class GmeetUpdateView(UpdateView):
+    model = GmeetClass
+    template_name = 'myadmin/gmeetedit.html'
+    fields = ['name']
+    success_url = reverse_lazy('list-settings')
+
+
+class GmeetDeleteView(DeleteView):
+    model = GmeetClass
+    template_name = 'myadmin/gmeetdelete.html'
     success_url = reverse_lazy('list-settings')

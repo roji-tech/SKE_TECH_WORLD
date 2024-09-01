@@ -85,11 +85,11 @@ class AcademicSession(models.Model):
 
         super().save(*args, **kwargs)  # Corrected to call the parent class's save method
 
-        @staticmethod
-        def get_school_sessions(request):
-            user = request.user
-            school = School.objects.filter(owner=user).first()
-            return AcademicSession.objects.filter(school=school)
+    @staticmethod
+    def get_school_sessions(request):
+        user = request.user
+        school = School.objects.filter(owner=user).first()
+        return AcademicSession.objects.filter(school=school)
 
 
 class Term(models.Model):
@@ -121,6 +121,9 @@ class Teacher(models.Model):
 
     def __str__(self):
         return f"{self.department} - {self.user.full_name}"
+
+    class Meta:
+        ordering = ['school', 'department']
 
     def get_school_teachers(request):
         user = request.user
@@ -158,6 +161,7 @@ class SchoolClass(models.Model):
     CLASS_CATEGORIES = (
         ("ART", "Art Class"),
         ("SCIENCE", "Science Class"),
+        ("SCIENCE_TECH", "Science and Technology Class"),
         ("COMMERCIAL", "Commercial Class"),
     )
 
@@ -247,11 +251,15 @@ class Student(models.Model):
         return f"{self.user.full_name}"
 
     def save(self, *args, **kwargs):
-        if not self.student_id:  # Check if student_id is not set
-            self.student_id = f"STU-{self.admission_date.year}-{self.id}"
+        # Save the instance first to generate the ID
+        if not self.id:
             super().save(*args, **kwargs)  # Save first to get the ID
-        else:
-            super().save(*args, **kwargs)  # Save as usual if student_id is already set
+
+        # Ensure reg_no is available before updating student_id
+        if self.reg_no:
+            self.student_id = f"STU-{self.admission_date.year}-{self.reg_no}"
+
+        super().save(*args, **kwargs)  # Save again with updated student_idI
 
 
 class Subject(models.Model):
@@ -295,7 +303,12 @@ class GmeetClass(models.Model):
     gmeet_link = models.URLField()
     start_time = models.DateTimeField()
     end_time = models.DateTimeField()
-    created_by = models.ForeignKey(User, on_delete=models.CASCADE)
+    created_by = models.ForeignKey(
+        User, on_delete=models.SET_NULL,
+        null=True, blank=True,
+        limit_choices_to={'role': "teacher", 'role': "admin", 'role': "owner"},
+        related_name="gmeets"
+    )
 
     def __str__(self):
         return f"{self.subject.name} - {self.subject.school_class.name} ({self.start_time})"

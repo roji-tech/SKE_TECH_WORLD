@@ -1,5 +1,10 @@
 from django.contrib import admin
-from ..models import User, School, AcademicSession, LessonPlan, ClassNote, SchoolClass, Student, Subject, Teacher
+from ..models import (
+    User, School, AcademicSession,
+    LessonPlan, ClassNote, SchoolClass,
+    Student, Subject, Teacher,
+    GmeetClass
+)
 
 
 class UserAdmin(admin.ModelAdmin):
@@ -39,9 +44,16 @@ class SchoolAdmin(admin.ModelAdmin):
     ]
 
 
+class AcademicSessionAdmin(admin.ModelAdmin):
+    list_display = [
+        "name", "school",
+        "is_current", "id",
+    ]
+
+
 class TeacherAdmin(admin.ModelAdmin):
     list_display = [
-        "full_name", "phone",
+        "full_name", "phone", "department",
         "id", "school",
     ]
 
@@ -63,12 +75,11 @@ class ClassAdmin(admin.ModelAdmin):
 
 admin.site.register(User, UserAdmin)
 admin.site.register(School, SchoolAdmin)
-admin.site.register(AcademicSession)
+admin.site.register(AcademicSession, AcademicSessionAdmin)
 admin.site.register(Teacher, TeacherAdmin)
 admin.site.register(Student, StudentAdmin)
 admin.site.register(Subject)
 admin.site.register(SchoolClass, ClassAdmin)
 admin.site.register(ClassNote)
 admin.site.register(LessonPlan)
-# admin.site.register(Student)
-# admin.site.register(Parent)
+admin.site.register(GmeetClass)
