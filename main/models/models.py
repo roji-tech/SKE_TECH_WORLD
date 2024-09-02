@@ -16,9 +16,7 @@ def get_year_from_date(date_string):
     except (ValueError, IndexError):
         # Handle cases where the date string is not in the expected format
         raise ValueError(
-            f"Invalid date format: '{
-                date_string}'. Expected format 'YYYY-MM-DD'."
-        )
+            f"Invalid date format: '{date_string}'. Expected format 'YYYY-MM-DD'.")
 
 
 class School(models.Model):

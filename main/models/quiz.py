@@ -54,6 +54,7 @@ class Quiz(models.Model):
     course = models.ForeignKey(Course, on_delete=models.CASCADE, null=True)
     title = models.CharField(verbose_name=_(
         "Title"), max_length=60, blank=False)
+
     slug = models.SlugField(blank=True, unique=True)
     description = models.TextField(
         verbose_name=_("Description"),

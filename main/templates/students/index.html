@@ -73,7 +73,7 @@
         <div class="nav__data">
           <a href="#" class="nav__logo">
             <img
-              src="students/images/logo.png"
+              src="{% static 'images/students/logo.png' %}"
               alt="Logo"
               class="nav__logo-img"
             />
@@ -97,7 +97,7 @@
               <a href="{% url 'google_meets_classes' %}" class="nav__link">G-meet Classes</a>
             </li>
             <li>
-              <a href="/login form/e-exam.html" class="nav__link">E-Exam</a>
+              <a href="{% url 'e-exam' %}" class="nav__link">E-Exam</a>
             </li>
             <li class="nav__item dropdown">
               <a href="#" class="nav__link dropdown__link"
@@ -105,16 +105,16 @@
               ></a>
               <ul class="dropdown__menu">
                 <li>
-                  <a href="/login form/result.html" class="dropdown__item"
+                  <a href="{% url 'e-exam' %}" class="dropdown__item"
                     >Results</a
                   >
                 </li>
                 <li>
-                  <a href="/login form/e-exam.html" class="dropdown__item"
+                  <a href="{% url 'e-exam' %}" class="dropdown__item"
                     >Exam</a
                   >
                 </li>
-                <li><a href="#" class="dropdown__item">Homework</a></li>
+                <li><a href="{% url 'e-exam' %}" class="dropdown__item">Homework</a></li>
               </ul>
             </li>
           </ul>
@@ -135,7 +135,7 @@
       <div class="profile-details">
         <img
           id="profile-pic"
-          src="students/images/logo.png"
+          src="{% static 'images/students/logo.png' %}"
           alt="Profile Picture"
           class="profile-pic"
         />
@@ -180,7 +180,7 @@
                 70
               </div>
               <div class="notification-dot"></div>
-              <a class="read-more-button" href="/others/Library.html"
+              <a class="read-more-button" href="{% url 'library' %}"
                 ><i class="fas fa-arrow-right"></i
               ></a>
             </div>
@@ -210,7 +210,7 @@
             </div>
           </div>
         </a>
-      </div>teacher
+      </div>
 
       <div
         data-aos="fade-up"
@@ -328,7 +328,7 @@
     </footer>
 
     <!--=============== MAIN JS ===============-->
-    <script src="{% static 'students/js/main.js' %}"></script>
+    <script src="{% static 'js/students/main.js' %}"></script>
     <script>
       // Toggle Menu
       const navToggle = document.getElementById("nav-toggle");

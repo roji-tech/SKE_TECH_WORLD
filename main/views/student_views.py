@@ -45,4 +45,9 @@ class StudentClassNoteListView(ListView):
     context_object_name = 'notes'
 
 
+def e_exam(request):
+    return render(request, 'students/inner/e-exam.html') 
 
+
+def exam_quiz(request):
+    return render(request, 'students/inner/exam.html') 
