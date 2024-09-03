@@ -6,7 +6,7 @@ from main.views.student_views import StudentClassNoteListView, StudentGoogleMeet
 
 
 urlpatterns = [
-    path('students/', StudentsHome.as_view(), name='students_home'),
+    path('students/', StudentsHome.as_view(), name='students'),
 
     # path('student/view-library/', library, name='library'),
 

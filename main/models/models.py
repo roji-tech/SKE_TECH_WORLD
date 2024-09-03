@@ -16,7 +16,8 @@ def get_year_from_date(date_string):
     except (ValueError, IndexError):
         # Handle cases where the date string is not in the expected format
         raise ValueError(
-            f"Invalid date format: '{date_string}'. Expected format 'YYYY-MM-DD'.")
+            "Invalid date format: '" + date_string + "'. Expected format 'YYYY-MM-DD'."
+        )
 
 
 class School(models.Model):
@@ -58,6 +59,12 @@ class AcademicSession(models.Model):
     is_current = models.BooleanField(default=False)
     max_exam_score = models.SmallIntegerField(default=60)
 
+    @staticmethod
+    def get_school_sessions(request):
+        user = request.user
+        school = School.objects.filter(owner=user).first()
+        return AcademicSession.objects.filter(school=school)
+
     def save(self, *args, **kwargs):
         if not self.name:  # Set the name only if it's not already set
             try:
@@ -82,13 +89,29 @@ class AcademicSession(models.Model):
             year2 = get_year_from_date(self.end_date)
             self.name = f"{year1}-{year2}"
 
-        super().save(*args, **kwargs)  # Corrected to call the parent class's save method
+        # Retrieve all current sessions for the school
+        current_sessions = AcademicSession.objects.filter(
+            school=self.school, is_current=True
+        )
+        print(current_sessions)
 
-        @staticmethod
-        def get_school_sessions(request):
-            user = request.user
-            school = School.objects.filter(owner=user).first()
-            return AcademicSession.objects.filter(school=school)
+        # If this session is marked as current, ensure all others are not
+        if self.is_current:
+            # Deactivate all other sessions for the same school
+            current_sessions.update(is_current=False)
+        else:
+            # If not marked as current, find the latest session
+            latest_session = AcademicSession.objects.filter(
+                school=self.school
+            ).order_by('-end_date').first()
+
+            # If the latest session is this session, set it as current
+            if latest_session == self:
+                self.is_current = True
+                current_sessions.update(is_current=False)
+
+        # Call the parent class's save method
+        super().save(*args, **kwargs)
 
 
 class Term(models.Model):
@@ -121,6 +144,9 @@ class Teacher(models.Model):
     def __str__(self):
         return f"{self.department} - {self.user.full_name}"
 
+    class Meta:
+        ordering = ['school', 'department']
+
     def get_school_teachers(request):
         user = request.user
         school = School.get_user_school(user)
@@ -137,6 +163,12 @@ class Teacher(models.Model):
 
 class SchoolClass(models.Model):
     CLASS_CHOICES = [
+        ('BASIC1', 'Basic 1'),
+        ('Basic2', 'Basic 2'),
+        ('Basic3', 'Basic 3'),
+        ('Basic4', 'Basic 4'),
+        ('Basic5', 'Basic 5'),
+        ('Basic6', 'Basic 6'),
         ('KG1', 'Kindergarten 1'),
         ('KG2', 'Kindergarten 2'),
         ('KG3', 'Kindergarten 3'),
@@ -157,13 +189,14 @@ class SchoolClass(models.Model):
     CLASS_CATEGORIES = (
         ("ART", "Art Class"),
         ("SCIENCE", "Science Class"),
+        ("SCIENCE_TECH", "Science and Technology Class"),
         ("COMMERCIAL", "Commercial Class"),
     )
 
     DIVISION_CHOICES = [(letter, letter) for letter in string.ascii_uppercase]
 
     # school = models.ForeignKey(School, on_delete=models.CASCADE, related_name='classes')
-    name = models.CharField(max_length=4, choices=CLASS_CHOICES)
+    name = models.CharField(max_length=6, choices=CLASS_CHOICES)
     academic_session = models.ForeignKey(
         AcademicSession, on_delete=models.CASCADE, related_name='classes')
     class_teacher = models.ForeignKey(
@@ -218,6 +251,18 @@ class Student(models.Model):
         return Student.objects.filter(school=school).select_related("user", "student_class").order_by("student_class")
 
     @property
+    def full_name(self):
+        return f"{self.user.full_name}"
+
+    @property
+    def email(self):
+        return f"{self.user.email}"
+
+    @property
+    def klass(self):
+        return f"{self.student_class.name} {self.student_class.division}"
+
+    @property
     def student_age(self):
         # Helper method to calculate the student's age
         today = date.today()
@@ -234,11 +279,15 @@ class Student(models.Model):
         return f"{self.user.full_name}"
 
     def save(self, *args, **kwargs):
-        if not self.student_id:  # Check if student_id is not set
-            self.student_id = f"STU-{self.admission_date.year}-{self.id}"
+        # Save the instance first to generate the ID
+        if not self.id:
             super().save(*args, **kwargs)  # Save first to get the ID
-        else:
-            super().save(*args, **kwargs)  # Save as usual if student_id is already set
+
+        # Ensure reg_no is available before updating student_id
+        if self.reg_no:
+            self.student_id = f"STU-{self.admission_date.year}-{self.reg_no}"
+
+        super().save(*args, **kwargs)  # Save again with updated student_idI
 
 
 class Subject(models.Model):
@@ -282,7 +331,12 @@ class GmeetClass(models.Model):
     gmeet_link = models.URLField()
     start_time = models.DateTimeField()
     end_time = models.DateTimeField()
-    created_by = models.ForeignKey(User, on_delete=models.CASCADE)
+    created_by = models.ForeignKey(
+        User, on_delete=models.SET_NULL,
+        null=True, blank=True,
+        limit_choices_to={'role': "teacher", 'role': "admin", 'role': "owner"},
+        related_name="gmeets"
+    )
 
     def __str__(self):
         return f"{self.subject.name} - {self.subject.school_class.name} ({self.start_time})"

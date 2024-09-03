@@ -3,40 +3,523 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>SKE TECH SOLUTION</title>
-
+    <title>SKE TECH - Empowering Education Through Technology</title>
     <style>
-      body {
-        background-color: navy;
-        color: aliceblue;
+      /* Global Styles */
+      * {
+        transition: 0.2s all ease-in-out;
       }
-      li {
-        font-size: 30px;
+
+      body {
+        font-family: "Arial", sans-serif;
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        background-color: #f9f9f9;
+        color: #333;
       }
 
       a {
-        color: aliceblue;
+        text-decoration: none;
+        color: #3498db;
+      }
+
+      ul {
+        list-style-type: none;
+        padding: 0;
+      }
+
+      /* Header */
+      header {
+        background-color: #2c3e50;
+        padding: 1rem 2rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        color: #ecf0f1;
+        position: relative;
+      }
+
+      .logo {
+        font-size: 1.5rem;
+        font-weight: bold;
+      }
+
+      nav ul {
+        display: flex;
+        gap: 1rem;
+        align-items: center;
+      }
+
+      nav ul li a {
+        padding: 0.5rem 1rem;
+        transition: background 0.3s;
+      }
+
+      nav ul li a:hover {
+        background-color: #34495e;
+        border-radius: 5px;
+      }
+
+      .hamburger {
+        display: none;
+        flex-direction: column;
+        gap: 0.3rem;
+        cursor: pointer;
+      }
+
+      .hamburger div {
+        width: 25px;
+        height: 3px;
+        background-color: #ecf0f1;
+        transition: transform 0.3s, opacity 0.3s;
+      }
+
+      .menu-open {
+        display: flex;
+      }
+
+      .menu-open nav {
+        display: flex;
+        flex-direction: column;
+        position: absolute;
+        top: 60px;
+        right: 0;
+        background-color: #2c3e50;
+        width: 100%;
+        padding: 1rem;
+        z-index: 1000;
+
+        transition: 0.4s all ease-in-out;
+      }
+
+      .menu-open nav ul {
+        flex-direction: column;
+        gap: 0.5rem;
+      }
+
+      .menu-open nav ul li a {
+        padding: 1rem;
+        color: #ecf0f1;
+      }
+
+      .menu-open nav ul li a:hover {
+        background-color: #34495e;
+      }
+
+      /* Hero Section */
+      .hero {
+        height: 70vh;
+        background: url("https://images.unsplash.com/photo-1596495577886-d920f13eaa7a?ixlib=rb-1.2.1&auto=format&fit=crop&w=1650&q=80")
+          no-repeat center center/cover;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        color: #fff;
+        text-align: center;
+        padding: 0 1rem;
+      }
+
+      .hero h1 {
+        font-size: 2.5rem;
+        margin-bottom: 1rem;
+        text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.7);
+      }
+
+      .hero p {
+        font-size: 1.2rem;
+        margin-bottom: 2rem;
+      }
+
+      .hero a {
+        padding: 1rem 2rem;
+        background-color: #e74c3c;
+        color: #fff;
+        font-weight: bold;
+        border-radius: 5px;
+        transition: background 0.3s;
+      }
+
+      .hero a:hover {
+        background-color: #c0392b;
+      }
+
+      /* Features Section */
+      .features {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        padding: 3rem 1rem;
+        background-color: #ecf0f1;
+      }
+
+      .feature {
+        text-align: center;
+        max-width: 300px;
+        margin: 1rem;
+      }
+
+      .feature img {
+        width: 80px;
+        margin-bottom: 1rem;
+      }
+
+      .feature h3 {
+        font-size: 1.5rem;
+        margin-bottom: 1rem;
+      }
+
+      /* About Section */
+      .about {
+        padding: 3rem 1rem;
+        background-color: #fff;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+      }
+
+      .about img {
+        max-width: 100%;
+        height: auto;
+        border-radius: 10px;
+        margin-bottom: 2rem;
+      }
+
+      .about .content {
+        max-width: 800px;
+      }
+
+      .about h2 {
+        font-size: 2rem;
+        margin-bottom: 1rem;
+      }
+
+      .about p {
+        line-height: 1.6;
+        margin-bottom: 1rem;
+      }
+
+      /* Call to Action Section */
+      .cta {
+        background-color: #2c3e50;
+        color: #ecf0f1;
+        text-align: center;
+        padding: 2rem 1rem;
+      }
+
+      .cta h2 {
+        font-size: 1.8rem;
+        margin-bottom: 1rem;
+      }
+
+      .cta a {
+        padding: 1rem 2rem;
+        background-color: #3498db;
+        color: #fff;
+        border-radius: 5px;
+        transition: background 0.3s;
+      }
+
+      .cta a:hover {
+        background-color: #2980b9;
+      }
+
+      /* Contact Section */
+      .contact {
+        padding: 3rem 1rem;
+        background-color: #ecf0f1;
+        text-align: center;
+      }
+
+      .contact h2 {
+        font-size: 2rem;
+        margin-bottom: 1rem;
+      }
+
+      .contact form {
+        max-width: 600px;
+        margin: 0 auto;
+      }
+
+      .contact label {
+        display: block;
+        margin: 0.5rem 0;
+        font-weight: bold;
+      }
+
+      .contact input,
+      .contact textarea {
+        width: 100%;
+        padding: 0.75rem;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        margin-bottom: 1rem;
+      }
+
+      .contact button {
+        padding: 1rem 2rem;
+        background-color: #e74c3c;
+        color: #fff;
+        border: none;
+        border-radius: 5px;
+        font-size: 1rem;
+        cursor: pointer;
+        transition: background 0.3s;
+      }
+
+      .contact button:hover {
+        background-color: #c0392b;
+      }
+
+      /* Footer */
+      footer {
+        background-color: #34495e;
+        color: #ecf0f1;
+        text-align: center;
+        padding: 1rem;
+      }
+
+      footer p {
+        margin: 0;
+      }
+
+      /* Responsive Design */
+      @media screen and (max-width: 1024px) {
+        .hero h1 {
+          font-size: 2rem;
+        }
+
+        .hero p {
+          font-size: 1rem;
+        }
+
+        .features .feature img {
+          width: 70px;
+        }
+
+        .about {
+          padding: 2rem 1rem;
+        }
+
+        .cta h2 {
+          font-size: 1.6rem;
+        }
+      }
+
+      @media screen and (max-width: 768px) {
+        header {
+          align-items: flex-start;
+          padding: 1rem;
+        }
+
+        header nav {
+          display: none;
+        }
+
+        header .hamburger {
+          display: flex;
+        }
+
+        .menu-open {
+          display: flex;
+        }
+
+        .hero {
+          height: 50vh;
+          padding: 1rem;
+        }
+
+        .hero h1 {
+          font-size: 1.8rem;
+        }
+
+        .hero p {
+          font-size: 0.9rem;
+        }
+
+        .features {
+          flex-direction: column;
+          align-items: center;
+        }
+
+        .feature img {
+          width: 60px;
+        }
+
+        .about img {
+          margin-bottom: 1rem;
+        }
+
+        .cta {
+          padding: 1.5rem 1rem;
+        }
+
+        .cta h2 {
+          font-size: 1.4rem;
+        }
+      }
+
+      @media screen and (max-width: 480px) {
+        header {
+          padding: 1rem;
+        }
+
+        header .logo {
+          font-size: 1.25rem;
+        }
+
+        header nav ul {
+          display: none;
+        }
+
+        .contact form {
+          width: 100%;
+        }
+
+        .contact input,
+        .contact textarea {
+          font-size: 0.9rem;
+        }
       }
     </style>
   </head>
-  <body>
-    <center>
-      <h1>SKE TECH SOLUTION</h1>
-    </center>
 
-    <ul style="display: flex; flex-direction: column; gap: 30px">
-      <li>
-        <a target="_blank" href="{% url 'teachers' %}"> Teacher's Dashboard </a>
-      </li>
-      <li>
-        <a target="_blank" href="{% url 'myadmin' %}"> Admin's Dashboard </a>
-      </li>
-      <li>
-        <a target="_blank" href="/skesuperadmin"> SuperAdmin's Dashboard </a>
-      </li>
-      <li>
-        <a target="_blank" href="/students"> Student's Dashboard </a>
-      </li>
-    </ul>
+  <body>
+    <!-- Header -->
+    <header>
+      <div class="logo">SKE TECH</div>
+      <div class="hamburger" onclick="toggleMenu()">
+        <div></div>
+        <div></div>
+        <div></div>
+      </div>
+      <nav>
+        <ul>
+          <li><a href="#features">Features</a></li>
+          <li><a href="#about">About Us</a></li>
+          <li><a href="#contact">Contact</a></li>
+          <li><a href="/admin/register/">Register your School</a></li>
+          <!-- Uncomment if login links are needed
+                <li><a href="/teachers/login/">Teacher Login</a></li>
+                <li><a href="/students/login/">Student Login</a></li>
+          -->
+        </ul>
+      </nav>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+      <div>
+        <h1>Welcome to SKE TECH</h1>
+        <p>Empowering Education Through Technology</p>
+        <a href="#contact">Get Started</a>
+      </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="features" id="features">
+      <div class="feature">
+        <img
+          src="https://img.icons8.com/ios-filled/100/000000/school.png"
+          alt="School Management"
+        />
+        <h3>School Management</h3>
+        <p>
+          Manage school operations, academic sessions, and student enrollments
+          with ease.
+        </p>
+      </div>
+      <div class="feature">
+        <img
+          src="https://img.icons8.com/ios-filled/100/000000/teacher.png"
+          alt="Teacher Dashboard"
+        />
+        <h3>Teacher Dashboard</h3>
+        <p>
+          Comprehensive tools for teachers to manage classes and student
+          progress.
+        </p>
+      </div>
+      <div class="feature">
+        <img
+          src="https://img.icons8.com/ios-filled/100/000000/student-male.png"
+          alt="Student Portal"
+        />
+        <h3>Student Portal</h3>
+        <p>
+          Personalized student portals with access to assignments, grades, and
+          more.
+        </p>
+      </div>
+    </section>
+
+    <!-- About Section -->
+    <section class="about" id="about">
+      <img
+        src="https://images.unsplash.com/photo-1587560699334-f186d9d717c2?ixlib=rb-1.2.1&auto=format&fit=crop&w=1650&q=80"
+        alt="About Us"
+      />
+      <div class="content">
+        <h2>About SKE TECH</h2>
+        <p>
+          SKE TECH is a comprehensive platform designed to simplify the
+          management of educational institutions. From school administration to
+          teacher and student dashboards, our platform covers all the essential
+          tools you need to ensure a seamless educational experience.
+        </p>
+        <p>
+          Whether you are an administrator, teacher, or student, SKE TECH
+          provides the tools you need to succeed in the digital age of
+          education.
+        </p>
+      </div>
+    </section>
+
+    <!-- Call to Action Section -->
+    <section class="cta">
+      <h2>Ready to Transform Your School?</h2>
+      <a href="{% url 'register-school' %}">Get Started</a>
+    </section>
+
+    <!-- Contact Section -->
+    <section class="contact" id="contact">
+      <h2>Contact Us</h2>
+      <form action="/submit_form/" method="post">
+        <label for="name">Name:</label>
+        <input type="text" id="name" name="name" required />
+
+        <label for="email">Email:</label>
+        <input type="email" id="email" name="email" required />
+
+        <label for="message">Message:</label>
+        <textarea id="message" name="message" rows="4" required></textarea>
+
+        <button type="submit">Send Message</button>
+      </form>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+      <p>&copy; 2024 SKE TECH. All rights reserved.</p>
+    </footer>
+
+    <script>
+      // Smooth scroll for anchor links
+      document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
+        anchor.addEventListener("click", function (e) {
+          e.preventDefault();
+
+          document.querySelector(this.getAttribute("href")).scrollIntoView({
+            behavior: "smooth",
+          });
+        });
+      });
+
+      // Toggle menu visibility
+      function toggleMenu() {
+        document.querySelector("header").classList.toggle("menu-open");
+      }
+    </script>
   </body>
 </html>

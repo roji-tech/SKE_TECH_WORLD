@@ -61,17 +61,27 @@ class TeacherUserForm(forms.ModelForm):
             'placeholder': 'Enter Password',
             'class': 'input',
             'disabled': 'disabled',
-            'value': "Disabled: Teacher's Surname in lowercase"
+            'value': "Disabled: Teacher's Surname in lowercase is default"
         }),
         required=False
     )
 
 
 class StudentForm(forms.ModelForm):
+
+    def __init__(self, *args, **kwargs):
+        # Extract the request object from the keyword arguments
+        self.request = kwargs.pop('request', None)
+        super(StudentForm, self).__init__(*args, **kwargs)
+
+        print(self.fields)
+        if self.request:
+            self.fields['academic_year'].queryset = AcademicSession.get_school_sessions(
+                self.request)
+
     class Meta:
         model = Student
         fields = [
-            'student_id',
             'date_of_birth',
             'admission_date',
             'student_class',
@@ -79,20 +89,22 @@ class StudentForm(forms.ModelForm):
             'reg_no'
         ]
         widgets = {
-            'student_id': forms.TextInput(attrs={
-                'placeholder': 'Enter Student ID',
-                'class': 'input',
-                'required': 'required'
-            }),
+            # 'student_id': forms.TextInput(attrs={
+            #     'placeholder': 'Enter Student ID',
+            #     'class': 'input',
+            #     'required': 'required'
+            # }),
             'date_of_birth': forms.DateInput(attrs={
                 'placeholder': 'YYYY-MM-DD',
                 'class': 'input',
-                'required': 'required'
+                'required': 'required',
+                'type': 'date'
             }),
             'admission_date': forms.DateInput(attrs={
                 'placeholder': 'YYYY-MM-DD',
                 'class': 'input',
-                'required': 'required'
+                'required': 'required',
+                'type': 'date'
             }),
             'student_class': forms.Select(attrs={
                 'class': 'input-1',
@@ -144,7 +156,7 @@ class StudentUserForm(forms.ModelForm):
             'placeholder': 'Enter Password',
             'class': 'input',
             'disabled': 'disabled',
-            'value': "Disabled: Teacher's Surname in lowercase"
+            'value': "Disabled: Student's Surname in lowercase is default"
         }),
         required=False
     )
@@ -186,19 +198,6 @@ class ClassForm(forms.ModelForm):
         model = SchoolClass
         fields = ['name', 'academic_session',
                   'class_teacher', 'division', 'category']
-
-    def __init__(self, *args, **kwargs):
-        # Extract the request object from the keyword arguments
-        self.request = kwargs.pop('request', None)
-        super(ClassForm, self).__init__(*args, **kwargs)
-
-        self.fields['academic_session'].queryset = AcademicSession.get_school_sessions(
-            self.request)
-
-        if self.request:
-            self.fields['academic_session'].queryset = AcademicSession.get_school_sessions(
-                self.request)
-
         widgets = {
             'school_class': CustomSelect(attrs={
                 'class': 'custom-select-class',  # Add your custom class
@@ -206,6 +205,41 @@ class ClassForm(forms.ModelForm):
                 'data-custom-attribute': 'example',  # Add custom data attributes if needed
             }),
         }
+
+    def __init__(self, *args, **kwargs):
+        # Extract the request object from the keyword arguments
+        self.request = kwargs.pop('request', None)
+        super(ClassForm, self).__init__(*args, **kwargs)
+
+        if self.request:
+            print(
+                Teacher.objects.filter(
+                    school__in=AcademicSession.get_school_sessions(
+                        self.request
+                    ).values('school')
+                )
+            )
+            self.fields['academic_session'].queryset = AcademicSession.get_school_sessions(
+                self.request
+            )
+            self.fields['class_teacher'].queryset = Teacher.objects.filter(
+                school__in=AcademicSession.get_school_sessions(
+                    self.request
+                ).values('school')
+            )
+
+    def clean(self):
+        self._validate_unique = True
+        print("""
+        
+        
+        hello
+        
+        """)
+        print(self.cleaned_data)
+        return self.cleaned_data
+
+    
 
 
 class SubjectForm(forms.ModelForm):

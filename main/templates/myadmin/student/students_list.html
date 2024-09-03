@@ -4,7 +4,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Teachers List List</title>
+    <title>Students List List</title>
     <link
       rel="stylesheet"
       href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap"
@@ -215,7 +215,7 @@
       <div class="sub-rows">
         <p>Subject Class List</p>
 
-        <a id="add_new" href="{% url 'add-subject' %}"> Add New Student </a>
+        <a id="add_new" href="{% url 'add-student' %}"> Add New Student </a>
       </div>
 
       <div class="search-row">
@@ -256,15 +256,13 @@
       <div class="table">
         <table>
           <thead>
-            <th>Reg No.</th>
+            <th>*</th>
             <th>Full Name</th>
             <th>Student Class</th>
             <th>Gender</th>
             <th>D.O.B</th>
-            <th>Divison</th>
             <th>Reg No</th>
-            <th>Term</th>
-            <th>Acc Year</th>
+            <th>Admitted Year</th>
             <th>Picture</th>
             <th>Edit</th>
             <th>Delete</th>
@@ -273,18 +271,14 @@
           <tbody>
             {% for student in students %}
             <tr>
-              <td>{{ student.reg_no }}</td>
-              <td>{{ student.full_name }}</td>
-              <td>{{ student.student_class.name }}</td>
-              <th>Gender</th>
-              <th>D.O.B</th>
-              <th>Divison</th>
-              <th>Reg No</th>
-              <th>Term</th>
-              <th>Acc Year</th>
-              <th>Picture</th>
+              <td>{{ forloop.counter }}</td>
 
-              <td>{{ student.user.email }}</td>
+              <td>{{ student.full_name }}</td>
+              <td>{{ student.klass }}</td>
+              <td>{{ student.user.get_gender_display }}</td>
+              <td>{{ student.date_of_birth }}</td>
+              <td>{{ student.reg_no }}</td>
+              <td>{{ student.admission_date }}</td>
               <td>
                 {% if student.user.picture %}
                 <img
@@ -301,7 +295,6 @@
                 />
                 {% endif %}
               </td>
-              <td>{{ student.get_name_display }}</td>
 
               <td>
                 <a href="{% url 'update-student' student.pk %}">Edit 🔁</a>
@@ -312,22 +305,6 @@
             </tr>
             {% endfor %}
             <!-- Add more rows as needed -->
-            <tr>
-              <td>1</td>
-              <td>Samuel okwaraji</td>
-              <td>js2</td>
-              <td>Male</td>
-              <td>11/07/2007</td>
-              <td>A</td>
-              <td>088</td>
-              <td>1st</td>
-              <td>2023</td>
-              <td>
-                <img src="ball.jpeg" alt="Student" class="student-picture" />
-              </td>
-              <td><a href="studentProfileUpdate.html">Edit🔁</a></td>
-              <td><a href="#" class="delete">Delete🚮</a></td>
-            </tr>
           </tbody>
         </table>
       </div>

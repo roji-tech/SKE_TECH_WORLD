@@ -1,6 +1,9 @@
 from .base import BASE_DIR
+import os
 
 STATIC_URL = '/static/'
+
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 # Directories for local static files (optional)
 STATICFILES_DIRS = [
@@ -10,3 +13,5 @@ STATICFILES_DIRS = [
 
 # Not needed for local development, but typically used in production
 # STATIC_ROOT = BASE_DIR / 'staticfiles'
+# This is for serving static files in production
+STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.ManifestStaticFilesStorage'

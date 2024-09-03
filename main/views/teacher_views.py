@@ -9,28 +9,6 @@ from main.forms import GoogleMeetForm, LessonPlanForm
 from main.models.models import GmeetClass, LessonPlan
 
 
-class TeacherLogin(View):
-    def get(self, request, *args, **kwargs):
-        return render(request, "teachers/teacher-login.html")
-
-    def post(self, request, *args, **kwargs):
-        print(request.POST)
-        username = request.POST.get('username')
-        password = request.POST.get('password')
-
-        user = authenticate(request, username=username, password=password)
-        print(user, username, password)
-
-        if user is not None:
-            print(user)
-            login(request, user)
-            return redirect('myadmin')
-        else:
-            messages.error(request, 'Invalid username or password')
-
-        return render(request, "myadmin/login.html")
-
-
 class TeachersHome(View):
     def get(self, request, *args, **kwargs):
         # Custom logic here

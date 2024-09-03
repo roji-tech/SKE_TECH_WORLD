@@ -4,7 +4,6 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Add Student</title>
-    <link rel="stylesheet" href="employee.css" />
 
     <style>
       @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap");
@@ -304,11 +303,7 @@
 
       <div class="contents">
         <form id="studentForm" method="post">
-          {% csrf_token %}
-          <br />
-          <br />
-          <br />
-          {% for field in user_form %}
+          {% csrf_token %} {% for field in user_form %}
           <div class="inline-f">
             <label for="{{ field.id_for_label }}" class="class"
               >{{ field.label }}</label
@@ -349,7 +344,7 @@
     <div id="updateOverlay" class="overlay">
       <div class="overlay-content">
         <span class="close">&times;</span>
-        <p>Are you sure you want to add this Teacher?</p>
+        <p>Are you sure you want to add this Student?</p>
         <table class="details-table">
           <tr>
             <th>First Name</th>
@@ -364,16 +359,28 @@
             <td id="confirmGender"></td>
           </tr>
           <tr>
-            <th>Department</th>
-            <td id="confirmDepartment"></td>
+            <th>Date of birth</th>
+            <td id="confirmDateOfBirth"></td>
           </tr>
           <tr>
             <th>Email</th>
             <td id="confirmEmail"></td>
           </tr>
           <tr>
-            <th>Phone</th>
-            <td id="confirmPhone"></td>
+            <th>Admission date</th>
+            <td id="confirmAdmissionDate"></td>
+          </tr>
+          <tr>
+            <th>Academic year</th>
+            <td id="confirmAcademicYear"></td>
+          </tr>
+          <tr>
+            <th>Student class</th>
+            <td id="confirmStudentClass"></td>
+          </tr>
+          <tr>
+            <th>Registration No.</th>
+            <td id="confirmRegNo"></td>
           </tr>
           <tr>
             <th>Picture</th>
@@ -431,13 +438,19 @@
         document.getElementById("confirmLastName").innerText =
           document.getElementById("id_last_name").value;
         document.getElementById("confirmGender").innerText =
-          document.getElementById("id_gender").value;
-        document.getElementById("confirmPhone").innerText =
-          document.getElementById("id_phone").value;
-        document.getElementById("confirmDepartment").innerText =
-          document.getElementById("id_department").value;
+          document.getElementById("id_gender").selectedOptions[0].text;
         document.getElementById("confirmEmail").innerText =
           document.getElementById("id_email").value;
+        document.getElementById("confirmDateOfBirth").innerText =
+          document.getElementById("id_date_of_birth").value;
+        document.getElementById("confirmAdmissionDate").innerText =
+          document.getElementById("id_admission_date").value;
+        document.getElementById("confirmAcademicYear").innerText =
+          document.getElementById("id_academic_year").selectedOptions[0].text;
+        document.getElementById("confirmStudentClass").innerText =
+          document.getElementById("id_student_class").selectedOptions[0].text;
+        document.getElementById("confirmRegNo").innerText =
+          document.getElementById("id_reg_no").value;
 
         var pictureFile = document.getElementById("Picture").files[0];
         var confirmPictureCell = document.getElementById("confirmPicture");
