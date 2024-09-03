@@ -10,7 +10,9 @@ INSTALLED_APPS = [
     'django_extensions',
 
     'django_seed',
-    'main',
     'django_filters',
+
+    'main',
+    'library',
 
 ]
