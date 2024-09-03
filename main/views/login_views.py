@@ -69,7 +69,7 @@ class SuperAdminAuthenticationForm(CustomAuthenticationForm):
 
 class CustomLoginView(LoginView):
     authentication_form = CustomAuthenticationForm
-    template_name = 'login.htm'
+    template_name = "myadmin/login.html"
     role = None
     page = None
 
@@ -125,6 +125,7 @@ class TeacherLoginView(CustomLoginView):
 
 
 class StudentLoginView(CustomLoginView):
+    template_name = "myadmin/login.html"
     page = "Student"
     role = STUDENT
     ...

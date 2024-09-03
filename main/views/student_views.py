@@ -28,6 +28,7 @@ from ..models.models import ClassNote, GmeetClass
 
 #         return render(request, "myadmin/login.html")
 
+
 class StudentsHome(View):
     def get(self, request, *args, **kwargs):
         # Custom logic here
