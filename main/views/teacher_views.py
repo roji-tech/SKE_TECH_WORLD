@@ -6,33 +6,7 @@ from django.views import View
 from django.views.generic import ListView
 
 from main.forms import GoogleMeetForm, LessonPlanForm
-from main.models import GmeetClass, LessonPlan, TEACHER
-
-
-class TeacherLogin(View):
-    def get(self, request, *args, **kwargs):
-        return render(request, "teachers/teacher-login.html")
-
-    def post(self, request, *args, **kwargs):
-        print(request.POST)
-        username = request.POST.get('username')
-        password = request.POST.get('password')
-
-        user = authenticate(request, username=username, password=password)
-
-        if user.role != TEACHER:
-            return render(request, "teachers/login.html")
-
-        print(user, username, password)
-
-        if user is not None:
-            print(user)
-            login(request, user)
-            return redirect('teachers')
-        else:
-            messages.error(request, 'Invalid username or password')
-
-        return render(request, "teachers/login.html")
+from main.models.models import GmeetClass, LessonPlan
 
 
 class TeachersHome(View):

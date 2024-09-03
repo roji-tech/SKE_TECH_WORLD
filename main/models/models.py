@@ -83,6 +83,13 @@ class AcademicSession(models.Model):
             year2 = get_year_from_date(self.end_date)
             self.name = f"{year1}-{year2}"
 
+        # If this session is marked as current, ensure all others are not
+        if self.is_current:
+            # Deactivate all other sessions for the same school
+            AcademicSession.objects.filter(
+                school=self.school, is_current=True
+            ).update(is_current=False)
+
         super().save(*args, **kwargs)  # Corrected to call the parent class's save method
 
     @staticmethod

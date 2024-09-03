@@ -15,14 +15,13 @@ from main.views.admin_views import (
     GmeetListView
 )
 
-from ..views import AdminsHome, RegisterAndRegisterSchool, AdminLogin, AdminsHelp
+from ..views import AdminsHome, RegisterAndRegisterSchool, AdminsHelp
 
 
 urlpatterns = [
     path('admin/', AdminsHome.as_view(), name='myadmin'),
     path('admin/register/', RegisterAndRegisterSchool.as_view(),
          name='register-school'),
-    path('admin/login/', AdminLogin.as_view(), name='admin-login'),
     path('admin/help/', AdminsHelp.as_view(), name='admin-help'),
 
 
