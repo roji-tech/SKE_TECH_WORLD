@@ -1,6 +1,9 @@
 from django.db import models
+from django.contrib.contenttypes.fields import GenericForeignKey
+from django.contrib.contenttypes.models import ContentType
 from main.models.models import School
 # Create your models here.
+
 
 
 class Library(models.Model):
@@ -23,6 +26,15 @@ class LibraryBook(models.Model):
     author = models.CharField(max_length=50)
     isbn = models.CharField(max_length=20)
     available_copies = models.IntegerField()
+
+
+    class Meta:
+        permissions = [
+            ('can_add_books', 'Can add books'),
+            ('can_view_books', 'Can view books'),
+            ('can_change_books', 'Can change books'),
+            ('can_delete_books', 'Can delete books'),
+        ]
 
     def __str__(self):
         return self.title

@@ -1,7 +1,7 @@
 from django.db.models import Q
+from django.db.utils import IntegrityError
 import logging
 from django.http import JsonResponse
-import django.db
 from django.forms.models import BaseModelForm
 from django.http.response import JsonResponse
 from typing import Any

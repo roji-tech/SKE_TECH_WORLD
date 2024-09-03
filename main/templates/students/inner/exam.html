@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Subject Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- <link rel="stylesheet" href="../updated/common entrance/styles.css"> -->
+    <style>
+        body, html {
+  margin: 0;
+  padding: 0;
+  font-family: 'Poppins', sans-serif;
+  height: 100%;
+}
+.dashboard {
+  min-height: 100%;
+  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+  display: flex;
+  flex-direction: column;
+}
+.navbar {
+  background-color: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(10px);
+  padding: 10px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.profile {
+  display: flex;
+  align-items: center;
+}
+.profile-pic {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  margin-right: 10px;
+}
+.profile-name {
+  color: #333;
+  font-weight: bold;
+}
+.subject-name {
+  font-size: 1.2em;
+  font-weight: bold;
+}
+.timer {
+  font-size: 1.2em;
+  font-weight: bold;
+}
+.content {
+  padding: 20px;
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.question-count {
+  margin-bottom: 20px;
+  font-size: 1.1em;
+}
+.question-container {
+  width: 80%;
+  max-width: 800px;
+  background-color: white;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  margin-bottom: 20px;
+  transition: all 0.3s ease;
+}
+.question {
+  margin-bottom: 20px;
+}
+.options {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+.option {
+  display: flex;
+  align-items: center;
+  background-color: #f0f0f0;
+  padding: 10px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+.option:hover {
+  background-color: #e0e0e0;
+}
+.option.selected {
+  background-color: #d4edda;
+}
+.option-checkbox {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  border: 2px solid #4CAF50;
+  margin-right: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.option.selected .option-checkbox::after {
+  content: '';
+  width: 12px;
+  height: 12px;
+  background-color: #4CAF50;
+  border-radius: 50%;
+}
+.button-container {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 20px;
+}
+.nav-btn {
+  background-color: #4CAF50;
+  border: none;
+  color: white;
+  padding: 10px 20px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: background-color 0.3s ease;
+}
+.nav-btn:hover {
+  background-color: #45a049;
+}
+.nav-btn:disabled {
+  background-color: #cccccc;
+  cursor: not-allowed;
+}
+.submit-btn {
+  background-color: #2196F3;
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+}
+.overlay {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 1000;
+  justify-content: center;
+  align-items: center;
+}
+.confirmation-box {
+  background-color: white;
+  padding: 20px;
+  border-radius: 8px;
+  text-align: center;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+}
+.confirmation-box h2 {
+  margin-top: 0;
+}
+.confirmation-box button {
+  margin: 10px;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 16px;
+}
+.confirm-btn {
+  background-color: #4CAF50;
+  color: white;
+}
+.cancel-btn {
+  background-color: #f44336;
+  color: white;
+}
+#scoreOverlay .confirmation-box {
+  background-color: #f0f8ff;
+  border: 2px solid #4CAF50;
+}
+#scoreDisplay {
+  font-size: 24px;
+  font-weight: bold;
+  color: #4CAF50;
+}
+    </style>
+</head>
+<body>
+    <div class="dashboard">
+        <nav class="navbar">
+            <div class="timer" id="timer">00:00:00</div>
+            <div class="subject-name">Mathematics</div>
+            <div class="profile">
+                <img src="https://via.placeholder.com/40" alt="Profile Picture" class="profile-pic">
+                <span class="profile-name">John Doe</span>
+            </div>
+        </nav>
+        <div class="content">
+            <div class="question-count">No. of questions answered: <span id="questionCount">0</span></div>
+            <div class="question-container" id="questionContainer">
+                <div class="question" id="currentQuestion">
+                    <h2>Question 1</h2>
+                    <p>What is 2 + 2?</p>
+                </div>
+                <div class="options" id="options">
+                    <div class="option" onclick="selectOption(this)"><div class="option-checkbox"></div>A) 3</div>
+                    <div class="option" onclick="selectOption(this)"><div class="option-checkbox"></div>B) 4</div>
+                    <div class="option" onclick="selectOption(this)"><div class="option-checkbox"></div>C) 5</div>
+                    <div class="option" onclick="selectOption(this)"><div class="option-checkbox"></div>D) 6</div>
+                </div>
+                <div class="button-container">
+                    <button class="nav-btn" id="prevBtn" onclick="prevQuestion()" disabled>Previous</button>
+                    <button class="nav-btn" id="nextBtn" onclick="nextQuestion()">Next</button>
+                </div>
+            </div>
+        </div>
+        <button class="nav-btn submit-btn" onclick="showConfirmation()">Submit</button>
+    </div>
+    <div class="overlay" id="confirmationOverlay">
+        <div class="confirmation-box">
+            <h2>Confirm Submission</h2>
+            <p>Are you Sure You Want to Submit your exam?, You cannot undo this action</p>
+            <button class="confirm-btn" onclick="submitQuiz()">Yes, Submit</button>
+            <button class="cancel-btn" onclick="hideConfirmation()">Cancel</button>
+        </div>
+    </div>
+    <div class="overlay" id="scoreOverlay">
+        <div class="confirmation-box">
+            <h2>Quiz Completed</h2>
+            <p>Your score is: <span id="scoreDisplay"></span></p>
+            <button class="confirm-btn" onclick="closeScoreOverlay()">Close</button>
+        </div>
+    </div>
+    <script src="../updated/common entrance/script.js"></script>
+</body>
+</html>

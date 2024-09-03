@@ -1,4 +1,5 @@
 from django import forms
+from library.models import LibraryBook
 from main.models.models import (
     AcademicSession, SchoolClass,
     GmeetClass, LessonPlan, Subject,
@@ -275,6 +276,14 @@ class LessonPlanForm(forms.ModelForm):
             'uploaded_file': forms.ClearableFileInput(attrs={'class': 'input'}),
             'school_clas': forms.Select(attrs={'class': 'input'}),
         }
+
+
+class LibraryBookForm(forms.ModelForm):
+    class Meta:
+        model = LibraryBook
+        fields = '__all__'
+
+
 
 
 # class ContinuousAssessmentForm(forms.ModelForm):
