@@ -59,6 +59,12 @@ class AcademicSession(models.Model):
     is_current = models.BooleanField(default=False)
     max_exam_score = models.SmallIntegerField(default=60)
 
+    @staticmethod
+    def get_school_sessions(request):
+        user = request.user
+        school = School.objects.filter(owner=user).first()
+        return AcademicSession.objects.filter(school=school)
+
     def save(self, *args, **kwargs):
         if not self.name:  # Set the name only if it's not already set
             try:
@@ -83,20 +89,29 @@ class AcademicSession(models.Model):
             year2 = get_year_from_date(self.end_date)
             self.name = f"{year1}-{year2}"
 
+        # Retrieve all current sessions for the school
+        current_sessions = AcademicSession.objects.filter(
+            school=self.school, is_current=True
+        )
+        print(current_sessions)
+
         # If this session is marked as current, ensure all others are not
         if self.is_current:
             # Deactivate all other sessions for the same school
-            AcademicSession.objects.filter(
-                school=self.school, is_current=True
-            ).update(is_current=False)
+            current_sessions.update(is_current=False)
+        else:
+            # If not marked as current, find the latest session
+            latest_session = AcademicSession.objects.filter(
+                school=self.school
+            ).order_by('-end_date').first()
 
-        super().save(*args, **kwargs)  # Corrected to call the parent class's save method
+            # If the latest session is this session, set it as current
+            if latest_session == self:
+                self.is_current = True
+                current_sessions.update(is_current=False)
 
-    @staticmethod
-    def get_school_sessions(request):
-        user = request.user
-        school = School.objects.filter(owner=user).first()
-        return AcademicSession.objects.filter(school=school)
+        # Call the parent class's save method
+        super().save(*args, **kwargs)
 
 
 class Term(models.Model):
@@ -148,6 +163,12 @@ class Teacher(models.Model):
 
 class SchoolClass(models.Model):
     CLASS_CHOICES = [
+        ('BASIC1', 'Basic 1'),
+        ('Basic2', 'Basic 2'),
+        ('Basic3', 'Basic 3'),
+        ('Basic4', 'Basic 4'),
+        ('Basic5', 'Basic 5'),
+        ('Basic6', 'Basic 6'),
         ('KG1', 'Kindergarten 1'),
         ('KG2', 'Kindergarten 2'),
         ('KG3', 'Kindergarten 3'),
@@ -175,7 +196,7 @@ class SchoolClass(models.Model):
     DIVISION_CHOICES = [(letter, letter) for letter in string.ascii_uppercase]
 
     # school = models.ForeignKey(School, on_delete=models.CASCADE, related_name='classes')
-    name = models.CharField(max_length=4, choices=CLASS_CHOICES)
+    name = models.CharField(max_length=6, choices=CLASS_CHOICES)
     academic_session = models.ForeignKey(
         AcademicSession, on_delete=models.CASCADE, related_name='classes')
     class_teacher = models.ForeignKey(

@@ -2,6 +2,7 @@ from django.core.exceptions import PermissionDenied
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
 from functools import wraps
+from django.shortcuts import redirect, render
 
 
 def role_required(role_check, login_url):
@@ -11,8 +12,8 @@ def role_required(role_check, login_url):
             class Wrapper(view_func_or_class):
                 def dispatch(self, request, *args, **kwargs):
                     if not role_check(request.user):
-                        raise PermissionDenied(
-                            "You do not have permission to view this page.")
+                        return render(request, '403.html', status=403)
+
                     return super().dispatch(request, *args, **kwargs)
             return Wrapper
         else:  # If it's a function-based view
@@ -21,9 +22,9 @@ def role_required(role_check, login_url):
                 if not request.user.is_authenticated:
                     return redirect(f"{login_url}?next={request.path}")
                 if not role_check(request.user):
-                    raise PermissionDenied(
-                        "You do not have permission to view this page."
-                    )
+                    # Render custom 403 template
+                    return render(request, '403.html', status=403)
+
                 return view_func_or_class(request, *args, **kwargs)
             return wrapper
     return decorator

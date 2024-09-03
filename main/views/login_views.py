@@ -29,8 +29,7 @@ class CustomAuthenticationForm(AuthenticationForm):
         label="Email", max_length=254, widget=forms.EmailInput(attrs={'autofocus': True}))
 
     def __init__(self, request=None, *args, **kwargs):
-        if not self.role:
-            self.role = kwargs.pop('role', None)
+        self.role = kwargs.pop('role', None)
 
         if not self.role:
             raise ImproperlyConfigured(
@@ -44,6 +43,7 @@ class CustomAuthenticationForm(AuthenticationForm):
         if user.role == OWNER:
             user_role = ADMIN
 
+        print("user_role", "self.role")
         print(user_role, self.role)
         if not user.is_active:
             raise forms.ValidationError(
