@@ -36,8 +36,8 @@ def admin_is_authenticated(*args):
     # print(args)I
     return method_decorator(login_required(login_url="/admin/login/"), name='dispatch')
 
-
-@admin_is_authenticated()
+# for quick testing
+# @admin_is_authenticated() 
 class AdminsHome(ListView):
     def get(self, request, *args, **kwargs):
         # Custom logic here

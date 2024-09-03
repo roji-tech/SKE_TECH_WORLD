@@ -222,15 +222,17 @@ table td {
                     </thead>
                     <tbody>
                         <tr>
-                            <td>1</td>
-                            <td><img src="" alt="image"></td>
-                            <td>Truth Be Told</td>
-                            <td>DEMO TEACHERS</td>
-                            <td>Download</td>
-                            <td>
-                                <span class="edit">Edit</span>
-                                <span class="delete">Delete</span>
-                            </td>
+                            {% for book in library_books %}
+                                <td>{{ book.id }}</td>
+                                <td><img src="" alt="image">{{ book.url }}</td>
+                                <td>{{ book.title }}</td>
+                                <td>{{ book.self.request.user }}</td>
+                                <td>{{ book.}}</td>
+                                <td>
+                                    <span class="edit"  href="{% url 'library:change_library_book' %}">Edit</span>
+                                    <span class="delete" href="{% url 'delete_' %}">Delete</span>
+                                </td>
+                            {% endfor %}
                         </tr>
                     
                     </tbody>
@@ -244,20 +246,30 @@ table td {
         <div class="overlay-content">
             <span class="close" id="closeOverlay">&times;</span>
             <h2>Upload Book</h2>
-            <form action="#" method="POST">
+            <form action="{% url 'library:add_book_to_library' %}" method="POST" enctype="multipart/form-data">
+                {% csrf_token %}
+                <!-- Title Field -->
                 <label for="bookTitle">Title:</label>
-                <input type="text" id="bookTitle" name="bookTitle" required>
-                <label for="author">Uploaded By:</label>
-                <input type="text" id="author" name="author">
-                <label for="uploadFile">Choose an image:</label>
-                <input type="file" id="uploadFile" name="uploadFile" accept=".png,.jpg" required>
+                <input type="text" id="bookTitle" name="title" required>
+                
+                <!-- Uploaded By Field -->
+                <label for="uploadedBy">Uploaded By:</label>
+                <input type="text" id="uploadedBy" name="uploaded_by">
+                
+                <!-- Image Upload Field -->
+                <label for="uploadImage">Choose an image:</label>
+                <input type="file" id="uploadImage" name="image" accept=".png,.jpg" required>
+                
+                <!-- File Upload Field -->
                 <label for="uploadFile">Choose a file:</label>
-                <input type="file" id="uploadFile" name="uploadFile" accept=".pdf,.doc,.docx" required>
+                <input type="file" id="uploadFile" name="file" accept=".pdf,.doc,.docx" required>
+                
+                <!-- Submit Button -->
                 <button type="submit">Upload</button>
             </form>
         </div>
     </div>
-
+    
     <script>
         const uploadButton = document.getElementById('upload');
         const uploadOverlay = document.getElementById('uploadOverlay');

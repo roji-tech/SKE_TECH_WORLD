@@ -1,5 +1,6 @@
 from django.shortcuts import get_object_or_404, redirect, render
 from django.contrib.auth.decorators import login_required, permission_required
+from django.contrib import messages
 from django.urls import reverse_lazy
 from django.views.generic import View
 
@@ -10,8 +11,8 @@ from .models import Library, LibraryBook
 @login_required
 @permission_required('library.can_view_book', raise_exception=True)
 def library_books_list(request):
-  libraryBooks = LibraryBook.objects.all()
-  return render(request, 'library.html', {'librarybooks' : libraryBooks})
+  library_books = LibraryBook.objects.all()
+  return render(request, 'library.html', {'librarybooks' : library_books})
 
 
 
@@ -38,8 +39,10 @@ def update_library_book(request, pk):
             return redirect('library:library_book_list')
         
     else:
-        form = LibraryBookForm()
+        form = LibraryBookForm(instance=book)
     return render(request, 'index.html', {'form': form , 'book' : book})
+
+
 @login_required
 @permission_required('library.can_delete_book', raise_exception=True)
 def delete_library_book(request, pk):

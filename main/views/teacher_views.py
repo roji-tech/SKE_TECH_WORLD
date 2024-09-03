@@ -92,12 +92,6 @@ def lessons_list(request):
     return render(request, 'teachers/notes/lessonNoteList.html', {'lesson_plans': lesson_plans})
 
 
-"""Library"""
-
-
-def library(request):
-    return render(request, 'teachers/Library.html')
-
 
 """Notes Views"""
 
