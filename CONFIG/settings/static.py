@@ -13,3 +13,5 @@ STATICFILES_DIRS = [
 
 # Not needed for local development, but typically used in production
 # STATIC_ROOT = BASE_DIR / 'staticfiles'
+# This is for serving static files in production
+STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.ManifestStaticFilesStorage'
