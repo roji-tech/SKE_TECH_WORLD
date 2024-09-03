@@ -23,7 +23,7 @@ from main.models.models import School, Student, Subject, Teacher, GmeetClass
 from main.forms import TeacherForm, StudentForm, TeacherUserForm, StudentUserForm
 from main.models.models import Student
 from ..forms import AcademicSessionForm, ClassForm  # Assuming you have a form
-from main.decorators import admin_is_authenticated
+from main import mydecorators
 # from ..models.profiles import Teacher
 # from ..forms import TeachersForm
 
@@ -39,7 +39,7 @@ class AddRequestToFormMixin(View):
         return form_class(request=self.request, **self.get_form_kwargs())
 
 
-@admin_is_authenticated()
+@mydecorators.admin_is_authenticated
 class AdminsHome(ListView):
     def get(self, request, *args, **kwargs):
         # Custom logic here
@@ -104,7 +104,7 @@ class RegisterAndRegisterSchool(View):
             return JsonResponse({"status": False, "message": "Error creating account. Please try again."})
 
 
-@admin_is_authenticated()
+@mydecorators.admin_is_authenticated
 class AdminsHelp(View):
     def get(self, request, *args, **kwargs):
         # Custom logic here
@@ -114,7 +114,7 @@ class AdminsHelp(View):
 # ACADEMIC SESSION
 # ACADEMIC SESSION
 # ACADEMIC SESSION
-@admin_is_authenticated()
+@mydecorators.admin_is_authenticated
 class ListSession(ListView):
     template_name = "myadmin/list_sessions.html"
     context_object_name = 'academic_sessions'
@@ -123,7 +123,7 @@ class ListSession(ListView):
         return AcademicSession.get_school_sessions(request=self.request)
 
 
-@admin_is_authenticated()
+@mydecorators.admin_is_authenticated
 class AddSession(View):
     template_name = "myadmin/add_session.html"
 
@@ -189,7 +189,7 @@ class AddSession(View):
         return render(request, self.template_name, {'form': form})
 
 
-@admin_is_authenticated()
+@mydecorators.admin_is_authenticated
 class UpdateSession(UpdateView):
     model = AcademicSession
     context_object_name = 'academicSession'
@@ -201,7 +201,7 @@ class UpdateSession(UpdateView):
         return AcademicSession.get_school_sessions(request=self.request)
 
 
-@admin_is_authenticated()
+@mydecorators.admin_is_authenticated
 class DeleteSession(DeleteView):
     model = AcademicSession
     template_name = "myadmin/delete_session.html"
@@ -217,7 +217,7 @@ class DeleteSession(DeleteView):
 # CLASSES
 # CLASSES
 # CLASSES
-@admin_is_authenticated()
+@mydecorators.admin_is_authenticated
 class ClassListView(ListView):
     model = SchoolClass
     template_name = 'myadmin/class_list.html'
@@ -232,7 +232,7 @@ class ClassListView(ListView):
         return SchoolClass.get_school_classes(request=self.request)
 
 
-@admin_is_authenticated()
+@mydecorators.admin_is_authenticated
 class ClassDetailView(DetailView):
     model = SchoolClass
     template_name = 'myadmin/class_detail.html'
@@ -247,7 +247,7 @@ class ClassDetailView(DetailView):
         return SchoolClass.get_school_classes(request=self.request)
 
 
-@admin_is_authenticated()
+@mydecorators.admin_is_authenticated
 class ClassCreateView(CreateView):
     model = SchoolClass
     template_name = 'myadmin/class_create.html'
@@ -280,7 +280,7 @@ class ClassCreateView(CreateView):
         return super().post(request, *args, **kwargs)
 
 
-@admin_is_authenticated()
+@mydecorators.admin_is_authenticated
 class ClassUpdateView(UpdateView):
     model = SchoolClass
     template_name = 'myadmin/class_edit.html'
@@ -297,7 +297,7 @@ class ClassUpdateView(UpdateView):
         return form_class(request=self.request, **self.get_form_kwargs())
 
 
-@admin_is_authenticated()
+@mydecorators.admin_is_authenticated
 class ClassDeleteView(DeleteView):
     model = SchoolClass
     template_name = 'myadmin/class_delete.html'
@@ -319,21 +319,21 @@ class ClassDeleteView(DeleteView):
 # TERMS
 # TERMS
 # TERMS
-@admin_is_authenticated()
+@mydecorators.admin_is_authenticated
 class TermListView(ListView):
     model = Term
     template_name = 'myadmin/term_list.html'
     context_object_name = 'terms'
 
 
-@admin_is_authenticated()
+@mydecorators.admin_is_authenticated
 class TermDetailView(DetailView):
     model = Term
     template_name = 'myadmin/term_detail.html'
     context_object_name = 'term'
 
 
-@admin_is_authenticated()
+@mydecorators.admin_is_authenticated
 class TermCreateView(CreateView):
     model = Term
     template_name = 'myadmin/term_form.html'
@@ -342,7 +342,7 @@ class TermCreateView(CreateView):
     success_url = reverse_lazy('term-list')
 
 
-@admin_is_authenticated()
+@mydecorators.admin_is_authenticated
 class TermUpdateView(UpdateView):
     model = Term
     template_name = 'myadmin/term_form.html'
@@ -351,7 +351,7 @@ class TermUpdateView(UpdateView):
     success_url = reverse_lazy('term-list')
 
 
-@admin_is_authenticated()
+@mydecorators.admin_is_authenticated
 class TermDeleteView(DeleteView):
     model = Term
     template_name = 'myadmin/term_confirm_delete.html'
@@ -363,7 +363,7 @@ class TermDeleteView(DeleteView):
 # SUBJECTS
 # SUBJECTS
 # SUBJECTS
-@admin_is_authenticated()  # SUBJECTS
+@mydecorators.admin_is_authenticated  # SUBJECTS
 class SubjectListView(ListView):
     model = Subject
     template_name = 'myadmin/subject/subjects_list.html'
@@ -384,7 +384,7 @@ class SubjectListView(ListView):
         return context
 
 
-@admin_is_authenticated()
+@mydecorators.admin_is_authenticated
 class SubjectDetailView(DetailView):
     model = Subject
     template_name = 'myadmin/subject/subject_detail.html'
@@ -394,7 +394,7 @@ class SubjectDetailView(DetailView):
         return Subject.get_school_subjects(request=self.request)
 
 
-@admin_is_authenticated()
+@mydecorators.admin_is_authenticated
 class SubjectCreateView(CreateView):
     model = Subject
     fields = ['name', 'school_class',]
@@ -425,7 +425,7 @@ class SubjectCreateView(CreateView):
         return JsonResponse({'status': True, 'message': 'Subjects added successfully!'})
 
 
-@admin_is_authenticated()
+@mydecorators.admin_is_authenticated
 class SubjectUpdateView(UpdateView):
     model = Subject
     template_name = 'myadmin/subject/subject_edit.html'
@@ -440,7 +440,7 @@ class SubjectUpdateView(UpdateView):
         return Subject.get_school_subjects(request=self.request)
 
 
-@admin_is_authenticated()
+@mydecorators.admin_is_authenticated
 class SubjectDeleteView(DeleteView):
     model = Subject
     template_name = 'myadmin/subject/subject_delete.html'
@@ -455,7 +455,7 @@ class SubjectDeleteView(DeleteView):
 # STUDENTS
 # STUDENTS
 # STUDENTS
-@admin_is_authenticated()  # STUDENTS
+@mydecorators.admin_is_authenticated  # STUDENTS
 class StudentListView(ListView):
     model = Student
     template_name = 'myadmin/student/students_list.html'
@@ -487,14 +487,14 @@ class StudentListView(ListView):
         return queryset.distinct()
 
 
-@admin_is_authenticated()
+@mydecorators.admin_is_authenticated
 class StudentDetailView(DetailView):
     model = Student
     template_name = 'myadmin/student/student_detail.html'
     context_object_name = 'student'
 
 
-@admin_is_authenticated()
+@mydecorators.admin_is_authenticated
 class StudentCreateView(CreateView, AddRequestToFormMixin):
     model = User
     success_url = reverse_lazy('list-students')
@@ -545,7 +545,7 @@ class StudentCreateView(CreateView, AddRequestToFormMixin):
         return super().form_valid(form)
 
 
-@admin_is_authenticated()
+@mydecorators.admin_is_authenticated
 class StudentUpdateView(UpdateView):
     model = Student
     form_class = StudentUserForm
@@ -575,7 +575,7 @@ class StudentUpdateView(UpdateView):
         return render(request, self.template_name, {'user_form': user_form, 'student_form': student_form, 'student': student})
 
 
-@admin_is_authenticated()
+@mydecorators.admin_is_authenticated
 class StudentDeleteView(DeleteView):
     model = Student
     template_name = 'myadmin/student/student_delete.html'
@@ -595,7 +595,7 @@ class StudentDeleteView(DeleteView):
 # TEACHERS
 # TEACHERS
 # TEACHERS
-@admin_is_authenticated()
+@mydecorators.admin_is_authenticated
 class TeacherListView(ListView):
     model = Teacher
     template_name = 'myadmin/teacher/teachers_list.html'
@@ -627,14 +627,14 @@ class TeacherListView(ListView):
         return queryset.distinct()
 
 
-@admin_is_authenticated()
+@mydecorators.admin_is_authenticated
 class TeacherDetailView(DetailView):
     model = User
     template_name = 'myadmin/teacher/teacher_detail.html'
     context_object_name = 'teacher'
 
 
-@admin_is_authenticated()
+@mydecorators.admin_is_authenticated
 class TeacherCreateView(CreateView):
     model = User
     template_name = 'myadmin/teacher/teacher_create.html'
@@ -667,7 +667,7 @@ class TeacherCreateView(CreateView):
         return render(request, self.template_name, {'user_form': user_form, 'teacher_form': teacher_form})
 
 
-@admin_is_authenticated()
+@mydecorators.admin_is_authenticated
 class TeacherUpdateView(UpdateView):
     model = Teacher
     template_name = 'myadmin/teacher/teacher_create.html'
@@ -694,7 +694,7 @@ class TeacherUpdateView(UpdateView):
         return render(request, self.template_name, {'user_form': user_form, 'teacher_form': teacher_form, 'teacher': teacher})
 
 
-@admin_is_authenticated()
+@mydecorators.admin_is_authenticated
 class TeacherDeleteView(DeleteView):
     model = Teacher
     template_name = 'myadmin/teacher/teacher_delete.html'
@@ -715,21 +715,21 @@ class TeacherDeleteView(DeleteView):
 # SETTINGS
 
 
-@admin_is_authenticated()
+@mydecorators.admin_is_authenticated
 class SettingsListView(ListView):
     model = SchoolSettings
     template_name = 'myadmin/settings/settingss_list.html'
     context_object_name = 'settings'
 
 
-@admin_is_authenticated()
+@mydecorators.admin_is_authenticated
 class SettingsDetailView(DetailView):
     model = SchoolSettings
     template_name = 'myadmin/settings/settings_detail.html'
     context_object_name = 'setting'
 
 
-@admin_is_authenticated()
+@mydecorators.admin_is_authenticated
 class SettingsCreateView(CreateView):
     model = SchoolSettings
     template_name = 'myadmin/settings/settings_create.html'
@@ -737,7 +737,7 @@ class SettingsCreateView(CreateView):
     success_url = reverse_lazy('list-settings')
 
 
-@admin_is_authenticated()
+@mydecorators.admin_is_authenticated
 class SettingsUpdateView(UpdateView):
     model = SchoolSettings
     template_name = 'myadmin/settings/settings_edit.html'
@@ -745,7 +745,7 @@ class SettingsUpdateView(UpdateView):
     success_url = reverse_lazy('list-settings')
 
 
-@admin_is_authenticated()
+@mydecorators.admin_is_authenticated
 class SettingsDeleteView(DeleteView):
     model = SchoolSettings
     template_name = 'myadmin/settings/settings_delete.html'
@@ -759,21 +759,21 @@ class SettingsDeleteView(DeleteView):
 # GOOGLE MEET CLASSES
 # GOOGLE MEET CLASSES
 
-@admin_is_authenticated()
+@mydecorators.admin_is_authenticated
 class GmeetListView(ListView):
     model = GmeetClass
     template_name = 'myadmin/gmeet_list.html'
     context_object_name = 'settings'
 
 
-@admin_is_authenticated()
+@mydecorators.admin_is_authenticated
 class GmeetDetailView(DetailView):
     model = GmeetClass
     template_name = 'myadmin/gmeetdetail.html'
     context_object_name = 'setting'
 
 
-@admin_is_authenticated()
+@mydecorators.admin_is_authenticated
 class GmeetCreateView(CreateView):
     model = GmeetClass
     template_name = 'myadmin/gmeetcreate.html'
@@ -781,7 +781,7 @@ class GmeetCreateView(CreateView):
     success_url = reverse_lazy('list-settings')
 
 
-@admin_is_authenticated()
+@mydecorators.admin_is_authenticated
 class GmeetUpdateView(UpdateView):
     model = GmeetClass
     template_name = 'myadmin/gmeetedit.html'
@@ -789,7 +789,7 @@ class GmeetUpdateView(UpdateView):
     success_url = reverse_lazy('list-settings')
 
 
-@admin_is_authenticated()
+@mydecorators.admin_is_authenticated
 class GmeetDeleteView(DeleteView):
     model = GmeetClass
     template_name = 'myadmin/gmeetdelete.html'
