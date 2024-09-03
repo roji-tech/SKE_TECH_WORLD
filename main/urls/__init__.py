@@ -10,6 +10,7 @@ from main.views.settings import SettingView
 
 urlpatterns = [
     path("", TemplateView.as_view(template_name="index.html"), name="home"),
+    path("test", TemplateView.as_view(template_name="test.htm"), name="test"),
     path("settings/", SettingView.as_view(), name="settings")
 ]
 
