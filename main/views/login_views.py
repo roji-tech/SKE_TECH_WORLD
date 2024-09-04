@@ -74,18 +74,24 @@ class CustomLoginView(LoginView):
     page = None
 
     def __init__(self, *args, **kwargs):
+        print(self.__class__)
         if not self.role:
             raise ImproperlyConfigured(
                 "The role kwargs must be supplied to CustomLoginView."
             )
+        print(self.__class__, self.role)
 
         if not self.page:
             raise ImproperlyConfigured(
                 "The page attribute must be set in CustomLoginView or its subclasses. (e.g Teacher, Admin, Student )"
             )
+        print(self.__class__)
         super().__init__(*args, **kwargs)
+        print(self.__class__)
 
     def get_form(self, form_class=None):
+        print(self.__class__, self.role, self.form_class)
+
         if form_class is None:
             form_class = self.get_form_class()
         return form_class(role=self.role, **self.get_form_kwargs())

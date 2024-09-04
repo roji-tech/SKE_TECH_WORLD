@@ -22,11 +22,12 @@ def add_gmeet(request):
     if request.method == "POST":
         form = GoogleMeetForm(request.POST)
         if form.is_valid():
-            form.save()
+            form.save(commit=False)
+            form.created_by = request.user
             messages.success(request, 'Google Meet Session added successfully')
             return redirect('teachers')
-    else:
-        form = GoogleMeetForm()
+
+    form = GoogleMeetForm()
     return render(request, 'teachers/gmeet/gmeet.html', {'form': form})
 
 
@@ -40,8 +41,7 @@ def teachers_edit_gmeet(request, pk):
                 request, 'Google Meet Session updated successfully')
             return redirect('teachers')
 
-    else:
-        form = GoogleMeetForm(instance=gmeets)
+    form = GoogleMeetForm(instance=gmeets)
     return render(request, 'teachers/gmeet/uploadgmeet.html',  {'form': form, "gmeets": gmeets})
 
 
@@ -68,7 +68,6 @@ def upload_lesson_plan(request, pk):
 def lessons_list(request):
     lesson_plans = LessonPlan.objects.all()
     return render(request, 'teachers/notes/lessonNoteList.html', {'lesson_plans': lesson_plans})
-
 
 
 """Notes Views"""

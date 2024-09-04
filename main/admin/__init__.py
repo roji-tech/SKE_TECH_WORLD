@@ -9,10 +9,10 @@ from ..models import (
 
 class UserAdmin(admin.ModelAdmin):
     list_display = [
+        "role",
         "id",
         "get_full_name",
         "email",
-        "role",
         "gender",
         "is_active",
         # "is_teacher",

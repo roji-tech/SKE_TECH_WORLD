@@ -326,7 +326,7 @@ class Subject(models.Model):
 
 class GmeetClass(models.Model):
     subject = models.ForeignKey(
-        Subject, on_delete=models.CASCADE, related_name='gmeet_classes')
+        Subject, on_delete=models.SET_NULL, null=True, blank=True, related_name='gmeet_classes')
     description = models.TextField()
     gmeet_link = models.URLField()
     start_time = models.DateTimeField()

@@ -195,6 +195,7 @@ class UpdateSession(UpdateView):
     context_object_name = 'academicSession'
     fields = ['start_date', 'end_date']
     template_name = "myadmin/update_session.html"
+    template_name = "myadmin/add_session.html"
     success_url = reverse_lazy('list-sessions')
 
     def get_queryset(self):

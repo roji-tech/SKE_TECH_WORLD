@@ -136,6 +136,8 @@
         <form id="meeting-form" method="post">
           {% csrf_token %}
 
+          {{ form }}
+
           <div class="inline-f">
             {{form.title.label_tag }} {{ form.title }} {{ form.title.errors }}
           </div>
