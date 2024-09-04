@@ -25,6 +25,7 @@ class LibraryBook(models.Model):
     title = models.CharField(max_length=100)
     author = models.CharField(max_length=50)
     isbn = models.CharField(max_length=20)
+    book_image_url = models.URLField()
     available_copies = models.IntegerField()
 
 

@@ -1,5 +1,6 @@
-<!DOCTYPE html>
-<html lang="en">
+{% extends 'pages_header.html %}
+
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -182,106 +183,108 @@ table td {
 
     </style>
 </head>
-<body>
-    <div class="container">
-        <div class="header">
-            <h1>Library</h1>
-            <div class="upload-button">
-                <a href="#" id="upload">Upload Book</a>
+{% block content %}
+
+        <div class="container">
+            <div class="header">
+                <h1>Library</h1>
+                <div class="upload-button">
+                    <a href="{%  %}" id="upload">Upload Book</a>
+                </div>
+            </div>
+            
+            <div class="content">
+                <div class="search-bar">
+                    <select name="class">
+                        <option value="10">10</option>
+                        <option value="9">9</option>
+                        <option value="8">8</option>
+                        <option value="7">7</option>
+                        <option value="6">6</option>
+                        <option value="5">5</option>
+                        <option value="4">4</option>
+                        <option value="3">3</option>
+                        <option value="2">2</option>
+                        <option value="1">1</option>
+                    </select>
+                    <input type="search" placeholder="Search">
+                </div>
+
+                <div class="table">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>No.</th>
+                                <th>Image</th>
+                                <th>Title</th>
+                                <th>By</th>
+                                <th>Download</th>
+                                <th>Options</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                {% for book in library_books %}
+                                    <td>{{ book.id }}</td>
+                                    <td><img src="" alt="image">{{ book.book_image_url}}</td>
+                                    <td>{{ book.title }}</td>
+                                    <td>{{ book.author }}</td>
+                                    <td>{{ book.}}</td>
+                                    <td>
+                                        <span class="edit"  href="{% url 'library:change_library_book' %}">Edit</span>
+                                        <span class="delete" href="{% url 'delete_' %}">Delete</span>
+                                    </td>
+                                {% endfor %}
+                            </tr>
+                        
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Upload Note Overlay -->
+        <div class="overlay" id="uploadOverlay">
+            <div class="overlay-content">
+                <span class="close" id="closeOverlay">&times;</span>
+                <h2>Upload Book</h2>
+                <form action="{% url 'library:add_book_to_library' %}" method="POST" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <!-- Title Field -->
+                    <label for="bookTitle">Title:</label>
+                    <input type="text" id="bookTitle" name="title" required>
+                    
+                    <!-- Uploaded By Field -->
+                    <label for="uploadedBy">Uploaded By:</label>
+                    <input type="text" id="uploadedBy" name="uploaded_by">
+                    
+                    <!-- Image Upload Field -->
+                    <label for="uploadImage">Choose an image:</label>
+                    <input type="file" id="uploadImage" name="image" accept=".png,.jpg" required>
+                    
+                    <!-- File Upload Field -->
+                    <label for="uploadFile">Choose a file:</label>
+                    <input type="file" id="uploadFile" name="file" accept=".pdf,.doc,.docx" required>
+                    
+                    <!-- Submit Button -->
+                    <button type="submit">Upload</button>
+                </form>
             </div>
         </div>
         
-        <div class="content">
-            <div class="search-bar">
-                <select name="class">
-                    <option value="10">10</option>
-                    <option value="9">9</option>
-                    <option value="8">8</option>
-                    <option value="7">7</option>
-                    <option value="6">6</option>
-                    <option value="5">5</option>
-                    <option value="4">4</option>
-                    <option value="3">3</option>
-                    <option value="2">2</option>
-                    <option value="1">1</option>
-                </select>
-                <input type="search" placeholder="Search">
-            </div>
+        <script>
+            const uploadButton = document.getElementById('upload');
+            const uploadOverlay = document.getElementById('uploadOverlay');
+            const closeOverlay = document.getElementById('closeOverlay');
 
-            <div class="table">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>No.</th>
-                            <th>Image</th>
-                            <th>Title</th>
-                            <th>Uploaded By</th>
-                            <th>Download</th>
-                            <th>Options</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            {% for book in library_books %}
-                                <td>{{ book.id }}</td>
-                                <td><img src="" alt="image">{{ book.url }}</td>
-                                <td>{{ book.title }}</td>
-                                <td>{{ book.self.request.user }}</td>
-                                <td>{{ book.}}</td>
-                                <td>
-                                    <span class="edit"  href="{% url 'library:change_library_book' %}">Edit</span>
-                                    <span class="delete" href="{% url 'delete_' %}">Delete</span>
-                                </td>
-                            {% endfor %}
-                        </tr>
-                    
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    </div>
+            uploadButton.addEventListener('click', function() {
+                uploadOverlay.style.display = 'block';
+            });
 
-    <!-- Upload Note Overlay -->
-    <div class="overlay" id="uploadOverlay">
-        <div class="overlay-content">
-            <span class="close" id="closeOverlay">&times;</span>
-            <h2>Upload Book</h2>
-            <form action="{% url 'library:add_book_to_library' %}" method="POST" enctype="multipart/form-data">
-                {% csrf_token %}
-                <!-- Title Field -->
-                <label for="bookTitle">Title:</label>
-                <input type="text" id="bookTitle" name="title" required>
-                
-                <!-- Uploaded By Field -->
-                <label for="uploadedBy">Uploaded By:</label>
-                <input type="text" id="uploadedBy" name="uploaded_by">
-                
-                <!-- Image Upload Field -->
-                <label for="uploadImage">Choose an image:</label>
-                <input type="file" id="uploadImage" name="image" accept=".png,.jpg" required>
-                
-                <!-- File Upload Field -->
-                <label for="uploadFile">Choose a file:</label>
-                <input type="file" id="uploadFile" name="file" accept=".pdf,.doc,.docx" required>
-                
-                <!-- Submit Button -->
-                <button type="submit">Upload</button>
-            </form>
-        </div>
-    </div>
-    
-    <script>
-        const uploadButton = document.getElementById('upload');
-        const uploadOverlay = document.getElementById('uploadOverlay');
-        const closeOverlay = document.getElementById('closeOverlay');
+            closeOverlay.addEventListener('click', function() {
+                uploadOverlay.style.display = 'none';
+            });
+        </script>
+    </body>
+{% endblock content %}
 
-        uploadButton.addEventListener('click', function() {
-            uploadOverlay.style.display = 'block';
-        });
-
-        closeOverlay.addEventListener('click', function() {
-            uploadOverlay.style.display = 'none';
-        });
-    </script>
-</body>
-</html>
