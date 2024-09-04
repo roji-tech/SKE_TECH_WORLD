@@ -14,5 +14,4 @@ INSTALLED_APPS = [
 
     'main',
     'library',
-
 ]
