@@ -132,7 +132,6 @@ class AddSession(View):
         return render(request, self.template_name, {'form': form})
 
     def post(self, request, *args, **kwargs):
-        print(request.POST)
         form = AcademicSessionForm(request.POST)
 
         try:
@@ -150,6 +149,7 @@ class AddSession(View):
                 else:
                     school_name = f"{start_date.year}-{end_date.year}"
                 print(start_date, end_date, _name, school_name, school)
+                print(request.POST)
 
                 # is_current = form.cleaned_data.get('is_current')
                 # next_session_begins = form.cleaned_data.get('next_session_begins')
@@ -181,6 +181,7 @@ class AddSession(View):
             messages.error(
                 request, 'This academic session already exists. Please enter a different session.')
         except Exception as e:
+            print(e)
             messages.error(
                 request, 'Error adding academic session. Please try again.')
             print(e)
