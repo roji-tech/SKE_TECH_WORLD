@@ -188,7 +188,9 @@ table td {
         <div class="header">
             <h1>Library</h1>
             <div class="upload-button">
-                <a href="{% url 'library:library_add_book' %}" id="upload">Upload Book</a>
+                <a href="#" id="upload"
+                onclick="(e)=>e.preventDefault()"
+                >Upload B_ook</a>
             </div>
         </div>
         
@@ -210,6 +212,7 @@ table td {
             </div>
 
             <div class="table">
+                {% if library_books %}
                 <table>
                     <thead>
                         <tr>
@@ -222,23 +225,27 @@ table td {
                         </tr>
                     </thead>
                     <tbody>
+                        {% for book in library_books %}
                         <tr>
-                            {% for book in library_books %}
-                                <td>{{ book.id }}</td>
-                                <td><img src="" alt="image">{{ book.url }}</td>
-                                <td>{{ book.title }}</td>
-                                <td>{{ book.self.request.user }}</td>
-                                <td>{{ book.}}</td>
-                                <td>
-                                    <span class="edit"  href="{% url 'library:change_library_book' %}">Edit</span>
-                                    <span class="delete" href="{% url 'delete_' %}">Delete</span>
-                                </td>
-                            {% endfor %}
+                            <td>{{ book.id }}</td>
+                            <td><img src="{{ book.book_image_url }}" alt="image"></td>
+                            <td>{{ book.title }}</td>
+                            <td>{{ book.uploaded_by.get_full_name }}</td>
+                            <td><a href="{{ book.file.url }}" download>Download</a></td>
+                            <td>
+                                <a class="edit" href="{% url 'library:change_library_book' book.id %}">Edit</a>
+                                <a class="delete" href="{% url 'library:delete_library_book' book.id %}">Delete</a>
+                            </td>
                         </tr>
-                    
+                        {% endfor %}
                     </tbody>
                 </table>
+                {% else %}
+                <p>No books available. Click the button above to add a new book.</p>
+                {% endif %}
             </div>
+        </div>
+    </div>
         </div>
     </div>
 

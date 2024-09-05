@@ -4,6 +4,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    {% block title %}Students Dashboard{% endblock title %}
 
     <!--=============== REMIXICONS ===============-->
     <link
@@ -89,7 +90,7 @@
             <li>
               <a href="/others/index.html" class="nav__link">Dashboard</a>
             </li>
-            <li><a href="{% url 'library' %}" class="nav__link">Library</a></li>
+            <li><a href="{% url 'library:library' %}" class="nav__link">Library</a></li>
             <li>
               <a href="{% url 'students_class_notes' %}" class="nav__link">Class-Notes</a>
             </li>
@@ -97,7 +98,7 @@
               <a href="{% url 'google_meets_classes' %}" class="nav__link">G-meet Classes</a>
             </li>
             <li>
-              <a href="{% url 'e-exam' %}" class="nav__link">E-Exam</a>
+              <a href="{% url 'exam_login' %}" class="nav__link">E-Exam</a>
             </li>
             <li class="nav__item dropdown">
               <a href="#" class="nav__link dropdown__link"
@@ -105,16 +106,16 @@
               ></a>
               <ul class="dropdown__menu">
                 <li>
-                  <a href="{% url 'e-exam' %}" class="dropdown__item"
+                  <a href="{% url 'exam_login' %}" class="dropdown__item"
                     >Results</a
                   >
                 </li>
                 <li>
-                  <a href="{% url 'e-exam' %}" class="dropdown__item"
+                  <a href="{% url 'exam_login' %}" class="dropdown__item"
                     >Exam</a
                   >
                 </li>
-                <li><a href="{% url 'e-exam' %}" class="dropdown__item">Homework</a></li>
+                <li><a href="{% url 'exam_login' %}" class="dropdown__item">Homework</a></li>
               </ul>
             </li>
           </ul>
@@ -167,7 +168,7 @@
         data-aos-once="true"
         class="service-card notification-container"
       >
-        <a href="{% url 'library' %}" class="card-link">
+        <a href="{% url 'library:library' %}" class="card-link">
           <div class="inner">
             <div class="icon"><i data-feather="menu"></i></div>
             <div class="content-1">
@@ -180,7 +181,7 @@
                 70
               </div>
               <div class="notification-dot"></div>
-              <a class="read-more-button" href="{% url 'library' %}"
+              <a class="read-more-button" href="{% url 'library:library' %}"
                 ><i class="fas fa-arrow-right"></i
               ></a>
             </div>
@@ -195,7 +196,7 @@
         data-aos-once="true"
         class="service-card notification-container"
       >
-        <a href="{% url 'e-exam' %}" class="card-link">
+        <a href="{% url 'exam_login' %}" class="card-link">
           <div class="inner">
             <div class="icon"><i data-feather="menu"></i></div>
             <div class="content-1">
@@ -204,7 +205,7 @@
                 Participate in online exams and track your progress.
               </p>
               <div class="notification-dot"></div>
-              <a class="read-more-button" href="{% url 'e-exam' %}"
+              <a class="read-more-button" href="{% url 'exam_login' %}"
                 ><i class="fas fa-arrow-right"></i
               ></a>
             </div>

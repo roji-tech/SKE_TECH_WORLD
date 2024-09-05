@@ -2,7 +2,7 @@ from django.urls import path
 
 from ..views import StudentsHome
 from library.views import *
-from main.views.student_views import StudentClassNoteListView, StudentGoogleMeetListView
+from main.views.student_views import StudentClassNoteListView, StudentGoogleMeetListView, e_exam
 
 
 urlpatterns = [
@@ -16,4 +16,6 @@ urlpatterns = [
     path('student/subjects/combination', StudentsHome.as_view(), name='student_subject_combination'),
 
     path('students/class-notes/', StudentClassNoteListView.as_view(), name='students_class_notes'),
+
+    path('students/exam-view/', e_exam, name='exam_login')
 ]
