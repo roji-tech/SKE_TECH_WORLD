@@ -5,25 +5,27 @@ from django.urls import reverse_lazy
 from django.views.generic import View
 
 from main.forms import LibraryBookForm
+from main import mydecorators
 from .models import Library, LibraryBook
 
 
-@login_required
-@permission_required('library.can_view_book', raise_exception=True)
+# @lecturer_required
+# @permission_required('library.can_view_book', raise_exception=True)
 def library_books_list(request):
   library_books = LibraryBook.objects.all()
   return render(request, 'library.html', {'librarybooks' : library_books})
 
 
 
-@login_required
-@permission_required('library.can_add_book', raise_exception=True)
+
+# @mydecorators.teacher_is_authenticated
+# @permission_required('library.can_add_book', raise_exception=True)
 def add_book_to_library(request):
     if request.method == 'POST':
         form = LibraryBookForm(request.POST)
         if form.is_valid():
             form.save()
-            return redirect('library:book_list')
+            return redirect('library')
     else:
         form = LibraryBookForm()
     return render(request, 'library.html', {'form': form})
