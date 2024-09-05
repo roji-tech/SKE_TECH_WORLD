@@ -20,8 +20,8 @@ class Library(models.Model):
 
 
 class LibraryBook(models.Model):
-    library = models.ForeignKey(
-        Library, on_delete=models.CASCADE, related_name="library")
+    # library = models.ForeignKey(
+    #     Library, on_delete=models.CASCADE, related_name="library")
     title = models.CharField(max_length=100)
     author = models.CharField(max_length=50)
     isbn = models.CharField(max_length=20)
