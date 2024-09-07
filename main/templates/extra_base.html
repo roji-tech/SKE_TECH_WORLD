@@ -1,0 +1,14 @@
+{% extends 'base_generic.html' %} 
+{% block content %}
+<h1>Gmeet Classes</h1>
+<ul>
+  {% for gmeet_class in gmeet_classes %}
+  <li>
+    <a href="{% url 'gmeetclass-detail' gmeet_class.pk %}">
+      {{ gmeet_class.subject.name }} - {{ gmeet_class.start_time }}
+    </a>
+  </li>
+  {% endfor %}
+</ul>
+<a href="{% url 'gmeetclass-create' %}">Add New Gmeet Class</a>
+{% endblock %}

@@ -2,9 +2,11 @@ from django.contrib.auth import get_user_model
 from datetime import date
 
 from django.utils.crypto import get_random_string
-from .users import OWNER
+import main.models.models
+from .users import ADMIN, OWNER, STUDENT
 from django.db import models
 import string
+from django.db.models import Q
 
 User = get_user_model()
 
@@ -220,12 +222,22 @@ class SchoolClass(models.Model):
         except:
             return f"{self.name}({self.academic_session.name})"
 
-    @staticmethod
-    def get_school_classes(request):
+    @classmethod
+    def get_school_classes(cls, request):
         user = request.user
-        school = School.objects.filter(owner=user).first()
+        school = School.get_user_school(user)
         print(SchoolClass.objects.filter(academic_session__school=school))
         return SchoolClass.objects.filter(academic_session__school=school)
+
+    @classmethod
+    def get_school_class_ids(cls, request):
+        user = request.user
+        school = School.get_user_school(user)
+        print(SchoolClass.objects.filter(academic_session__school=school))
+        # # Use a subquery to explicitly define the filtering
+        return cls.objects.filter(
+            academic_session__school=school
+        ).values_list('id', flat=True)
 
 
 class Student(models.Model):
@@ -325,6 +337,7 @@ class Subject(models.Model):
 
 
 class GmeetClass(models.Model):
+    title = models.CharField(max_length=50, null=True, blank=True)
     subject = models.ForeignKey(
         Subject, on_delete=models.SET_NULL, null=True, blank=True, related_name='gmeet_classes')
     description = models.TextField()
@@ -334,12 +347,61 @@ class GmeetClass(models.Model):
     created_by = models.ForeignKey(
         User, on_delete=models.SET_NULL,
         null=True, blank=True,
-        limit_choices_to={'role': "teacher", 'role': "admin", 'role': "owner"},
+        limit_choices_to={'role__in': ["teacher", "admin", "owner"]},
         related_name="gmeets"
     )
 
     def __str__(self):
-        return f"{self.subject.name} - {self.subject.school_class.name} ({self.start_time})"
+        try:
+            return f"{self.subject.name} - {self.subject.school_class.name} ({self.start_time})"
+        except Exception as e:
+            print(e)
+            return f"Gmeet"
+
+    @classmethod
+    def filter_by_school(cls, request):  # Filter based on school
+        school = School.get_user_school(request.user)
+
+        # # Use a subquery to explicitly define the filtering
+        school_class_ids = SchoolClass.get_school_class_ids(request)
+
+        # Use Q objects to create the filter
+        return cls.objects.filter(
+            Q(subject__school_class__academic_session__school=school) |
+            Q(subject__school_class__id__in=school_class_ids,) |
+            Q(created_by__school=school) |
+            Q(created_by=request.user)
+        )
+
+    @classmethod
+    def filter_by_class(cls, school_class):  # Filter based on class
+        return cls.objects.filter(subject__school_class=school_class)
+
+    @classmethod
+    def filter_by_role(cls, request):
+        # Get the user's school using the method from the School model
+        school: School = School.get_user_school(request.user)
+
+        print(school, cls.filter_by_school(request).values(
+            "created_by", "start_time", "id"))
+        # Check if the user is an admin
+        if request.user.role == ADMIN or request.user.role == OWNER:
+            # Admin or owner can view all GmeetClass for the school
+            # return cls.objects.filter(subject__school_class__school=school)
+            return cls.filter_by_school(request)
+
+        # Check if the user is a subject teacher
+        elif request.user.role == 'teacher':
+            # Teachers can only view the GmeetClass for the subjects they teach
+            return cls.objects.filter(subject__teacher=request.user)
+
+        # Check if the user is a student
+        elif request.user.role == STUDENT:
+            # Students can only view GmeetClass for their school class
+            return cls.objects.filter(subject__school_class=request.user.student_profile.school_class)
+
+        # In case the user has no matching role, return an empty queryset
+        return cls.objects.none()
 
 
 class LessonPlan(models.Model):
@@ -352,6 +414,21 @@ class LessonPlan(models.Model):
 
     def __str__(self):
         return f"{self.uploaded_file.name} uploaded by {self.uploaded_by.username}"
+
+    # Filter based on school
+    @classmethod
+    def filter_by_school(cls, school):
+        return cls.objects.filter(school_class__school=school)
+
+    # Filter based on class
+    @classmethod
+    def filter_by_class(cls, school_class):
+        return cls.objects.filter(school_class=school_class)
+
+    # Filter based on teacher
+    @classmethod
+    def filter_by_teacher(cls, teacher):
+        return cls.objects.filter(subject__teacher=teacher)
 
 
 class ClassNote(models.Model):
@@ -366,6 +443,21 @@ class ClassNote(models.Model):
 
     def __str__(self):
         return f"Note for {self.lesson_plan.subject.name} ({self.lesson_plan.subject.school_class.name})"
+    # Filter based on school
+
+    @classmethod
+    def filter_by_school(cls, school):
+        return cls.objects.filter(lesson_plan__school_class__school=school)
+
+    # Filter based on class
+    @classmethod
+    def filter_by_class(cls, school_class):
+        return cls.objects.filter(lesson_plan__school_class=school_class)
+
+    # Filter based on teacher
+    @classmethod
+    def filter_by_teacher(cls, teacher):
+        return cls.objects.filter(lesson_plan__subject__teacher=teacher)
 
 
 class SchoolSettings(models.Model):

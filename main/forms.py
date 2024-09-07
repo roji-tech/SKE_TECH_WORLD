@@ -168,8 +168,8 @@ class AcademicSessionForm(forms.ModelForm):
         fields = [
             'start_date',
             'end_date',
-            "name",
-            # 'is_current', 'next_session_begins', 'max_exam_score'
+            "name", 'is_current',
+            #  'next_session_begins', 'max_exam_score'
         ]
         widgets = {
             'start_date': forms.DateInput(attrs={'type': 'date', "id": "start_date"}),
@@ -239,8 +239,6 @@ class ClassForm(forms.ModelForm):
         print(self.cleaned_data)
         return self.cleaned_data
 
-    
-
 
 class SubjectForm(forms.ModelForm):
     class Meta:
@@ -281,8 +279,6 @@ class LibraryBookForm(forms.ModelForm):
     class Meta:
         model = LibraryBook
         fields = '__all__'
-
-
 
 
 # class ContinuousAssessmentForm(forms.ModelForm):

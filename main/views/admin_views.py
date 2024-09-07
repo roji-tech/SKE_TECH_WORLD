@@ -19,7 +19,7 @@ from main.models import User, AcademicSession, School, SchoolSettings, Student, 
 from django.contrib.auth import authenticate, login
 
 # FORMS
-from main.models.models import School, Student, Subject, Teacher, GmeetClass
+from main.models.models import AcademicSession, GmeetClass, School, Student, Subject, Teacher
 from main.forms import TeacherForm, StudentForm, TeacherUserForm, StudentUserForm
 from main.models.models import Student
 from ..forms import AcademicSessionForm, ClassForm  # Assuming you have a form
@@ -195,12 +195,17 @@ class UpdateSession(UpdateView):
     model = AcademicSession
     context_object_name = 'academicSession'
     fields = ['start_date', 'end_date']
-    template_name = "myadmin/update_session.html"
+    # template_name = "myadmin/update_session.html"
     template_name = "myadmin/add_session.html"
     success_url = reverse_lazy('list-sessions')
 
     def get_queryset(self):
         return AcademicSession.get_school_sessions(request=self.request)
+
+    def get(self, request, pk, *args, **kwargs):
+        session = get_object_or_404(AcademicSession, pk=pk)
+        form = AcademicSessionForm(instance=session)
+        return render(request, self.template_name, {'form': form})
 
 
 @mydecorators.admin_is_authenticated
@@ -215,7 +220,7 @@ class DeleteSession(DeleteView):
 
 
 # CLASSES
-# CLASSES
+# CLASSESI
 # CLASSES
 # CLASSES
 # CLASSES

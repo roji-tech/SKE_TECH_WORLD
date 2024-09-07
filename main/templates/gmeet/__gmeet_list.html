@@ -34,6 +34,7 @@
         background: #fff;
         margin-bottom: 5%;
         border-radius: 8px;
+        overflow: hidden;
         box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
       }
 
@@ -74,34 +75,17 @@
         border-radius: 3px;
       }
 
-      .table {
-        max-width: 100%;
-        width: 100%;
-        overflow-x: auto;
-      }
-
       table {
-        border: 1px solid #ccc;
         width: 100%;
         border-collapse: collapse;
-        margin-top: 10px;
-        background: #fff;
-        max-width: 100%;
-        padding: 50px;
-        min-width: max-content;
       }
 
-      thead,
-      tbody {
-        width: fit-content;
-      }
-
+      table,
       th,
       td {
         border: 1px solid #ccc;
         padding: 10px 15px;
         text-align: left;
-        height: max-content;
       }
 
       .edit-action,
@@ -169,15 +153,9 @@
         background-color: rgb(255, 23, 23);
         color: #fff;
       }
-
-      a {
-        color: #fff;
-      }
     </style>
   </head>
   <body>
-    {% include 'pages_header.html' %}
-
     <div class="table-datas">
       <div class="sub-rows">
         <p>Google Meet</p>
@@ -203,43 +181,46 @@
           <input type="search" placeholder="Search" />
         </div>
 
-        <div class="table">
-          <table>
-            <thead>
-              <th>No</th>
-              <th>Meeting Title</th>
-              <th>Description</th>
-              <th>Time and Date</th>
-              <th>Created By</th>
-              <th>Link</th>
-              <th>Actions</th>
-            </thead>
+        <table>
+          <thead>
+            <th>No</th>
+            <th>Meeting Title</th>
+            <th>Description</th>
+            <th>Time and Date</th>
+            <th>Created By</th>
+            <th>Link</th>
+          </thead>
 
+          <tbody>
+            {% comment %}
+            <tr>
+              <td>1</td>
+              <td>Biology</td>
+              <td>Just Text</td>
+              <td>1-1-43</td>
+              <td>DEMO TEACHERS</td>
+              <td>
+                <a href="http://127.0.0.1:5501/others/gmeet.html#">link</a>
+              </td>
+            </tr>
+            {% endcomment %}
+            <em></em>
             {% for gmeet in gmeet_classes %}
             <tr>
               <td>{{ forloop.counter }}</td>
               <td>{{gmeet.title}}</td>
               <td>{{ gmeet.description }}</td>
               <td>{{ gmeet.start_time }}</td>
-              <td>{{ gmeet.created_by }}</td>
+              <td>{{ gmeet_class.created_by }}</td>
               <td>
                 <a href="{{ gmeet.gmeet_link }}">link</a>
               </td>
-              <td>
-                <span class="edit-action">
-                  <a href="{% url 'gmeetclass-update' gmeet.pk %}"> Edit </a>
-                </span>
-
-                <span class="delete-action">
-                  <a href="{% url 'gmeetclass-delete' gmeet.pk %}"> Delete </a>
-                </span>
-              </td>
             </tr>
             {% endfor %}
+          </tbody>
 
-            <!-- Additional rows can be added here -->
-          </table>
-        </div>
+          <!-- Additional rows can be added here -->
+        </table>
       </div>
     </div>
 
