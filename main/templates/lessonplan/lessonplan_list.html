@@ -182,7 +182,7 @@
         font-weight: bold;
       }
 
-      .add-division a{
+      .add-division a {
         color: #000;
       }
     </style>
@@ -195,7 +195,7 @@
       <div class="add-division sub-rows">
         <p>Lesson Plans</p>
 
-        <a href="{% url 'gmeetclass-create' %}">
+        <a href="{% url 'lessonplan-create' %}">
           <i class="fa fa-plus" id="plus-icon" style="font-size: 23px"></i>
         </a>
       </div>
@@ -236,12 +236,9 @@
             <tr>
               <td>{{ forloop.counter }}</td>
               <td>{{plan.title}}</td>
-              <td>{{ plan.description }}</td>
-              <td>{{ plan.start_time }}</td>
-              <td>{{ plan.created_by }}</td>
-              <td>
-                <a href="{{ plan.gmeet_link }}">link</a>
-              </td>
+              <td>{{ plan.subject }}</td>
+              <td>{{ plan.school_class }}</td>
+
               <td>
                 <span class="edit-action">
                   <a href="{% url 'lessonplan-update' plan.pk %}"> Edit </a>

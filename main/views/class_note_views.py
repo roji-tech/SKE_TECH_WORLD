@@ -60,7 +60,7 @@ class ClassNoteDetailView(DetailView):  # ClassNote DetailView
 
 class ClassNoteListView(ListView):  # ClassNote ListView with filters
     model = ClassNote
-    template_name = 'class_note_list.html'
+    template_name = 'notes/notes.html'
     context_object_name = 'class_notes'
 
     def get_queryset(self):  # Assuming class is passed as a GET param

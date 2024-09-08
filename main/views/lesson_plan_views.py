@@ -16,7 +16,7 @@ from django import forms
 class LessonPlanForm(forms.ModelForm):  # LessonPlan Form
     class Meta:
         model = LessonPlan
-        fields = ['school_class', 'subject', 'uploaded_file']
+        fields = ['school_class', 'subject', 'title', 'uploaded_file']
         widgets = {
             'uploaded_file': forms.ClearableFileInput(attrs={'accept': 'application/pdf,application/msword'})
         }
@@ -25,7 +25,7 @@ class LessonPlanForm(forms.ModelForm):  # LessonPlan Form
 class LessonPlanCreateView(CreateView):  # LessonPlan Create View
     model = LessonPlan
     form_class = LessonPlanForm
-    template_name = 'lessonplan_form.html'
+    template_name = 'lessonplan/lessonplan_create.html'
     success_url = reverse_lazy('lessonplan-list')
 
     def form_valid(self, form):
@@ -37,7 +37,7 @@ class LessonPlanCreateView(CreateView):  # LessonPlan Create View
 class LessonPlanUpdateView(UpdateView):  # LessonPlan Update View
     model = LessonPlan
     form_class = LessonPlanForm
-    template_name = 'lessonplan_form.html'
+    template_name = 'lessonplan/lessonplan_create.html'
     success_url = reverse_lazy('lessonplan-list')
 
 

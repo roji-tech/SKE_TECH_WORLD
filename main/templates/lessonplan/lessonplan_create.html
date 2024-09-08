@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Edit Lesson Plan</title>
-
+    <link rel="stylesheet" href="lessonNote.css" />
     <style>
       @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap");
 
@@ -144,10 +144,9 @@
   </head>
   <body>
     {% include 'pages_header.html' %}
-
     <div class="container">
       <div class="add-division">
-        <p>Edit Lesson Note</p>
+        <p>Upload Lesson Note</p>
       </div>
 
       <div class="contents">
@@ -161,7 +160,7 @@
             <input type="text" placeholder="Subject" required class="input" />
           </div>
           <div class="inline-f">
-            <label for="uploaded By" class="class">Uploaded By</label>
+            <label for="uploaded By" class="class">Content</label>
             <input
               type="text"
               placeholder="uploaded By"
@@ -170,14 +169,14 @@
             />
           </div>
           <div class="inline-f">
-            <label for="uploaded file" class="class">Uploaded file</label>
+            <label for="uploaded file" class="class">Select file</label>
             <input type="file" />
           </div>
         </form>
       </div>
 
       <div class="function-btn">
-        <button id="add" onclick="showEditPopup(event)">Edit</button>
+        <button id="add" onclick="showEditPopup(event)">Upload</button>
         <button id="cancel">Cancel</button>
       </div>
     </div>
@@ -185,7 +184,7 @@
     <!-- Popup Overlay -->
     <div id="overlay" class="overlay">
       <div class="popup">
-        <p>Are you sure you want to edit this lesson plan?</p>
+        <p>Are you sure you want to Add this lesson plan?</p>
         <button onclick="confirmEdit()">Yes</button>
         <button onclick="closePopup()">No</button>
       </div>
