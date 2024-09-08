@@ -225,8 +225,8 @@ table td {
                         </tr>
                     </thead>
                     <tbody>
-                        {% for book in library_books %}
                         <tr>
+                            {% for book in library_books %}
                             <td>{{ book.id }}</td>
                             <td><img src="{{ book.book_image_url }}" alt="image"></td>
                             <td>{{ book.title }}</td>
@@ -240,8 +240,7 @@ table td {
                         {% endfor %}
                     </tbody>
                 </table>
-                {% else %}
-                <p>No books available. Click the button above to add a new book.</p>
+               
                 {% endif %}
             </div>
         </div>
