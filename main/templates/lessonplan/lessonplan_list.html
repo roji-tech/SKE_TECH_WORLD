@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Upload Google Meet</title>
+    <title>Lesson Plans</title>
     <link
       href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500&display=swap"
       rel="stylesheet"
@@ -193,7 +193,7 @@
 
     <div class="table-datas">
       <div class="add-division sub-rows">
-        <p>Google Meets</p>
+        <p>Lesson Plans</p>
 
         <a href="{% url 'gmeetclass-create' %}">
           <i class="fa fa-plus" id="plus-icon" style="font-size: 23px"></i>
@@ -232,23 +232,23 @@
               <th>Actions</th>
             </thead>
 
-            {% for gmeet in gmeet_classes %}
+            {% for plan in lesson_plans %}
             <tr>
               <td>{{ forloop.counter }}</td>
-              <td>{{gmeet.title}}</td>
-              <td>{{ gmeet.description }}</td>
-              <td>{{ gmeet.start_time }}</td>
-              <td>{{ gmeet.created_by }}</td>
+              <td>{{plan.title}}</td>
+              <td>{{ plan.description }}</td>
+              <td>{{ plan.start_time }}</td>
+              <td>{{ plan.created_by }}</td>
               <td>
-                <a href="{{ gmeet.gmeet_link }}">link</a>
+                <a href="{{ plan.gmeet_link }}">link</a>
               </td>
               <td>
                 <span class="edit-action">
-                  <a href="{% url 'gmeetclass-update' gmeet.pk %}"> Edit </a>
+                  <a href="{% url 'lessonplan-update' plan.pk %}"> Edit </a>
                 </span>
 
                 <span class="delete-action">
-                  <a href="{% url 'gmeetclass-delete' gmeet.pk %}"> Delete </a>
+                  <a href="{% url 'lessonplan-delete' plan.pk %}"> Delete </a>
                 </span>
               </td>
             </tr>

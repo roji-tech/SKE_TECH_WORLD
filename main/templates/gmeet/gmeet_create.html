@@ -125,12 +125,23 @@
         color: #fff;
         margin-top: 10px;
       }
+
+      .title-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border-bottom: 1px solid #ccc;
+        padding: 10px 20px;
+        text-transform: capitalize;
+      }
     </style>
   </head>
   <body>
     <div class="container">
-      <div class="add-division">
+      <div class="title-header">
         <p>Google Meet</p>
+
+        <a href="{% url 'gmeetclass-list' %}"> G-Meets </a>
       </div>
 
       <div class="contents">
@@ -170,7 +181,9 @@
 
           <div class="function-btn">
             <button type="submit" id="add upload-link">Add Meeting</button>
-            <button type="button" id="cancel">Cancel</button>
+            <button type="button" id="cancel">
+              <a href="{% url 'gmeetclass-list' %}" style='color: #Fff'> Cancel </a>
+            </button>
           </div>
         </form>
       </div>

@@ -9,6 +9,19 @@
     <link rel="stylesheet" href="{% static 'css/myadmin/class/edit.css' %}" />
 
     <style>
+      body {
+        display: flex;
+        flex-direction: column;
+
+        margin: 0;
+      }
+
+      .title-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
       .custom-select-class {
         border: 2px solid #007bff;
         padding: 8px;
@@ -37,8 +50,13 @@
   <body>
     <!-- Edit starts -->
     <div class="container">
-      <div class="add-division">
+      <div class="title-header">
         <p><span id="plus"></span>Add Class</p>
+        <p>
+          <a href="{% url 'list-classes' %}">
+            <button id="cancel" type="button">Class List</button>
+          </a>
+        </p>
       </div>
       <div class="contents">
         <form method="post">

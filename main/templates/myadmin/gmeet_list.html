@@ -8,6 +8,8 @@
       href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500&display=swap"
       rel="stylesheet"
     />
+    {% include "fontawesome.html" %}
+
     <style>
       /* Reset and general styles */
       * {
@@ -19,8 +21,6 @@
 
       body {
         display: flex;
-        justify-content: center;
-        align-items: center;
         flex-direction: column;
         background-color: #f8f7f7;
         height: 100vh;
@@ -37,7 +37,7 @@
         box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
       }
 
-      .sub-rows {
+      .title-header {
         display: flex;
         justify-content: space-between;
         align-items: center;
@@ -155,9 +155,11 @@
     </style>
   </head>
   <body>
+    {% include 'pages_header.html' %}
+
     <div class="table-datas">
-      <div class="sub-rows">
-        <p>Google Meet</p>
+      <div class="title-header">
+        <p>Google Meets</p>
       </div>
 
       <div class="padd">

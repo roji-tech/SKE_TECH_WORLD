@@ -207,6 +207,14 @@ class UpdateSession(UpdateView):
         form = AcademicSessionForm(instance=session)
         return render(request, self.template_name, {'form': form})
 
+    def post(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        form = AcademicSessionForm(request.POST, instance=self.object)
+        if form.is_valid():
+            form.save()
+        print(self.object)
+        return super().post(request, *args, **kwargs)
+
 
 @mydecorators.admin_is_authenticated
 class DeleteSession(DeleteView):
@@ -312,11 +320,6 @@ class ClassDeleteView(DeleteView):
 
     def get_queryset(self):
         return SchoolClass.get_school_classes(request=self.request)
-
-    def get_form(self, form_class=None):
-        if form_class is None:
-            form_class = self.get_form_class()
-        return form_class(request=self.request, **self.get_form_kwargs())
 
 
 # TERMS
@@ -436,7 +439,6 @@ class SubjectCreateView(CreateView):
 class SubjectUpdateView(UpdateView):
     model = Subject
     template_name = 'myadmin/subject/subject_edit.html'
-    fields = ['name']
     success_url = reverse_lazy('list-subjects')
 
     # Adjust these fields according to your Subject model
@@ -765,39 +767,3 @@ class SettingsDeleteView(DeleteView):
 # GOOGLE MEET CLASSES
 # GOOGLE MEET CLASSES
 # GOOGLE MEET CLASSES
-
-@mydecorators.admin_is_authenticated
-class GmeetListView(ListView):
-    model = GmeetClass
-    template_name = 'myadmin/gmeet_list.html'
-    context_object_name = 'settings'
-
-
-@mydecorators.admin_is_authenticated
-class GmeetDetailView(DetailView):
-    model = GmeetClass
-    template_name = 'myadmin/gmeetdetail.html'
-    context_object_name = 'setting'
-
-
-@mydecorators.admin_is_authenticated
-class GmeetCreateView(CreateView):
-    model = GmeetClass
-    template_name = 'myadmin/gmeetcreate.html'
-    fields = ['name']
-    success_url = reverse_lazy('list-settings')
-
-
-@mydecorators.admin_is_authenticated
-class GmeetUpdateView(UpdateView):
-    model = GmeetClass
-    template_name = 'myadmin/gmeetedit.html'
-    fields = ['name']
-    success_url = reverse_lazy('list-settings')
-
-
-@mydecorators.admin_is_authenticated
-class GmeetDeleteView(DeleteView):
-    model = GmeetClass
-    template_name = 'myadmin/gmeetdelete.html'
-    success_url = reverse_lazy('list-settings')

@@ -4,15 +4,15 @@ from main.views.admin_views import (
 
     AddSession, ClassCreateView, ClassDeleteView, ClassListView,
 
-    ClassUpdateView, DeleteSession, ListSession, SettingsCreateView, SettingsDeleteView, SettingsListView, SettingsUpdateView, StudentCreateView,
+    ClassUpdateView, DeleteSession, ListSession, SettingsCreateView, SettingsDeleteView,
+
+    SettingsListView, SettingsUpdateView, StudentCreateView,
 
     StudentDeleteView, StudentListView, StudentUpdateView, SubjectCreateView,
 
     SubjectDeleteView, SubjectListView, SubjectUpdateView, TeacherCreateView,
 
     TeacherDeleteView, TeacherListView, TeacherUpdateView, UpdateSession,
-
-    GmeetListView
 )
 
 from ..views import AdminsHome, RegisterAndRegisterSchool, AdminsHelp
@@ -97,11 +97,9 @@ urlpatterns = [
 
     # OTHERS
 
-    path("admin/gmeets/", GmeetListView.as_view(), name="list-gmeets"),
+    #     path("admin/lesson-plans/", GmeetListView.as_view(), name="list-lesson_plans"),
 
-    path("admin/lesson-plans/", GmeetListView.as_view(), name="list-lesson_plans"),
-
-    path("admin/notes/", GmeetListView.as_view(), name="list-notes"),
+    #     path("admin/notes/", GmeetListView.as_view(), name="list-notes"),
 
 
 ]

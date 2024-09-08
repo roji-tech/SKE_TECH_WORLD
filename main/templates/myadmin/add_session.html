@@ -48,7 +48,8 @@
 
       body {
         display: flex;
-        justify-content: center;
+        flex-direction: column;
+        justify-content: start;
         align-items: center;
         height: 100vh;
         margin: 0;
@@ -116,7 +117,14 @@
         border-bottom: 5px solid rgb(226, 226, 226);
         padding: 5px;
         padding-bottom: 10px;
-        border: 3px solid #1782a1;
+        border: 1px solid #1782a150;
+      }
+
+      @media screen and (max-width: 800px) {
+        .formInput {
+          display: grid;
+          grid-template-columns: 1fr;
+        }
       }
 
       .formInput label {
@@ -131,8 +139,13 @@
         padding: 8px;
         border-radius: 4px;
         font-size: medium;
-        width: 100%;
+        width: 90%;
         justify-self: flex-end;
+        border: 1px solid #ccc;
+      }
+
+      input:focus {
+        border: 1px solid #ccc;
       }
 
       .formInput input::placeholder {
@@ -227,6 +240,7 @@
   </head>
 
   <body>
+    {% include 'pages_header.html' %}
     <!-- add class start -->
     <div class="container">
       <div class="add-division">
@@ -242,7 +256,7 @@
           ><span id="ast">*</span>
         </h3>
 
-        <form method="post" action="{% url 'add-session' %}" id="sessionForm">
+        <form method="post" id="sessionForm">
           {% csrf_token %}
           <div class="formInput">
             <label for="start_date">Session Start Date</label>
@@ -255,6 +269,10 @@
           <div class="formInput">
             <label for="name">Session Name ( 2024-2025 )</label>
             {{ form.name }}
+          </div>
+          <div class="formInput">
+            <label for="name">Is Session Current</label>
+            {{ form.is_current }}
           </div>
 
           <div class="function-btn">
