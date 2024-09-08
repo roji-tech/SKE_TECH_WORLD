@@ -762,7 +762,7 @@ class SettingsDeleteView(DeleteView):
 @mydecorators.admin_is_authenticated
 class GmeetListView(ListView):
     model = GmeetClass
-    template_name = 'myadmin/gmeet_list.html'
+    template_name = 'myadmin/gmeet_l#ist.html'
     context_object_name = 'settings'
 
 

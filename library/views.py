@@ -11,9 +11,25 @@ from .models import Library, LibraryBook
 
 # @lecturer_required
 # @permission_required('library.can_view_book', raise_exception=True)
+# def library_books_list(request):
+#   library_books = LibraryBook.objects.all()
+#   return render(request, 'library.html', {'librarybooks' : library_books})
+@login_required
+@permission_required('library.can_view_book', raise_exception=True)
 def library_books_list(request):
-  library_books = LibraryBook.objects.all()
-  return render(request, 'library.html', {'librarybooks' : library_books})
+    library_books = LibraryBook.objects.all()
+    if request.method == "POST":
+        form = LibraryBookForm(request.POST, request.FILES)
+        if form.is_valid():
+            form.save()
+            return redirect('library:library')  # Ensure redirect after POST
+    else:
+        form = LibraryBookForm()
+    
+    return render(request, 'library.html', {
+        'library_books': library_books,
+        'form': form
+    })
 
 
 
@@ -42,7 +58,7 @@ def update_library_book(request, pk):
         
     else:
         form = LibraryBookForm(instance=book)
-    return render(request, 'index.html', {'form': form , 'book' : book})
+    return render(request, 'library.html', {'form': form , 'book' : book})
 
 
 @login_required
