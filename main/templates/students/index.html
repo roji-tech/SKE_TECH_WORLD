@@ -90,7 +90,7 @@
             <li>
               <a href="/others/index.html" class="nav__link">Dashboard</a>
             </li>
-            <li><a href="{% url 'library:library' %}" class="nav__link">Library</a></li>
+            <li><a href="{% url 'library:library_books_list' %}" class="nav__link">Library</a></li>
             <li>
               <a href="{% url 'students_class_notes' %}" class="nav__link">Class-Notes</a>
             </li>
@@ -168,7 +168,7 @@
         data-aos-once="true"
         class="service-card notification-container"
       >
-        <a href="{% url 'library:library' %}" class="card-link">
+        <a href="{% url 'library:library_books_list' %}" class="card-link">
           <div class="inner">
             <div class="icon"><i data-feather="menu"></i></div>
             <div class="content-1">
@@ -181,7 +181,7 @@
                 70
               </div>
               <div class="notification-dot"></div>
-              <a class="read-more-button" href="{% url 'library:library' %}"
+              <a class="read-more-button" href="{% url 'library:library_books_list' %}"
                 ><i class="fas fa-arrow-right"></i
               ></a>
             </div>

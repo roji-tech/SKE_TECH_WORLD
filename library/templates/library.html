@@ -230,8 +230,8 @@
                             <td>{{ book.uploaded_by.get_full_name }}</td>
                             <td><a href="{{ book.file.url }}" download>Download</a></td>
                             <td>
-                                <a class="edit" href="{% url 'library:change_library_book' book.pk %}">Edit</a>
-                                <a class="delete" href="{% url 'library:delete_library_book' book.pk %}">Delete</a>
+                                <a class="edit">Edit</a>
+                                <a class="delete" >Delete</a>
                             </td>
                         </tr>
                         {% endfor %}
@@ -293,7 +293,7 @@ document.getElementById('uploadForm').addEventListener('submit', function(e) {
 
     const formData = new FormData(this);
     
-    fetch('{% url "library:library_add_book" %}', {
+    fetch('{% url "library:library_books_list" %}', {
         method: 'POST',
         body: formData,
     }).then(response => response.json())

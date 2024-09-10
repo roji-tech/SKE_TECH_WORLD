@@ -15,7 +15,7 @@ from django.views import View
 from django.contrib import messages
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 
-from main.models import User, AcademicSession, School, SchoolSettings, Student, Subject, Teacher, Term, SchoolClass, STUDENT, TEACHER
+from main.models import User, AcademicSession, School, SchoolSettings, Student, Subject, Teacher, Term, SchoolClass, STUDENT, TEACHER, ADMIN
 from django.contrib.auth import authenticate, login
 
 # FORMS
