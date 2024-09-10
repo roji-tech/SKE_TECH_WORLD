@@ -20,7 +20,8 @@
         font-family: "Poppins", sans-serif;
         background-color: #f4f4f4;
         display: flex;
-        flex-direction: column;
+        justify-content: center;
+        align-items: center;
         height: 100vh;
       }
 
@@ -95,15 +96,12 @@
     </style>
   </head>
   <body>
-    {% include 'pages_header.html' %}
-
     <div class="confirmation-container">
       <form method="post" class="confirmation-box">
         {% csrf_token %}
         <h1>Are you sure you want to delete "{{ object }}"?</h1>
         <p>
-          This action cannot be undone. Do you really want to delete this
-          subject?
+          This action cannot be undone. Do you really want to delete this Class?
         </p>
         <div class="confirmation-buttons">
           <a href="{% url 'list-sessions' %}">

@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Upload Google Meet</title>
     {% include "poppins_font.html" %}
-    {% include "fontawesome.html" %}
 
     <style>
       /* Reset and general styles */
@@ -18,6 +17,8 @@
 
       body {
         display: flex;
+        justify-content: center;
+        align-items: center;
         flex-direction: column;
         background-color: #f8f7f7;
         height: 100vh;
@@ -34,7 +35,7 @@
         box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
       }
 
-      .title-header {
+      .sub-rows {
         display: flex;
         justify-content: space-between;
         align-items: center;
@@ -152,11 +153,9 @@
     </style>
   </head>
   <body>
-    {% include 'pages_header.html' %}
-
     <div class="table-datas">
-      <div class="title-header">
-        <p>Google Meets</p>
+      <div class="sub-rows">
+        <p>Google Meet</p>
       </div>
 
       <div class="padd">
@@ -180,23 +179,42 @@
         </div>
 
         <table>
-          <tr>
+          <thead>
             <th>No</th>
             <th>Meeting Title</th>
             <th>Description</th>
             <th>Time and Date</th>
             <th>Created By</th>
             <th>Link</th>
-          </tr>
+          </thead>
 
-          <tr>
-            <td>1</td>
-            <td>Biology</td>
-            <td>Just Text</td>
-            <td>1-1-43</td>
-            <td>DEMO TEACHERS</td>
-            <td><a href="http://127.0.0.1:5501/others/gmeet.html#">link</a></td>
-          </tr>
+          <tbody>
+            {% comment %}
+            <tr>
+              <td>1</td>
+              <td>Biology</td>
+              <td>Just Text</td>
+              <td>1-1-43</td>
+              <td>DEMO TEACHERS</td>
+              <td>
+                <a href="http://127.0.0.1:5501/others/gmeet.html#">link</a>
+              </td>
+            </tr>
+            {% endcomment %}
+            <em></em>
+            {% for gmeet in gmeet_classes %}
+            <tr>
+              <td>{{ forloop.counter }}</td>
+              <td>{{gmeet.title}}</td>
+              <td>{{ gmeet.description }}</td>
+              <td>{{ gmeet.start_time }}</td>
+              <td>{{ gmeet_class.created_by }}</td>
+              <td>
+                <a href="{{ gmeet.gmeet_link }}">link</a>
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
 
           <!-- Additional rows can be added here -->
         </table>
@@ -208,6 +226,7 @@
       <div class="overlay-content">
         <h2>Confirm Upload</h2>
         <p>Are you sure you want to upload this Google Meet link?</p>
+
         <div class="btn-group">
           <button id="confirm-upload">Upload</button>
           <button id="cancel-upload">Cancel</button>

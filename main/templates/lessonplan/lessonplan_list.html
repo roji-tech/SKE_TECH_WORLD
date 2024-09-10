@@ -3,9 +3,8 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Upload Google Meet</title>
+    <title>Lesson Plans</title>
     {% include "poppins_font.html" %}
-    {% include "fontawesome.html" %}
 
     <style>
       /* Reset and general styles */
@@ -18,6 +17,7 @@
 
       body {
         display: flex;
+        align-items: center;
         flex-direction: column;
         background-color: #f8f7f7;
         height: 100vh;
@@ -30,23 +30,7 @@
         background: #fff;
         margin-bottom: 5%;
         border-radius: 8px;
-        overflow: hidden;
         box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-      }
-
-      .title-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        border-bottom: 1px solid #ccc;
-        padding: 10px 20px;
-        text-transform: capitalize;
-      }
-
-      .sub-rows p {
-        font-size: 1.2rem;
-        color: #1b94c3;
-        font-weight: bold;
       }
 
       .search-row {
@@ -71,17 +55,34 @@
         border-radius: 3px;
       }
 
-      table {
+      .table {
+        max-width: 100%;
         width: 100%;
-        border-collapse: collapse;
+        overflow-x: auto;
       }
 
-      table,
+      table {
+        border: 1px solid #ccc;
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 10px;
+        background: #fff;
+        max-width: 100%;
+        padding: 50px;
+        min-width: max-content;
+      }
+
+      thead,
+      tbody {
+        width: fit-content;
+      }
+
       th,
       td {
         border: 1px solid #ccc;
         padding: 10px 15px;
         text-align: left;
+        height: max-content;
       }
 
       .edit-action,
@@ -149,14 +150,51 @@
         background-color: rgb(255, 23, 23);
         color: #fff;
       }
+
+      a {
+        color: #fff;
+      }
+
+      .add-division {
+        padding-left: 20px;
+
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border-bottom: 1px solid #ccc;
+        padding: 10px 20px;
+        text-transform: capitalize;
+      }
+
+      .add-division p {
+        color: #1b94c3;
+        font-weight: 600;
+
+        font-size: 1.2rem;
+        color: #1b94c3;
+        font-weight: bold;
+      }
+
+      .add-division a {
+        color: #000;
+      }
     </style>
+    {% include "fontawesome.html" %}
   </head>
   <body>
     {% include 'pages_header.html' %}
 
     <div class="table-datas">
-      <div class="title-header">
-        <p>Google Meets</p>
+      <div class="add-division sub-rows">
+        <p>Lesson Plans</p>
+
+        <a href="{% url 'lessonplan-create' %}">
+          <i class="fa fa-plus" id="plus-icon" style="font-size: 23px"></i>
+        </a>
       </div>
 
       <div class="padd">
@@ -179,27 +217,40 @@
           <input type="search" placeholder="Search" />
         </div>
 
-        <table>
-          <tr>
-            <th>No</th>
-            <th>Meeting Title</th>
-            <th>Description</th>
-            <th>Time and Date</th>
-            <th>Created By</th>
-            <th>Link</th>
-          </tr>
+        <div class="table">
+          <table>
+            <thead>
+              <th>No</th>
+              <th>Meeting Title</th>
+              <th>Description</th>
+              <th>Time and Date</th>
+              <th>Created By</th>
+              <th>Link</th>
+              <th>Actions</th>
+            </thead>
 
-          <tr>
-            <td>1</td>
-            <td>Biology</td>
-            <td>Just Text</td>
-            <td>1-1-43</td>
-            <td>DEMO TEACHERS</td>
-            <td><a href="http://127.0.0.1:5501/others/gmeet.html#">link</a></td>
-          </tr>
+            {% for plan in lesson_plans %}
+            <tr>
+              <td>{{ forloop.counter }}</td>
+              <td>{{plan.title}}</td>
+              <td>{{ plan.subject }}</td>
+              <td>{{ plan.school_class }}</td>
 
-          <!-- Additional rows can be added here -->
-        </table>
+              <td>
+                <span class="edit-action">
+                  <a href="{% url 'lessonplan-update' plan.pk %}"> Edit </a>
+                </span>
+
+                <span class="delete-action">
+                  <a href="{% url 'lessonplan-delete' plan.pk %}"> Delete </a>
+                </span>
+              </td>
+            </tr>
+            {% endfor %}
+
+            <!-- Additional rows can be added here -->
+          </table>
+        </div>
       </div>
     </div>
 

@@ -168,8 +168,8 @@ class AcademicSessionForm(forms.ModelForm):
         fields = [
             'start_date',
             'end_date',
-            "name",
-            # 'is_current', 'next_session_begins', 'max_exam_score'
+            "name", 'is_current',
+            #  'next_session_begins', 'max_exam_score'
         ]
         widgets = {
             'start_date': forms.DateInput(attrs={'type': 'date', "id": "start_date"}),
@@ -239,8 +239,6 @@ class ClassForm(forms.ModelForm):
         print(self.cleaned_data)
         return self.cleaned_data
 
-    
-
 
 class SubjectForm(forms.ModelForm):
     class Meta:
@@ -256,14 +254,13 @@ class GoogleMeetForm(forms.ModelForm):
     class Meta:
         model = GmeetClass
         fields = ['subject', 'description',
-                  'start_time', 'gmeet_link', 'created_by']
+                  'start_time', 'gmeet_link']
         widgets = {
             'start_time': forms.DateTimeInput(attrs={'type': 'datetime-local'}),
         }
         labels = {
-            'subject': 'Meeting Title',
+            # 'subject': 'Meeting Title',
             'start_time': 'Date and Time',
-            'created_by': 'Created By',
         }
 
 
@@ -297,8 +294,6 @@ class LibraryBookForm(forms.ModelForm):
         help_texts = {
             'book_image_url': 'Provide a valid URL for the book cover image.',
         }
-
-
 
 
 # class ContinuousAssessmentForm(forms.ModelForm):

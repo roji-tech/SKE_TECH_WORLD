@@ -19,7 +19,7 @@ from main.models import User, AcademicSession, School, SchoolSettings, Student, 
 from django.contrib.auth import authenticate, login
 
 # FORMS
-from main.models.models import School, Student, Subject, Teacher, GmeetClass
+from main.models.models import AcademicSession, GmeetClass, School, Student, Subject, Teacher
 from main.forms import TeacherForm, StudentForm, TeacherUserForm, StudentUserForm
 from main.models.models import Student
 from ..forms import AcademicSessionForm, ClassForm  # Assuming you have a form
@@ -132,7 +132,6 @@ class AddSession(View):
         return render(request, self.template_name, {'form': form})
 
     def post(self, request, *args, **kwargs):
-        print(request.POST)
         form = AcademicSessionForm(request.POST)
 
         try:
@@ -150,6 +149,7 @@ class AddSession(View):
                 else:
                     school_name = f"{start_date.year}-{end_date.year}"
                 print(start_date, end_date, _name, school_name, school)
+                print(request.POST)
 
                 # is_current = form.cleaned_data.get('is_current')
                 # next_session_begins = form.cleaned_data.get('next_session_begins')
@@ -181,6 +181,7 @@ class AddSession(View):
             messages.error(
                 request, 'This academic session already exists. Please enter a different session.')
         except Exception as e:
+            print(e)
             messages.error(
                 request, 'Error adding academic session. Please try again.')
             print(e)
@@ -194,11 +195,25 @@ class UpdateSession(UpdateView):
     model = AcademicSession
     context_object_name = 'academicSession'
     fields = ['start_date', 'end_date']
-    template_name = "myadmin/update_session.html"
+    # template_name = "myadmin/update_session.html"
+    template_name = "myadmin/add_session.html"
     success_url = reverse_lazy('list-sessions')
 
     def get_queryset(self):
         return AcademicSession.get_school_sessions(request=self.request)
+
+    def get(self, request, pk, *args, **kwargs):
+        session = get_object_or_404(AcademicSession, pk=pk)
+        form = AcademicSessionForm(instance=session)
+        return render(request, self.template_name, {'form': form})
+
+    def post(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        form = AcademicSessionForm(request.POST, instance=self.object)
+        if form.is_valid():
+            form.save()
+        print(self.object)
+        return super().post(request, *args, **kwargs)
 
 
 @mydecorators.admin_is_authenticated
@@ -213,7 +228,7 @@ class DeleteSession(DeleteView):
 
 
 # CLASSES
-# CLASSES
+# CLASSESI
 # CLASSES
 # CLASSES
 # CLASSES
@@ -305,11 +320,6 @@ class ClassDeleteView(DeleteView):
 
     def get_queryset(self):
         return SchoolClass.get_school_classes(request=self.request)
-
-    def get_form(self, form_class=None):
-        if form_class is None:
-            form_class = self.get_form_class()
-        return form_class(request=self.request, **self.get_form_kwargs())
 
 
 # TERMS
@@ -429,7 +439,6 @@ class SubjectCreateView(CreateView):
 class SubjectUpdateView(UpdateView):
     model = Subject
     template_name = 'myadmin/subject/subject_edit.html'
-    fields = ['name']
     success_url = reverse_lazy('list-subjects')
 
     # Adjust these fields according to your Subject model

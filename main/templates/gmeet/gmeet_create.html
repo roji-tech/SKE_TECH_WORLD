@@ -1,4 +1,3 @@
-{% load static %}
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -43,6 +42,8 @@
 
       .input {
         width: 100%;
+        max-width: 100%;
+        max-height: 150px;
         padding: 8px;
         border: 1px solid #ccc;
         border-radius: 4px;
@@ -121,49 +122,64 @@
         color: #fff;
         margin-top: 10px;
       }
+
+      .title-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border-bottom: 1px solid #ccc;
+        padding: 10px 20px;
+        text-transform: capitalize;
+      }
     </style>
   </head>
   <body>
     <div class="container">
-      <div class="add-division">
-        <p>Add Google Meet Session</p>
+      <div class="title-header">
+        <p>Google Meet</p>
+
+        <a href="{% url 'gmeetclass-list' %}"> G-Meets </a>
       </div>
 
       <div class="contents">
-        <form id="meeting-form" method="post">
-          {% csrf_token %} {{ form }}
-
+        <form method="post" id="meeting-form">
+          {% csrf_token %}
           <div class="inline-f">
-            {{form.title.label_tag }} {{ form.title }} {{ form.title.errors }}
+            <label for="subject" class="label">Meetng Title</label>
+            {{ form.title }}
           </div>
 
           <div class="inline-f">
-            {{ form.description.label_tag }} {{ form.description }} {{
-            form.description.errors }}
+            <label for="subject" class="label"
+              >Subject ( If it's a class )
+            </label>
+            {{ form.subject }}
           </div>
 
           <div class="inline-f">
-            {{ form.date_time.label_tag }} {{ form.date_time }} {{
-            form.date_time.errors }}
+            <label for="description" class="label">Description</label>
+            {{ form.description }}
           </div>
 
           <div class="inline-f">
-            {{form.created_by.label_tag }} {{form.created_by }} {{
-            form.created_by.errors }}
+            <label for="start_time" class="label">Start Date and Time</label>
+            {{ form.start_time }}
           </div>
 
           <div class="inline-f">
-            {{form.link.label_tag }} {{form.link }} {{form.link.errors }}
+            <label for="end_time" class="label">End Date and Time</label>
+            {{ form.end_time }}
+          </div>
+
+          <div class="inline-f">
+            <label for="gmeet_link" class="label">Gmeet Link</label>
+            {{ form.gmeet_link }}
           </div>
 
           <div class="function-btn">
-            <button type="submit" id="add">Add Meeting</button>
-            <button
-              type="button"
-              id="cancel"
-              onclick="window.location.href='{% url 'teachers' %}'"
-            >
-              Cancel
+            <button type="submit" id="add upload-link">Add Meeting</button>
+            <button type="button" id="cancel">
+              <a href="{% url 'gmeetclass-list' %}" style='color: #Fff'> Cancel </a>
             </button>
           </div>
         </form>
@@ -183,6 +199,41 @@
       </div>
     </div>
 
-    <script src="{% static 'teachers/js/scripts.js' %}"></script>
+    <!-- Overlay for upload confirmation -->
+
+    <div class="overlay">
+      <div class="overlay-content">
+        <h2>Confirm Upload</h2>
+        <p>Are you sure you want to upload this Google Meet link?</p>
+        <div class="btn-group">
+          <button id="confirm-upload">Upload</button>
+          <button id="cancel-upload">Cancel</button>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      const uploadLink = document.getElementById("upload-link");
+      const overlay = document.getElementById("overlay");
+      const confirmUpload = document.getElementById("confirm-upload");
+      const cancelUpload = document.getElementById("cancel-upload");
+
+      uploadLink.addEventListener("click", function (event) {
+        event.preventDefault();
+        overlay.style.display = "block";
+      });
+
+      cancelUpload.addEventListener("click", function () {
+        overlay.style.display = "none";
+      });
+
+      // Add functionality to confirm upload
+      confirmUpload.addEventListener("click", function () {
+        // Implement your upload logic here
+        console.log("Upload confirmed");
+        // Close the overlay
+        overlay.style.display = "none";
+      });
+    </script>
   </body>
 </html>

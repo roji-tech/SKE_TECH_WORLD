@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Teachers Note</title>
+    <link rel="stylesheet" href="/updated/note/teachersnote.css" />
+
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap");
+
+      * {
+        font-family: "Poppins", sans-serif;
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        display: flex;
+        align-items: center;
+        min-height: 100vh;
+        background-color: #f0f0f0;
+
+        flex-direction: column;
+      }
+
+      .table-datas {
+        border: 1px solid #b5adad;
+        width: 90%;
+        background: #f8f7f788;
+        margin-bottom: 10%;
+      }
+
+      .padd {
+        padding: 2%;
+        background: white;
+      }
+
+      .sub-rows {
+        display: flex;
+        border-bottom: 1px solid #b5adad;
+        justify-content: space-between;
+        text-transform: capitalize;
+        align-items: center;
+      }
+
+      .sub-rows p {
+        padding: 2%;
+        font-size: larger;
+        color: #1b94c3;
+        font-weight: unset;
+        font-family: sans-serif;
+      }
+
+      a {
+        text-decoration: none;
+        color: #1b94c3;
+      }
+
+      .search-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 1em 0;
+      }
+
+      .search-row input {
+        width: 50%;
+        height: 35px;
+        background: transparent;
+        border: 1px solid #b5adad;
+        padding: 0 10px;
+      }
+
+      select {
+        border: none;
+      }
+
+      span {
+        padding: 2%;
+        border: 1px solid #b5adad;
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 20px;
+      }
+
+      table,
+      th,
+      td {
+        border: 1px solid #b5adad;
+        padding: 10px;
+        text-align: left;
+        text-transform: capitalize;
+      }
+
+      th {
+        background-color: #f0f0f0;
+      }
+
+      #edit {
+        padding: 3px;
+        background: #1b94c3;
+        color: white;
+        margin: 0 5px;
+        cursor: pointer;
+      }
+
+      #del {
+        padding: 3px;
+        background: rgb(255, 23, 23);
+        color: white;
+        margin: 0 5px;
+        cursor: pointer;
+      }
+
+      /* Overlay Styles */
+      .overlay {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5);
+        z-index: 1000;
+        justify-content: center;
+        align-items: center;
+      }
+
+      .overlay-content {
+        background-color: #fff;
+        padding: 20px;
+        border-radius: 5px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        width: 50%;
+        max-width: 600px;
+        position: relative;
+      }
+
+      .overlay-content .close {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        font-size: 24px;
+        cursor: pointer;
+        color: #aaa;
+      }
+
+      .inline-f {
+        margin-bottom: 15px;
+        text-align: left;
+      }
+
+      .inline-f label {
+        display: block;
+        margin-bottom: 5px;
+      }
+
+      .inline-f .input {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 3px;
+      }
+
+      .function-btn {
+        display: flex;
+        justify-content: space-between;
+      }
+
+      #add,
+      #cancel {
+        background-color: #1b94c3;
+        color: #fff;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+      }
+
+      #cancel {
+        background-color: #ff1717;
+      }
+
+      #add:hover {
+        background-color: #127185;
+      }
+
+      #cancel:hover {
+        background-color: #d41111;
+      }
+    </style>
+    {% include "fontawesome.html" %}
+  </head>
+
+  <body>
+    {% include 'pages_header.html' %}
+
+    <div class="table-datas">
+      <div class="add-division sub-rows">
+        <p>Note List</p>
+
+        <a href="{% url 'lessonplan-create' %}">
+          <i class="fa fa-plus" id="plus-icon" style="font-size: 23px"></i>
+        </a>
+      </div>
+
+      <div class="padd">
+        <div class="search-row">
+          <span>
+            <select name="class" id="">
+              <option value="10">10</option>
+              <option value="9">9</option>
+              <option value="8">8</option>
+              <option value="7">7</option>
+              <option value="6">6</option>
+              <option value="5">5</option>
+              <option value="4">4</option>
+              <option value="3">3</option>
+              <option value="2">2</option>
+              <option value="1">1</option>
+            </select>
+          </span>
+
+          <input type="search" placeholder="Search" />
+        </div>
+        <table>
+          <tr>
+            <th>No</th>
+            <th>Subject</th>
+            <th>Class</th>
+            <th>Topic</th>
+            <th>Uploaded By</th>
+            <th>Download</th>
+          </tr>
+          <tr>
+            <td>1</td>
+            <td>Computer Science</td>
+            <td>JSS1</td>
+            <td>Social Studies</td>
+            <td>Demo Teachers</td>
+            <td><a href="#">Download</a></td>
+          </tr>
+        </table>
+      </div>
+    </div>
+
+    <!-- Overlay -->
+    <div class="overlay" id="uploadOverlay">
+      <div class="overlay-content">
+        <span class="close" id="closeOverlay">&times;</span>
+        <form>
+          <div class="inline-f">
+            <label for="subject" class="class">Subject</label>
+            <input
+              type="text"
+              id="subject"
+              placeholder="Subject"
+              class="input"
+              required
+            />
+          </div>
+          <div class="inline-f">
+            <label for="class" class="class">Class</label>
+            <input
+              type="text"
+              id="class"
+              placeholder="Class"
+              required
+              class="input"
+            />
+          </div>
+          <div class="inline-f">
+            <label for="topic" class="class">Topic</label>
+            <input
+              type="text"
+              id="topic"
+              placeholder="Topic"
+              required
+              class="input"
+            />
+          </div>
+          <div class="inline-f">
+            <label for="uploadedBy" class="class">Uploaded By</label>
+            <input
+              type="text"
+              id="uploadedBy"
+              placeholder="Uploaded By"
+              required
+              class="input"
+            />
+          </div>
+          <div class="inline-f">
+            <label for="uploadedFile" class="class">Uploaded File</label>
+            <input type="file" id="uploadedFile" class="input" />
+          </div>
+          <div class="function-btn">
+            <button type="submit" id="add">Save</button>
+            <button type="button" id="cancel">Cancel</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <script>
+      const openOverlay = document.getElementById("openOverlay");
+      const uploadOverlay = document.getElementById("uploadOverlay");
+      const closeOverlay = document.getElementById("closeOverlay");
+      const cancelOverlay = document.getElementById("cancel");
+
+      openOverlay.addEventListener("click", function () {
+        uploadOverlay.style.display = "block";
+      });
+
+      closeOverlay.addEventListener("click", function () {
+        uploadOverlay.style.display = "none";
+      });
+
+      cancelOverlay.addEventListener("click", function () {
+        uploadOverlay.style.display = "none";
+      });
+    </script>
+  </body>
+</html>
