@@ -40,11 +40,11 @@
 
             <h2>Register</h2>
 
-            <div class="inputbox">
+            {% comment %} <div class="inputbox">
               <ion-icon name="person-outline"></ion-icon>
               <input type="text" name="username" required />
               <label>Username</label>
-            </div>
+            </div> {% endcomment %}
 
             <div class="inputbox">
               <ion-icon name="person-outline"></ion-icon>
@@ -145,7 +145,7 @@
 
       function validateFormData(formData) {
         const requiredFields = [
-          "username",
+          {% comment %} "username", {% endcomment %}
           "first_name",
           "last_name",
           "email",

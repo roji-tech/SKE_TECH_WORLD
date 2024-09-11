@@ -1,32 +1,37 @@
+
+import logging
+from typing import Any
+
 from django.db.models import Q
 from django.db.utils import IntegrityError
-import logging
-from django.http import JsonResponse
-from django.forms.models import BaseModelForm
-from django.http.response import JsonResponse
-from typing import Any
-from django.contrib.auth.decorators import login_required
-from django.db.models.query import QuerySet
-from django.urls import reverse_lazy
-from django.utils.decorators import method_decorator
-from django.http import HttpResponse
-from django.shortcuts import render, get_object_or_404, redirect
-from django.views import View
+
+from django.http import JsonResponse, HttpResponse
+
+from django.core.validators import validate_email
+from django.core.exceptions import ValidationError
+
 from django.contrib import messages
+from django.contrib.auth import authenticate, login
+from django.contrib.auth.password_validation import validate_password
+from django.contrib.auth.decorators import login_required
+
+from django.shortcuts import render, get_object_or_404, redirect
+
+from django.utils.decorators import method_decorator
+from django.urls import reverse_lazy
+
+from django.views import View
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 
+# MODELS
 from main.models import User, AcademicSession, School, SchoolSettings, Student, Subject, Teacher, Term, SchoolClass, STUDENT, TEACHER, ADMIN
-from django.contrib.auth import authenticate, login
+from main.models.models import GmeetClass
 
 # FORMS
-from main.models.models import AcademicSession, GmeetClass, School, Student, Subject, Teacher
-from main.forms import TeacherForm, StudentForm, TeacherUserForm, StudentUserForm
-from main.models.models import Student
-from ..forms import AcademicSessionForm, ClassForm  # Assuming you have a form
-from main import mydecorators
-# from ..models.profiles import Teacher
-# from ..forms import TeachersForm
+from main.forms import TeacherForm, StudentForm, TeacherUserForm, StudentUserForm, AcademicSessionForm, ClassForm
 
+# CUSTOM DECORATORS
+from main import mydecorators
 
 # Set up a logger for the application
 logger = logging.getLogger(__name__)
@@ -62,7 +67,7 @@ class RegisterAndRegisterSchool(View):
     def post(self, request, *args, **kwargs):
         try:
             # Extract POST data
-            username = request.POST.get('username')
+            # username = request.POST.get('username')
             first_name = request.POST.get('first_name')
             last_name = request.POST.get('last_name')
             email = request.POST.get('email')
@@ -73,13 +78,30 @@ class RegisterAndRegisterSchool(View):
             school_email = request.POST.get('school_email')
 
             # Validate the received data
-            if not all([username, first_name, last_name, email, password, gender, school_name, school_phone, school_email]):
-                messages.error(request, "Please fill all fields correctly.")
+            if not all([first_name, last_name, email, password, gender, school_name, school_phone, school_email]):
                 return JsonResponse({"status": False, "message": "Please fill all fields correctly."})
 
+            # Validate email format
+            try:
+                validate_email(email)
+            except ValidationError:
+                return JsonResponse({"status": False, "message": "Invalid email format."})
+
+            # Validate school email format
+            try:
+                validate_email(school_email)
+            except ValidationError:
+                return JsonResponse({"status": False, "message": "Invalid school email format."})
+
+            # Validate password strength
+            try:
+                validate_password(password)
+            except ValidationError as ve:
+                return JsonResponse({"status": False, "message": str(ve)})
+
             # Create the User
-            owner = User(username=username, first_name=first_name,
-                         last_name=last_name, email=email, gender=gender, role="owner")
+            owner = User(first_name=first_name, email=email,
+                         last_name=last_name,  gender=gender, role="owner")
             owner.set_password(password)
             owner.save()
 
@@ -88,28 +110,19 @@ class RegisterAndRegisterSchool(View):
                             phone=school_phone, email=school_email)
             school.save()
 
-            # Success message
-            messages.success(request, "Account created successfully.")
             return JsonResponse({"status": True, "message": "Account created successfully."})
 
+        except IntegrityError as ie:
+            logger.error(f"IntegrityError encountered: {str(ie)}")
+            return JsonResponse({"status": False, "message": "This email is already in use."})
+
         except ValueError as ve:
-            # Handle specific ValueErrors (e.g., invalid data types)
             logger.error(f"ValueError encountered: {str(ve)}")
-            messages.error(request, "Invalid input provided.")
+            print(ve)
             return JsonResponse({"status": False, "message": "Invalid input provided."})
 
-        except IntegrityError as ie:
-            # Handle database integrity errors (e.g., unique constraint violations)
-            logger.error(f"IntegrityError encountered: {str(ie)}")
-            messages.error(
-                request, "This username or email is already in use.")
-            return JsonResponse({"status": False, "message": "This username or email is already in use."})
-
         except Exception as e:
-            # Log the generic exception for further analysis
             logger.exception(f"Unexpected error occurred: {str(e)}")
-            messages.error(
-                request, "Error creating account. Please try again.")
             return JsonResponse({"status": False, "message": "Error creating account. Please try again."})
 
 

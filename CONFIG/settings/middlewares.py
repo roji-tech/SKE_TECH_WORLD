@@ -2,6 +2,8 @@ MIDDLEWARE = [
     # 'django_tenants.middleware.main.TenantMainMiddleware',
     'main.middleware.AppendSlashMiddleware',
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',  # Add WhiteNoise here
+
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
