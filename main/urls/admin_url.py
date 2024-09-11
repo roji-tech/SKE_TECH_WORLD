@@ -22,7 +22,7 @@ from ..views import AdminsHome, RegisterAndRegisterSchool, AdminsHelp
 
 urlpatterns = [
   
-    path('dashboard/admin/', AdminsHome.as_view(), name='myadmin'),
+    path('admin/', AdminsHome.as_view(), name='myadmin'),
     path('admin/register/', RegisterAndRegisterSchool.as_view(),
          name='register-school'),
     path('admin/help/', AdminsHelp.as_view(), name='admin-help'),

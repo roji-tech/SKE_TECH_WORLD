@@ -8,8 +8,6 @@ urlpatterns = [
     path('djangoadmin/', admin.site.urls),
     path('', include("main.urls")),
     path('library/', include("library.urls")),
-    path('logout/', auth_views.LogoutView.as_view(), name='logout'),
-
 ]
 
 if settings.DEBUG:

@@ -101,8 +101,14 @@ class CustomLoginView(LoginView):
         return super().form_invalid(form)
 
     def get_success_url(self):
-        user = self.request.user
+        # Check if there's a 'next' parameter in the query string
+        next_url = self.request.GET.get('next')
 
+        if next_url:
+            return next_url
+
+        # Fallback to role-based default URL
+        user = self.request.user
         if user.is_owner or user.is_admin:
             return reverse_lazy('myadmin')
         elif user.is_teacher:
@@ -110,7 +116,7 @@ class CustomLoginView(LoginView):
         elif user.is_student:
             return reverse_lazy('students')
         else:
-            return reverse_lazy('home')
+            return reverse_lazy('home')  # Default fallback
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
