@@ -12,4 +12,4 @@ def get_dashboard_url(user):
         return reverse('teachers')
     elif user.groups.filter(name='Student').exists():
         return reverse('students')
-    return reverse('myadmin')
+    return reverse('home')
