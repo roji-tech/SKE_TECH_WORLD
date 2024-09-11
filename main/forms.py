@@ -280,7 +280,7 @@ class LessonPlanForm(forms.ModelForm):
 class LibraryBookForm(forms.ModelForm):
     class Meta:
         model = LibraryBook
-        fields = ['book_image_url', 'title', 'author']
+        fields = ['book_image', 'title_with_author', 'book']
         labels = {
             'book_image_url': 'Book Image',
             'title': 'Book Title',
@@ -299,7 +299,7 @@ class LibraryBookForm(forms.ModelForm):
 # class ContinuousAssessmentForm(forms.ModelForm):
 #     class Meta:
 #         model = ContinuousAssessment
-#         fields = ['subject', 'file', 'student', 'name', 'score']
+#         fields = ['subject', 'file', 'sDEMO TEACHERS	tudent', 'name', 'score']
 #         widgets = {
 #             'subject': forms.Select(attrs={'class': 'form-control'}),
 #             'file': forms.ClearableFileInput(attrs={'class': 'form-control-file'}),

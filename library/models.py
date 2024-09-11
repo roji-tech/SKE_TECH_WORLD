@@ -1,10 +1,15 @@
 from django.db import models
+from django.contrib.auth import get_user_model
 from django.conf import settings
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
 from main.models.models import School
+
 # Create your models here.
 
+
+
+User = get_user_model()
 
 
 class Library(models.Model):
@@ -21,23 +26,18 @@ class Library(models.Model):
 
 
 class LibraryBook(models.Model):
-    # library = models.ForeignKey(
-    #     Library, on_delete=models.CASCADE, related_name="library")
-    title = models.CharField(max_length=100)
-    author = models.CharField(max_length=50)
-    book = models.FileField(upload_to='library/')
-    uploaded_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='books' )
-    book_image_url = models.URLField()
-    available_copies = models.IntegerField()
+    title_with_author = models.CharField(max_length=100)
+    book = models.FileField(upload_to='library/catalogue/books')
+    book_image = models.ImageField(upload_to='library/catalogue/images/')
+    available_copies = models.IntegerField(default=1)
+    
+    uploaded_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True,
+    limit_choices_to={'role__in': ['teacher', 'admin', 'owner']}, related_name='books'
+    ), 
 
 
     class Meta:
-        permissions = [
-            ('can_add_books', 'Can add books'),
-            ('can_view_books', 'Can view books'),
-            ('can_change_books', 'Can change books'),
-            ('can_delete_books', 'Can delete books'),
-        ]
+        ordering = ['title_with_author']
 
     def __str__(self):
         return self.title
