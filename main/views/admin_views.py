@@ -15,7 +15,7 @@ from django.views import View
 from django.contrib import messages
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 
-from main.models import User, AcademicSession, School, SchoolSettings, Student, Subject, Teacher, Term, SchoolClass, STUDENT, TEACHER
+from main.models import User, AcademicSession, School, SchoolSettings, Student, Subject, Teacher, Term, SchoolClass, STUDENT, TEACHER, ADMIN
 from django.contrib.auth import authenticate, login
 
 # FORMS
@@ -767,3 +767,39 @@ class SettingsDeleteView(DeleteView):
 # GOOGLE MEET CLASSES
 # GOOGLE MEET CLASSES
 # GOOGLE MEET CLASSES
+
+@mydecorators.admin_is_authenticated
+class GmeetListView(ListView):
+    model = GmeetClass
+    template_name = 'myadmin/gmeet_l#ist.html'
+    context_object_name = 'settings'
+
+
+@mydecorators.admin_is_authenticated
+class GmeetDetailView(DetailView):
+    model = GmeetClass
+    template_name = 'myadmin/gmeetdetail.html'
+    context_object_name = 'setting'
+
+
+@mydecorators.admin_is_authenticated
+class GmeetCreateView(CreateView):
+    model = GmeetClass
+    template_name = 'myadmin/gmeetcreate.html'
+    fields = ['name']
+    success_url = reverse_lazy('list-settings')
+
+
+@mydecorators.admin_is_authenticated
+class GmeetUpdateView(UpdateView):
+    model = GmeetClass
+    template_name = 'myadmin/gmeetedit.html'
+    fields = ['name']
+    success_url = reverse_lazy('list-settings')
+
+
+@mydecorators.admin_is_authenticated
+class GmeetDeleteView(DeleteView):
+    model = GmeetClass
+    template_name = 'myadmin/gmeetdelete.html'
+    success_url = reverse_lazy('list-settings')

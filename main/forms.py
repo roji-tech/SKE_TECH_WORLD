@@ -275,10 +275,25 @@ class LessonPlanForm(forms.ModelForm):
         }
 
 
+
+
 class LibraryBookForm(forms.ModelForm):
     class Meta:
         model = LibraryBook
-        fields = '__all__'
+        fields = ['book_image_url', 'title', 'author']
+        labels = {
+            'book_image_url': 'Book Image',
+            'title': 'Book Title',
+            'author': 'Author Name',
+        }
+        widgets = {
+            'book_image_url': forms.URLInput(attrs={'placeholder': 'Enter Image URL'}),
+            'title': forms.TextInput(attrs={'placeholder': 'Enter Book Title'}),
+            'author': forms.TextInput(attrs={'placeholder': 'Enter Author Name'}),
+        }
+        help_texts = {
+            'book_image_url': 'Provide a valid URL for the book cover image.',
+        }
 
 
 # class ContinuousAssessmentForm(forms.ModelForm):

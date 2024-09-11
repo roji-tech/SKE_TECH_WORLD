@@ -5,13 +5,154 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Upload Google Meet</title>
-    <link
-      rel="stylesheet"
-      href="{% static 'css/students/student-gmeet.css' %}"
-    />
-    {% include "poppins_font.html" %}
-  </head>
-  <body>
+    <link rel="stylesheet" href="{% static 'css/students/student-gmeet.css' %}">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500&display=swap" rel="stylesheet">
+    <style>
+        /* Reset and general styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+}
+
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    background-color: #f8f7f7;
+    height: 100vh;
+    margin: 0;
+}
+
+.table-datas {
+    border: 1px solid #ccc;
+    width: 90%;
+    background: #fff;
+    margin-bottom: 5%;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.sub-rows {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #ccc;
+    padding: 10px 20px;
+    text-transform: capitalize;
+}
+
+.sub-rows p {
+    font-size: 1.2rem;
+    color: #1b94c3;
+    font-weight: bold;
+}
+
+.search-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 20px;
+}
+
+.search-row input[type="search"] {
+    width: 50%;
+    height: 35px;
+    padding: 5px 10px;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+    font-size: 14px;
+}
+
+select {
+    padding: 5px 10px;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+table, th, td {
+    border: 1px solid #ccc;
+    padding: 10px 15px;
+    text-align: left;
+}
+
+.edit-action, .delete-action {
+    padding: 5px 10px;
+    margin: 0 5px;
+    color: #fff;
+    cursor: pointer;
+    border-radius: 3px;
+    text-align: center;
+}
+
+.edit-action {
+    background-color: #1b94c3;
+}
+
+.delete-action {
+    background-color: rgb(255, 23, 23);
+}
+
+/* Overlay styles */
+#overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+    justify-content: center;
+    align-items: center;
+}
+
+.overlay-content {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+
+.overlay-content h2 {
+    margin-bottom: 10px;
+}
+
+.btn-group {
+    margin-top: 20px;
+}
+
+button {
+    padding: 10px 20px;
+    margin: 0 10px;
+    cursor: pointer;
+    border: none;
+    border-radius: 5px;
+}
+
+#confirm-upload {
+    background-color: #1b94c3;
+    color: #fff;
+}
+
+#cancel-upload {
+    background-color: rgb(255, 23, 23);
+    color: #fff;
+}
+
+    </style>
+</head>
+<body>
+    {% include 'pages_header.html' %}
     <div class="table-datas">
       <div class="sub-rows">
         <p>Google Meet</p>

@@ -13,13 +13,16 @@ from main.views.admin_views import (
     SubjectDeleteView, SubjectListView, SubjectUpdateView, TeacherCreateView,
 
     TeacherDeleteView, TeacherListView, TeacherUpdateView, UpdateSession,
+
+    GmeetListView, 
 )
 
 from ..views import AdminsHome, RegisterAndRegisterSchool, AdminsHelp
 
 
 urlpatterns = [
-    path('admin/', AdminsHome.as_view(), name='myadmin'),
+  
+    path('dashboard/admin/', AdminsHome.as_view(), name='myadmin'),
     path('admin/register/', RegisterAndRegisterSchool.as_view(),
          name='register-school'),
     path('admin/help/', AdminsHelp.as_view(), name='admin-help'),
