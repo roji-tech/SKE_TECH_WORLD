@@ -24,7 +24,7 @@ from django.views import View
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 
 # MODELS
-from main.models import User, AcademicSession, School, SchoolSettings, Student, Subject, Teacher, Term, SchoolClass
+from main.models import User, AcademicSession, School, SchoolSettings, Student, Subject, Teacher, Term, SchoolClass, STUDENT, TEACHER, ADMIN
 from main.models.models import GmeetClass
 
 # FORMS
@@ -35,6 +35,15 @@ from main import mydecorators
 
 # Set up a logger for the application
 logger = logging.getLogger(__name__)
+
+def dashboard_redirect(request):
+    if request.user.is_superuser:
+        return redirect('myadmin')
+    elif request.user.groups.filter(role='TEACHER').exists():
+        return redirect('teachers')
+    elif request.user.groups.filter(role='STUDENT').exists():
+        return redirect('students')
+    return redirect('myadmin')
 
 
 class AddRequestToFormMixin(View):

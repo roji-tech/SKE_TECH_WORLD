@@ -224,14 +224,13 @@
                         <tr>
                             {% for book in library_books %}
                             <td>{{ book.id }}</td>
-                            <td><img src="{{ book.book_image_url }}" alt="image" loading="lazy"></td>
-                            <td>{{ book.title }}</td>
-                            <td>{{ book.author }}</td>
+                            <td><img src="{{ book.book_image}}" alt="image" loading="lazy"></td>
+                            <b><td>{{ book.title_with_author }}</td></b>
                             <td>{{ book.uploaded_by.get_full_name }}</td>
-                            <td><a href="{{ book.file.url }}" download>Download</a></td>
+                            <td><a href="{% url 'library:download_book' book.pk %}">Download</a></td>
                             <td>
-                                <a class="edit">Edit</a>
-                                <a class="delete" >Delete</a>
+                                <a class="edit" href="{% url 'library:change_library_book' book.pk %}">Edit</a>
+                                <a class="delete" href="{% url 'library:delete_library_book' book.pk %}">Delete</a>
                             </td>
                         </tr>
                         {% endfor %}
@@ -249,21 +248,7 @@
             <h2>Upload Book</h2>
             <form id="uploadForm" enctype="multipart/form-data">
                 {% csrf_token %}
-                <!-- Title Field -->
-                <label for="bookTitle">Title:</label>
-                <input type="text" id="bookTitle" name="title" required>
-                
-                <!-- Uploaded By Field -->
-                <label for="uploadedBy">Uploaded By:</label>
-                <input type="text" id="uploadedBy" name="uploaded_by">
-                
-                <!-- Image Upload Field -->
-                <label for="uploadImage">Choose an image:</label>
-                <input type="file" id="uploadImage" name="image" accept=".png,.jpg" required>
-                
-                <!-- File Upload Field -->
-                <label for="uploadFile">Choose a file:</label>
-                <input type="file" id="uploadFile" name="file" accept=".pdf,.doc,.docx" required>
+                {{form.as_p}}
                 
                 <!-- Submit Button -->
                 <button type="submit">Upload</button>

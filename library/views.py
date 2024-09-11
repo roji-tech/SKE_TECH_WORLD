@@ -1,3 +1,4 @@
+from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib import messages
@@ -52,3 +53,10 @@ def delete_library_book(request, pk):
         messages.success(request, "Book deleted successfully.")
         return redirect('library:library_books_list')
     return render(request, 'library.html', {'book': book})
+
+
+def download_book(request, pk):
+    book = get_object_or_404(LibraryBook, pk=pk)
+    response = HttpResponse(book.book, content_type='application/octet-stream')
+    response['content-disposition'] = f'attachment; filename="{book.book.name}"'
+    return response
