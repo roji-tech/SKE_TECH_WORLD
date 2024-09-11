@@ -53,7 +53,7 @@ class AdminsHome(ListView):
 
 class RegisterAndRegisterSchool(View):
     def get(self, request, *args, **kwargs):
-        return render(request, "dadmin/login.html")
+        return render(request, "myadmin/register.html")
 
     def post(self, request, *args, **kwargs):
         try:
