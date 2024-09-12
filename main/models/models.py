@@ -343,7 +343,7 @@ class GmeetClass(models.Model):
     description = models.TextField()
     gmeet_link = models.URLField()
     start_time = models.DateTimeField()
-    end_time = models.DateTimeField()
+    duration = models.DurationField(null=True, blank=True)
     created_by = models.ForeignKey(
         User, on_delete=models.SET_NULL,
         null=True, blank=True,

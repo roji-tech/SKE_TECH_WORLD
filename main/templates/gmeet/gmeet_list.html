@@ -179,7 +179,7 @@
         font-weight: bold;
       }
 
-      .add-division a{
+      .add-division a {
         color: #000;
       }
     </style>
@@ -222,8 +222,9 @@
             <thead>
               <th>No</th>
               <th>Meeting Title</th>
-              <th>Description</th>
               <th>Time and Date</th>
+              <th>Duration</th>
+              <th>Description</th>
               <th>Created By</th>
               <th>Link</th>
               <th>Actions</th>
@@ -232,12 +233,19 @@
             {% for gmeet in gmeet_classes %}
             <tr>
               <td>{{ forloop.counter }}</td>
-              <td>{{gmeet.title}}</td>
-              <td>{{ gmeet.description }}</td>
+              <td>{{ gmeet.title }}</td>
               <td>{{ gmeet.start_time }}</td>
+              <td>{{ gmeet.duration }}</td>
+              <td>{{ gmeet.description }}</td>
               <td>{{ gmeet.created_by }}</td>
               <td>
-                <a href="{{ gmeet.gmeet_link }}">link</a>
+                <a
+                  target="_blank"
+                  href="{{ gmeet.gmeet_link }}"
+                  style="color: #000"
+                >
+                  Join
+                </a>
               </td>
               <td>
                 <span class="edit-action">

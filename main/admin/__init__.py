@@ -74,14 +74,14 @@ class ClassAdmin(admin.ModelAdmin):
 
 
 class GmeetClassAdmin(admin.ModelAdmin):
-    list_display = ['start_time', 'created_by',
-                    'subject', 'gmeet_link', 'end_time']
+    list_display = ['start_time', 'title', 'created_by',
+                    'subject', 'gmeet_link', 'duration']
     list_filter = ['subject', 'start_time', 'created_by']
     search_fields = ['subject__name', 'description', 'gmeet_link']
     # date_hierarchy = 'start_time'
     ordering = ['start_time']
-    fields = ['created_by', 'subject', 'description',
-              'gmeet_link', 'start_time', 'end_time', ]
+    fields = ['created_by', 'title', 'subject', 'description',
+              'gmeet_link', 'start_time', 'duration', ]
 
     # Make sure the created_by field is automatically populated with the current user in the admin panel
     # def save_model(self, request, obj, form, change):

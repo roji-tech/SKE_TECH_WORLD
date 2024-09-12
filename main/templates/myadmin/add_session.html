@@ -244,7 +244,11 @@
     <!-- add class start -->
     <div class="container">
       <div class="add-division">
-        <p><span id="plus"></span>Add Academic Session</p>
+        <p>
+          <span id="plus"></span>
+          {% if form.instance.pk %} Update Academic Session
+          {{form.instance.name}} {% else %} Add Academic Session {% endif %}
+        </p>
         <p>
           <a href="{% url 'myadmin' %}">Home</a>
         </p>
@@ -276,7 +280,9 @@
           </div>
 
           <div class="function-btn">
-            <button type="button" id="add">Add</button>
+            <button type="button" id="add">
+              {% if form.instance.pk %} Update {% else %} Add {% endif %}
+            </button>
           </div>
         </form>
       </div>

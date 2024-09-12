@@ -339,7 +339,9 @@
         </form>
       </div>
       <div class="function-btn">
-        <button id="add">Add</button>
+        <button id="add">
+          {% if user_form.instance.pk %} Update {% else %} Add {% endif %}
+        </button>
         <button id="cancel">Cancel</button>
       </div>
     </div>

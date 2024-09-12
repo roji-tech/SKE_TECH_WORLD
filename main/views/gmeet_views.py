@@ -9,15 +9,13 @@ class GmeetClassForm(forms.ModelForm):  # GmeetClass Form
     class Meta:
         model = GmeetClass
         fields = ["title", 'subject', 'description',
-                  'gmeet_link', 'start_time', 'end_time']
+                  'gmeet_link', 'start_time', 'duration']
         widgets = {
             'title': forms.TextInput(attrs={'type': 'text', 'class': 'input', 'required': 'false', 'id': "meeting-title", 'placeholder': "Meeting Title"}),
             'subject': forms.Select(attrs={'class': 'input'}),
             'start_time': forms.DateTimeInput(attrs={'type': 'datetime-local', 'class': 'input', 'required': 'true'}),
-            'end_time': forms.DateTimeInput(attrs={'type': 'datetime-local', 'class': 'input', 'required': 'true'}),
-            'gmeet_link': forms.URLInput(attrs={'class': 'input', 'placeholder': 'Link'}),
+            'duration': forms.NumberInput(attrs={'class': 'input', 'placeholder': 'Duration in minutes', 'required': 'true', 'min': 0}),            'gmeet_link': forms.URLInput(attrs={'class': 'input', 'placeholder': 'Link'}),
             'description': forms.Textarea(attrs={'class': 'input', 'placeholder': 'Description', 'required': 'false', 'rows': 5}),
-
         }
 
     def __init__(self, *args, **kwargs):
