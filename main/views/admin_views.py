@@ -24,17 +24,21 @@ from django.views import View
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 
 # MODELS
-from main.models import User, AcademicSession, School, SchoolSettings, Student, Subject, Teacher, Term, SchoolClass, STUDENT, TEACHER, ADMIN
-from main.models.models import GmeetClass
-
+from main.models import (
+    User, AcademicSession, School, SchoolSettings,
+    Student, Subject, Teacher, Term, SchoolClass,
+    STUDENT, TEACHER, ADMIN, GmeetClass, TEACHER
+)
 # FORMS
 from main.forms import TeacherForm, StudentForm, TeacherUserForm, StudentUserForm, AcademicSessionForm, ClassForm
 
 # CUSTOM DECORATORS
 from main import mydecorators
 
+
 # Set up a logger for the application
 logger = logging.getLogger(__name__)
+
 
 def dashboard_redirect(request):
     if request.user.is_superuser:
