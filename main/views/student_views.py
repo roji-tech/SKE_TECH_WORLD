@@ -6,7 +6,6 @@ from django.views.generic import ListView
 from ..models.models import ClassNote, GmeetClass
 
 
-
 # class StudentsLogin(View):
 #     def get(self, request, *args, **kwargs):
 #         return render(request, "teachers/students-login.html")
@@ -32,23 +31,24 @@ from ..models.models import ClassNote, GmeetClass
 class StudentsHome(View):
     def get(self, request, *args, **kwargs):
         # Custom logic here
-        return render(request, "students/index.html")
-    
-class StudentGoogleMeetListView(ListView):
-    model = GmeetClass  
-    template_name = 'students/inner/students-gmeet-list.html'
-    context_object_name = 'gmeets'
+        return render(request, "students/index.html", {'user': request.user})
 
-    
+
+class StudentGoogleMeetListView(ListView):
+    model = GmeetClass
+    template_name = "students/inner/students-gmeet-list.html"
+    context_object_name = "gmeets"
+
+
 class StudentClassNoteListView(ListView):
     model = ClassNote
-    template_name = 'students/inner/students-class-note.html'
-    context_object_name = 'notes'
+    template_name = "students/inner/students-class-note.html"
+    context_object_name = "notes"
 
 
 def e_exam(request):
-    return render(request, 'students/inner/e-exam.html') 
+    return render(request, "students/inner/e-exam.html")
 
 
 def exam_quiz(request):
-    return render(request, 'students/inner/exam.html') 
+    return render(request, "students/inner/exam.html")

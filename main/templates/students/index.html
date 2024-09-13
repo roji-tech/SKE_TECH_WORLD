@@ -134,27 +134,29 @@
     <!-- Profile Section -->
     <section class="profile-section">
       <div class="profile-details">
-        <img
-          id="profile-pic"
-          src="{% static 'images/students/logo.png' %}"
-          alt="Profile Picture"
-          class="profile-pic"
-        />
-        <div class="profile-buttons">
-          <button class="profile-button" href="{% url 'student-login' %}">Logout</button>
-        </div>
-        <div class="profile-info">
-          <div class="info-left">
-            <p><strong>Name:</strong> John Doe</p>
-            <p><strong>Gender:</strong> Male</p>
-            <p><strong>Registration Number:</strong> 086</p>
+        {% if user.is_student %}
+          <img
+            id="profile-pic"
+            src="{{ request.user.get_picture }}"
+            alt="Profile Picture"
+            class="profile-pic"
+            />
+          <div class="profile-buttons">
+            <button class="profile-button" href="{% url 'logout' %}">Logout</button>
           </div>
-          <div class="info-right">
-            <p><strong>Class:</strong> JSS 2</p>
-            <p><strong>Class Division:</strong> JSS 2(C)</p>
-            <p><strong>Admission Number:</strong> 23090AF</p>
+          <div class="profile-info">
+            <div class="info-left">
+              <p><strong>Name:</strong> {{ request.user.get_full_name }}</p>
+              <p><strong>Gender:</strong> {{ request.user.gender|default:"N/A" }}</p>
+              <p><strong>Registration Number:</strong> {{ request.user.student.reg_no }}</p>
+            </div>
+            <div class="info-right">
+              <p><strong>Class:</strong> {{ request.user.student.klass }}</p>
+              <p><strong>Admission Number:</strong> {{ request.user.student_profile.student_id }}</p>
+              <p><strong>Age:</strong> {{ request.user.student.student_age }} years old</p>
           </div>
-        </div>
+          </div>
+        {% endif %}
       </div>
     </section>
 

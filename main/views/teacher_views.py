@@ -24,11 +24,11 @@ def add_gmeet(request):
         if form.is_valid():
             form.save(commit=False)
             form.created_by = request.user
-            messages.success(request, 'Google Meet Session added successfully')
-            return redirect('teachers')
+            messages.success(request, "Google Meet Session added successfully")
+            return redirect("teachers")
 
     form = GoogleMeetForm()
-    return render(request, 'teachers/gmeet/gmeet.html', {'form': form})
+    return render(request, "teachers/gmeet/gmeet.html", {"form": form})
 
 
 def teachers_edit_gmeet(request, pk):
@@ -37,12 +37,13 @@ def teachers_edit_gmeet(request, pk):
         form = GoogleMeetForm(request.POST, instance=gmeets)
         if form.is_valid():
             form.save()
-            messages.success(
-                request, 'Google Meet Session updated successfully')
-            return redirect('teachers')
+            messages.success(request, "Google Meet Session updated successfully")
+            return redirect("teachers")
 
     form = GoogleMeetForm(instance=gmeets)
-    return render(request, 'teachers/gmeet/uploadgmeet.html',  {'form': form, "gmeets": gmeets})
+    return render(
+        request, "teachers/gmeet/uploadgmeet.html", {"form": form, "gmeets": gmeets}
+    )
 
 
 """LessonPlan Views"""
@@ -50,42 +51,47 @@ def teachers_edit_gmeet(request, pk):
 
 def upload_lesson_plan(request, pk):
     lesson_plan = get_object_or_404(LessonPlan, pk=pk)
-    if request.method == 'POST':
+    if request.method == "POST":
 
-        form = LessonPlanForm(request.POST, request.FILES,
-                              instance=lesson_plan)
+        form = LessonPlanForm(request.POST, request.FILES, instance=lesson_plan)
         if form.is_valid():
             lesson_plan_instance = form.save(commit=False)
             lesson_plan_instance.uploaded_by = request.user
             lesson_plan_instance.save()
-            return redirect('lessons_lists')
+            return redirect("lessons_lists")
     else:
 
         form = LessonPlanForm(instance=lesson_plan)
-        return render(request, 'teachers/lessonplan/edit-lesson-note.html', {'form': form, 'lesson_plan': lesson_plan})
+        return render(
+            request,
+            "teachers/lessonplan/edit-lesson-note.html",
+            {"form": form, "lesson_plan": lesson_plan},
+        )
 
 
 def lessons_list(request):
     lesson_plans = LessonPlan.objects.all()
-    return render(request, 'teachers/notes/lessonNoteList.html', {'lesson_plans': lesson_plans})
+    return render(
+        request, "teachers/notes/lessonNoteList.html", {"lesson_plans": lesson_plans}
+    )
 
 
 """Notes Views"""
 
 
 def add_notes(request):
-    return render(request, 'teachers/notes/TeachersNote.html')
+    return render(request, "teachers/notes/TeachersNote.html")
 
 
 def upload_notes(request):
-    return render(request, 'teachers/notes/uploadNote.html')
+    return render(request, "teachers/notes/uploadNote.html")
 
 
 """Examination Views"""
 
 
 def view_examination(request):
-    return render(request, 'teachers/exam/examinations.html')
+    return render(request, "teachers/exam/examinations.html")
 
 
 # """Assignments Views"""
@@ -118,11 +124,11 @@ def view_examination(request):
 
 
 def add_assignments(request):
-    return render(request, 'teachers/homework/homework.html')
+    return render(request, "teachers/homework/homework.html")
 
 
 """results Views"""
 
 
 def results_list(request):
-    return render(request, 'teachers/results/results.html')
+    return render(request, "teachers/results/results.html")
