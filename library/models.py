@@ -40,4 +40,4 @@ class LibraryBook(models.Model):
         ordering = ['title_with_author']
 
     def __str__(self):
-        return self.title
+        return self.title_with_author

@@ -2,6 +2,7 @@ from django.http import HttpResponse
 from django.shortcuts import render
 from django.views import View
 from django.views.generic import ListView
+from main import mydecorators
 
 from ..models.models import ClassNote, GmeetClass
 
@@ -27,7 +28,7 @@ from ..models.models import ClassNote, GmeetClass
 
 #         return render(request, "myadmin/login.html")
 
-
+@mydecorators.student_is_authenticated
 class StudentsHome(View):
     def get(self, request, *args, **kwargs):
         # Custom logic here
