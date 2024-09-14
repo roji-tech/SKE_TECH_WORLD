@@ -3,8 +3,7 @@ from django.shortcuts import render
 from django.views import View
 from django.views.generic import ListView
 
-from ..models.models import ClassNote, GmeetClass
-
+from main.models import Student, ClassNote, GmeetClass
 
 
 # class StudentsLogin(View):
@@ -31,15 +30,18 @@ from ..models.models import ClassNote, GmeetClass
 
 class StudentsHome(View):
     def get(self, request, *args, **kwargs):
+        student_info = Student.objects.get(user=request.user)
+        print(student_info)
         # Custom logic here
-        return render(request, "students/index.html")
-    
+        return render(request, "students/index.html", {"student": student_info})
+
+
 class StudentGoogleMeetListView(ListView):
-    model = GmeetClass  
+    model = GmeetClass
     template_name = 'students/inner/students-gmeet-list.html'
     context_object_name = 'gmeets'
 
-    
+
 class StudentClassNoteListView(ListView):
     model = ClassNote
     template_name = 'students/inner/students-class-note.html'
@@ -47,8 +49,8 @@ class StudentClassNoteListView(ListView):
 
 
 def e_exam(request):
-    return render(request, 'students/inner/e-exam.html') 
+    return render(request, 'students/inner/e-exam.html')
 
 
 def exam_quiz(request):
-    return render(request, 'students/inner/exam.html') 
+    return render(request, 'students/inner/exam.html')

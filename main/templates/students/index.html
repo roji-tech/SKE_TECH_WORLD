@@ -6,6 +6,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     {% block title %}Students Dashboard{% endblock title %}
 
+    <!--=============== CSS ===============-->
+    <link rel="stylesheet" href="{% static 'css/students/styles.css' %}" />
+
     <!--=============== REMIXICONS ===============-->
     <link
       href="https://cdn.jsdelivr.net/npm/remixicon@2.5.0/fonts/remixicon.css"
@@ -21,9 +24,6 @@
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"
     />
-
-    <!--=============== CSS ===============-->
-    <link rel="stylesheet" href="{% static 'css/students/styles.css' %}" />
 
     <title>E.M.I.S</title>
     <style>
@@ -90,12 +90,20 @@
             <li>
               <a href="/others/index.html" class="nav__link">Dashboard</a>
             </li>
-            <li><a href="{% url 'library:library_books_list' %}" class="nav__link">Library</a></li>
             <li>
-              <a href="{% url 'students_class_notes' %}" class="nav__link">Class-Notes</a>
+              <a href="{% url 'library:library_books_list' %}" class="nav__link"
+                >Library</a
+              >
             </li>
             <li>
-              <a href="{% url 'google_meets_classes' %}" class="nav__link">G-meet Classes</a>
+              <a href="{% url 'students_class_notes' %}" class="nav__link"
+                >Class-Notes</a
+              >
+            </li>
+            <li>
+              <a href="{% url 'google_meets_classes' %}" class="nav__link"
+                >G-meet Classes</a
+              >
             </li>
             <li>
               <a href="{% url 'exam_login' %}" class="nav__link">E-Exam</a>
@@ -115,7 +123,11 @@
                     >Exam</a
                   >
                 </li>
-                <li><a href="{% url 'exam_login' %}" class="dropdown__item">Homework</a></li>
+                <li>
+                  <a href="{% url 'exam_login' %}" class="dropdown__item"
+                    >Homework</a
+                  >
+                </li>
               </ul>
             </li>
           </ul>
@@ -141,7 +153,9 @@
           class="profile-pic"
         />
         <div class="profile-buttons">
-          <button class="profile-button" href="{% url 'student-login' %}">Logout</button>
+          <a class="profile-button" href="{% url 'student-login' %}">
+            Logout
+          </a>
         </div>
         <div class="profile-info">
           <div class="info-left">
@@ -181,7 +195,9 @@
                 70
               </div>
               <div class="notification-dot"></div>
-              <a class="read-more-button" href="{% url 'library:library_books_list' %}"
+              <a
+                class="read-more-button"
+                href="{% url 'library:library_books_list' %}"
                 ><i class="fas fa-arrow-right"></i
               ></a>
             </div>
@@ -211,7 +227,8 @@
             </div>
           </div>
         </a>
-      </div>teacher
+      </div>
+      teacher
 
       <div
         data-aos="fade-up"
@@ -286,7 +303,9 @@
                 Access and download class notes for various subjects.
               </p>
               <div class="notification-dot"></div>
-              <a class="read-more-button" href="{% url 'students_class_notes' %}"
+              <a
+                class="read-more-button"
+                href="{% url 'students_class_notes' %}"
                 ><i class="fas fa-arrow-right"></i
               ></a>
             </div>
@@ -313,7 +332,9 @@
               <div class="random-number light-mode" id="books-uploaded-number">
                 17
               </div>
-              <a class="read-more-button" href="{% url 'students_class_notes' %}"
+              <a
+                class="read-more-button"
+                href="{% url 'students_class_notes' %}"
                 ><i class="fas fa-arrow-right"></i
               ></a>
             </div>
