@@ -28,7 +28,7 @@ class DashboardRedirectView(LoginRequiredMixin, View):
             return redirect('myadmin')
         else:
             # If no matching role, redirect to a default dashboard
-            return redirect('default_dashboard')
+            return redirect('home')
 
 
 class LogoutRedirectView(LoginRequiredMixin, View):

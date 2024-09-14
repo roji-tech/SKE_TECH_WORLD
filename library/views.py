@@ -60,3 +60,13 @@ def download_book(request, pk):
     response = HttpResponse(book.book, content_type='application/octet-stream')
     response['content-disposition'] = f'attachment; filename="{book.book.name}"'
     return response
+
+
+
+def show_total_books_in_catalogue(request):
+    total_books = LibraryBook.objects.count()
+    context = {
+        'total_books' : total_books
+    }
+
+    return render(request, 'catalogue.html', context)

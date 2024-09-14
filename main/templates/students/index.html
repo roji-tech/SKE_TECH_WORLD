@@ -146,29 +146,29 @@
     <!-- Profile Section -->
     <section class="profile-section">
       <div class="profile-details">
-        <img
-          id="profile-pic"
-          src="{% static 'images/students/logo.png' %}"
-          alt="Profile Picture"
-          class="profile-pic"
-        />
-        <div class="profile-buttons">
-          <a class="profile-button" href="{% url 'student-login' %}">
-            Logout
-          </a>
-        </div>
-        <div class="profile-info">
-          <div class="info-left">
-            <p><strong>Name:</strong> John Doe</p>
-            <p><strong>Gender:</strong> Male</p>
-            <p><strong>Registration Number:</strong> 086</p>
+        {% if user.is_student %}
+          <img
+            id="profile-pic"
+            src="{{ request.user.get_picture }}"
+            alt="Profile Picture"
+            class="profile-pic"
+            />
+            <div class="profile-buttons">
+              <a href="{% url 'logout' %}" class="profile-button">Logout</a>
           </div>
-          <div class="info-right">
-            <p><strong>Class:</strong> JSS 2</p>
-            <p><strong>Class Division:</strong> JSS 2(C)</p>
-            <p><strong>Admission Number:</strong> 23090AF</p>
+          <div class="profile-info">
+            <div class="info-left">
+              <p><strong>Name:</strong> {{ request.user.get_full_name }}</p>
+              <p><strong>Gender:</strong> {{ request.user.gender|default:"N/A" }}</p>
+              <p><strong>Registration Number:</strong> {{ request.user.student.reg_no }}</p>
+            </div>
+            <div class="info-right">
+              <p><strong>Class:</strong> {{ request.user.student.klass }}</p>
+              <p><strong>Admission Number:</strong> {{ request.user.student_profile.student_id }}</p>
+              <p><strong>Age:</strong> {{ request.user.student.student_age }} years old</p>
           </div>
-        </div>
+          </div>
+        {% endif %}
       </div>
     </section>
 
@@ -228,7 +228,6 @@
           </div>
         </a>
       </div>
-      teacher
 
       <div
         data-aos="fade-up"
@@ -237,7 +236,7 @@
         data-aos-once="true"
         class="service-card notification-container"
       >
-        <a href="class info.html" class="card-link">
+        <a href="{% url 'class_list_view' %}" class="card-link">
           <div class="inner">
             <div class="icon"><i data-feather="menu"></i></div>
             <div class="content-1">
@@ -247,7 +246,7 @@
               </p>
               <div class="notification-dot"></div>
               <div class="random-number light-mode" id="total-students-number">
-                500
+                {}
               </div>
               <a class="read-more-button" href="class info.html"
                 ><i class="fas fa-arrow-right"></i
@@ -320,7 +319,7 @@
         data-aos-once="true"
         class="service-card notification-container"
       >
-        <a href="{% url 'students_class_notes' %}" class="card-link">
+        <a href="{% url 'library:total_books' %}" class="card-link">
           <div class="inner">
             <div class="icon"><i data-feather="menu"></i></div>
             <div class="content-1">
@@ -330,11 +329,9 @@
               </p>
               <div class="notification-dot"></div>
               <div class="random-number light-mode" id="books-uploaded-number">
-                17
+                {{total_books.count}}
               </div>
-              <a
-                class="read-more-button"
-                href="{% url 'students_class_notes' %}"
+              <a class="read-more-button" href="{% url 'library:total_books' %}"
                 ><i class="fas fa-arrow-right"></i
               ></a>
             </div>

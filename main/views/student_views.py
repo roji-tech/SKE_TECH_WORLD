@@ -1,9 +1,14 @@
+from ..models.models import ClassNote, GmeetClass, Student
+from main.models import Student, ClassNote, GmeetClass
 from django.http import HttpResponse
 from django.shortcuts import render
 from django.views import View
 from django.views.generic import ListView
+from main import mydecorators
 
-from main.models import Student, ClassNote, GmeetClass
+<< << << < HEAD
+== == == =
+>>>>>> > origin/dev
 
 
 # class StudentsLogin(View):
@@ -28,29 +33,47 @@ from main.models import Student, ClassNote, GmeetClass
 #         return render(request, "myadmin/login.html")
 
 
+@mydecorators.student_is_authenticated
 class StudentsHome(View):
     def get(self, request, *args, **kwargs):
         student_info = Student.objects.get(user=request.user)
         print(student_info)
         # Custom logic here
-        return render(request, "students/index.html", {"student": student_info})
+        return render(request, "students/index.html", {"user": request.user, "student": student_info})
 
 
 class StudentGoogleMeetListView(ListView):
     model = GmeetClass
-    template_name = 'students/inner/students-gmeet-list.html'
-    context_object_name = 'gmeets'
+    template_name = "students/inner/students-gmeet-list.html"
+    context_object_name = "gmeets"
 
 
 class StudentClassNoteListView(ListView):
     model = ClassNote
-    template_name = 'students/inner/students-class-note.html'
-    context_object_name = 'notes'
+    template_name = "students/inner/students-class-note.html"
+    context_object_name = "notes"
+
+
+@mydecorators.student_is_authenticated
+def class_list_view(request):
+    if request.user.is_student:
+        student = request.user.student_profile
+        student_class = student.student_class
+
+    all_classmates = Student.objects.filter(
+        student_class=student_class
+    ).order_by("reg_no")
+    return render(
+        request,
+        "students/inner/view_class.html",
+        {"all_classmates": all_classmates, "class_name": student_class.name,
+            "division": student_class.division},
+    )
 
 
 def e_exam(request):
-    return render(request, 'students/inner/e-exam.html')
+    return render(request, "students/inner/e-exam.html")
 
 
 def exam_quiz(request):
-    return render(request, 'students/inner/exam.html')
+    return render(request, "students/inner/exam.html")
