@@ -28,11 +28,12 @@ from ..models.models import ClassNote, GmeetClass, Student
 
 #         return render(request, "myadmin/login.html")
 
+
 @mydecorators.student_is_authenticated
 class StudentsHome(View):
     def get(self, request, *args, **kwargs):
         # Custom logic here
-        return render(request, "students/index.html", {'user': request.user})
+        return render(request, "students/index.html", {"user": request.user})
 
 
 class StudentGoogleMeetListView(ListView):
@@ -46,9 +47,21 @@ class StudentClassNoteListView(ListView):
     template_name = "students/inner/students-class-note.html"
     context_object_name = "notes"
 
+@mydecorators.student_is_authenticated
 def class_list_view(request):
-    students = Student.objects.all().order_by('reg_no')
-    return render(request, 'students/inner/view_class.html', {'students' : students})
+    if request.user.is_student:
+        student = request.user.student_profile
+        student_class = student.student_class
+
+    all_classmates = Student.objects.filter(
+        student_class=student_class
+    ).order_by("reg_no")
+    return render(
+        request,
+        "students/inner/view_class.html",
+        {"all_classmates": all_classmates, "class_name": student_class.name, "division": student_class.division},
+    )
+
 
 def e_exam(request):
     return render(request, "students/inner/e-exam.html")

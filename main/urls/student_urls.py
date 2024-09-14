@@ -17,7 +17,7 @@ urlpatterns = [
 
     path('students/class-notes/', StudentClassNoteListView.as_view(), name='students_class_notes'),
 
-    path('students/class-info/', class_list_view, name='class_list_view'),
+    path('students/my-class-list/', class_list_view, name='class_list_view'),
 
     path('students/exam-view/', e_exam, name='exam_login'),
 ]

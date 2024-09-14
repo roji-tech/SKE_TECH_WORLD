@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Class List</title>
+    <title>{{ class_name }} {{ division }} Class List</title>
     <style>
         .container {
             max-width: 800px;
@@ -40,7 +40,7 @@
 <body>
   {% include 'pages_header.html' %}
     <div class="container">
-        <h1>Class List</h1>
+      <h1>{{ class_name }} {{ division }} Class List</h1>
         <table>
             <thead>
                 <tr>
