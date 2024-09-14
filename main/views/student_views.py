@@ -4,7 +4,7 @@ from django.views import View
 from django.views.generic import ListView
 from main import mydecorators
 
-from ..models.models import ClassNote, GmeetClass
+from ..models.models import ClassNote, GmeetClass, Student
 
 
 # class StudentsLogin(View):
@@ -46,6 +46,9 @@ class StudentClassNoteListView(ListView):
     template_name = "students/inner/students-class-note.html"
     context_object_name = "notes"
 
+def class_list_view(request):
+    students = Student.objects.all().order_by('reg_no')
+    return render(request, 'students/inner/view_class.html', {'students' : students})
 
 def e_exam(request):
     return render(request, "students/inner/e-exam.html")

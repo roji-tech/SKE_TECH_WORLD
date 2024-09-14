@@ -141,8 +141,8 @@
             alt="Profile Picture"
             class="profile-pic"
             />
-          <div class="profile-buttons">
-            <button class="profile-button"  type="submit">Logout</button>
+            <div class="profile-buttons">
+              <a href="{% url 'logout' %}" class="profile-button">Logout</a>
           </div>
           <div class="profile-info">
             <div class="info-left">
@@ -222,7 +222,7 @@
         data-aos-once="true"
         class="service-card notification-container"
       >
-        <a href="class info.html" class="card-link">
+        <a href="{% url 'class_list_view' %}" class="card-link">
           <div class="inner">
             <div class="icon"><i data-feather="menu"></i></div>
             <div class="content-1">
@@ -232,7 +232,7 @@
               </p>
               <div class="notification-dot"></div>
               <div class="random-number light-mode" id="total-students-number">
-                500
+                {}
               </div>
               <a class="read-more-button" href="class info.html"
                 ><i class="fas fa-arrow-right"></i
@@ -313,7 +313,7 @@
               </p>
               <div class="notification-dot"></div>
               <div class="random-number light-mode" id="books-uploaded-number">
-                17
+                {{total_books.count}}
               </div>
               <a class="read-more-button" href="{% url 'library:total_books' %}"
                 ><i class="fas fa-arrow-right"></i
