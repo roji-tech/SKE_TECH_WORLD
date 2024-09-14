@@ -6,10 +6,6 @@ from django.views import View
 from django.views.generic import ListView
 from main import mydecorators
 
-<< << << < HEAD
-== == == =
->>>>>> > origin/dev
-
 
 # class StudentsLogin(View):
 #     def get(self, request, *args, **kwargs):
