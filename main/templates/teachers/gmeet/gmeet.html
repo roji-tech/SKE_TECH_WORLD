@@ -15,9 +15,14 @@
         margin: 0;
         padding: 0;
         display: flex;
-        justify-content: center;
+        flex-direction: column;
+        justify-content: start;
         align-items: center;
         height: 100vh;
+      }
+
+      body * {
+        max-width: 100%;
       }
 
       .container {
@@ -25,7 +30,8 @@
         padding: 20px;
         border-radius: 8px;
         box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        width: 400px;
+        width: 500px;
+        min-width: 400px;
       }
 
       .add-division {
@@ -124,6 +130,7 @@
     </style>
   </head>
   <body>
+    {% include "pages_header.html" %}
     <div class="container">
       <div class="add-division">
         <p>Add Google Meet Session</p>
@@ -138,18 +145,19 @@
           </div>
 
           <div class="inline-f">
-            {{ form.description.label_tag }} {{ form.description }} {{
-            form.description.errors }}
+            {{ form.description.label_tag }} {{ form.description }}
+
+            <span> {{ form.description.errors }} </span>
           </div>
 
           <div class="inline-f">
-            {{ form.date_time.label_tag }} {{ form.date_time }} {{
-            form.date_time.errors }}
+            {{ form.date_time.label_tag }} {{ form.date_time }}
+            <span> {{ form.date_time.errors }} </span>
           </div>
 
           <div class="inline-f">
-            {{form.created_by.label_tag }} {{form.created_by }} {{
-            form.created_by.errors }}
+            {{form.created_by.label_tag }} {{form.created_by }}
+            <span> {{ form.created_by.errors }} </span>
           </div>
 
           <div class="inline-f">

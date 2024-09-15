@@ -162,6 +162,10 @@ class Teacher(models.Model):
     def phone(self):
         return f"{self.user.phone}"
 
+    @property
+    def email(self):
+        return f"{self.user.email}"
+
 
 class SchoolClass(models.Model):
     CLASS_CHOICES = [

@@ -54,7 +54,7 @@ class AcademicSessionAdmin(admin.ModelAdmin):
 class TeacherAdmin(admin.ModelAdmin):
     list_display = [
         "full_name", "phone", "department",
-        "id", "school",
+        "id", "school", "email",
     ]
 
 
