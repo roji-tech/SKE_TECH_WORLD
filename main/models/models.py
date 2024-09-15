@@ -506,6 +506,9 @@ class SchoolSettings(models.Model):
         School, on_delete=models.CASCADE, related_name='settings')
     grading_system = models.TextField()  # e.g., "A: 90-100, B: 80-89, ..."
     attendance_policy = models.TextField()
+    # logo = ""
+    # banner = ""
+    # banner_position = ""
 
     def __str__(self):
         return f"Settings for {self.school.name}"
