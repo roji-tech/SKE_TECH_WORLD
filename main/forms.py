@@ -76,16 +76,15 @@ class StudentForm(forms.ModelForm):
 
         print(self.fields)
         if self.request:
-            self.fields['academic_year'].queryset = AcademicSession.get_school_sessions(
+            self.fields['session_admitted'].queryset = AcademicSession.get_school_sessions(
                 self.request)
 
     class Meta:
         model = Student
         fields = [
             'date_of_birth',
-            'admission_date',
+            'session_admitted',
             'student_class',
-            'academic_year',
             'reg_no'
         ]
         widgets = {
@@ -100,17 +99,17 @@ class StudentForm(forms.ModelForm):
                 'required': 'required',
                 'type': 'date'
             }),
-            'admission_date': forms.DateInput(attrs={
-                'placeholder': 'YYYY-MM-DD',
-                'class': 'input',
-                'required': 'required',
-                'type': 'date'
-            }),
+            # 'admission_date': forms.DateInput(attrs={
+            #     'placeholder': 'YYYY-MM-DD',
+            #     'class': 'input',
+            #     'required': 'required',
+            #     'type': 'date'
+            # }),
             'student_class': forms.Select(attrs={
                 'class': 'input-1',
                 'required': 'required'
             }),
-            'academic_year': forms.Select(attrs={
+            'session_admitted': forms.Select(attrs={
                 'class': 'input-1',
                 'required': 'required'
             }),
@@ -273,8 +272,6 @@ class LessonPlanForm(forms.ModelForm):
             'uploaded_file': forms.ClearableFileInput(attrs={'class': 'input'}),
             'school_clas': forms.Select(attrs={'class': 'input'}),
         }
-
-
 
 
 class LibraryBookForm(forms.ModelForm):

@@ -1,6 +1,6 @@
 from django.contrib.auth import views
 from django.urls import path
-from main.views import login_views
+from main.views import login_views, LogoutRedirectView
 
 urlpatterns = [
     path(
@@ -40,7 +40,7 @@ urlpatterns = [
 
 
 urlpatterns += [
-    path("logout/", views.LogoutView.as_view(), name="logout"),
+    path("logout/", LogoutRedirectView.as_view(), name="logout"),
     path(
         "password_change/", views.PasswordChangeView.as_view(), name="password_change"
     ),

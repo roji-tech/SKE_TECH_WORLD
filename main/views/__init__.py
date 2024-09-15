@@ -34,16 +34,18 @@ class DashboardRedirectView(LoginRequiredMixin, View):
 class LogoutRedirectView(LoginRequiredMixin, View):
     def get(self, request, *args, **kwargs):
         try:
+            user = request.user
+            role = user.role
+
             # Log the user out first
             logout(request)
 
             # Check user's role and redirect accordingly
-            user = request.user
-            if user.role == 'student':
+            if role == 'student':
                 return redirect('student-login')
-            elif user.role == 'teacher':
+            elif role == 'teacher':
                 return redirect('teacher-login')
-            elif user.role == 'admin':
+            elif role == 'admin':
                 return redirect('admin-login')
             else:
                 # If no matching role, redirect to a default login

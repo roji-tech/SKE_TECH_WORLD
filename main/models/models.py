@@ -250,11 +250,11 @@ class Student(models.Model):
     user = models.OneToOneField(
         User, on_delete=models.CASCADE, related_name='student_profile')
     date_of_birth = models.DateField()
-    admission_date = models.DateField(default=date.today)
+    # admission_date = models.DateField(default=date.today)
     student_class = models.ForeignKey(
         SchoolClass, on_delete=models.CASCADE, related_name='students', null=True, blank=True)
 
-    academic_year = models.ForeignKey(
+    session_admitted = models.ForeignKey(
         AcademicSession, on_delete=models.CASCADE, null=True, blank=True)  # e.g., 2023/2024
 
     def get_school_students(request):
@@ -290,16 +290,18 @@ class Student(models.Model):
     def full_name(self):
         return f"{self.user.full_name}"
 
-    def save(self, *args, **kwargs):
-        # Save the instance first to generate the ID
-        if not self.id:
-            super().save(*args, **kwargs)  # Save first to get the ID
+    # def save(self, *args, **kwargs):
+    #     # Save the instance first to generate the ID
+    #     print(self.id, "Printing ID from Student save method")
+    #     if not self.id:
+    #         super().save(*args, **kwargs)  # Save first to get the ID
+    #     print(self.id, "Printing ID from Student save method")
 
-        # Ensure reg_no is available before updating student_id
-        if self.reg_no:
-            self.student_id = f"STU-{self.admission_date.year}-{self.reg_no}"
+    #     # Ensure reg_no is available before updating student_id
+    #     if self.reg_no:
+    #         self.student_id = f"STU-{self.session_admitted}-{self.reg_no}"
 
-        super().save(*args, **kwargs)  # Save again with updated student_idI
+    #     super().save(*args, **kwargs)  # Save again with updated student_idI
 
 
 class Subject(models.Model):

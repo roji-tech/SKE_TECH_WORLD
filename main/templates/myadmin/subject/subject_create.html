@@ -359,7 +359,7 @@
               value="{{ form.school_class.value|default_if_none:'' }}"
             />
             <datalist id="school_classes">
-              {% for class in form.fields.school_class.queryset %}
+              {% for class in classes %}
               <option value="{{ class.name }}" id="{{ class.id }}">
                 {{ class.name }}
               </option>

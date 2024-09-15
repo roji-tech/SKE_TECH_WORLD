@@ -60,7 +60,7 @@ class TeacherAdmin(admin.ModelAdmin):
 
 class StudentAdmin(admin.ModelAdmin):
     list_display = [
-        "full_name", "email",
+        "full_name", "email", 'reg_no',
         "id", "school", 'klass',
         "student_class",
     ]

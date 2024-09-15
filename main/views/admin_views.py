@@ -484,6 +484,15 @@ class SubjectCreateView(CreateView):
     def get_queryset(self):
         return Subject.get_school_subjects(request=self.request)
 
+    def get(self, request, *args, **kwargs):
+        self.object = None
+        return super().get(request, *args, **kwargs)
+
+    def get_context_data(self, **kwargs) -> dict[str, Any]:
+        context = super().get_context_data(**kwargs)
+        context["classes"] = SchoolClass.get_school_classes(self.request)
+        return context
+    
     # def get(self, request, *args, **kwargs):
     #     return render(request, self.template_name)
 
