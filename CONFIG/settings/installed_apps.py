@@ -14,4 +14,5 @@ INSTALLED_APPS = [
 
     'main',
     'library',
+    'quiz',
 ]

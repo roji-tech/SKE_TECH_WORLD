@@ -4,10 +4,13 @@ from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib.auth import views as auth_views
 
+from quiz.views import addQuestion
+
 urlpatterns = [
     path('djangoadmin/', admin.site.urls),
     path('', include("main.urls")),
     path('library/', include("library.urls")),
+    path('addQuestion/', addQuestion,name='addQuestion'),
 ]
 
 if settings.DEBUG:
