@@ -6,7 +6,7 @@
     padding: 0;
     background-color: #1d2634;
     color: #9e9ea4;
-    font-family: 'Montserrat', sans-serif;
+    font-family: "Montserrat", sans-serif;
     font-size: 14px;
   }
 
@@ -20,8 +20,8 @@
     /* Adjusted for better mobile view */
     grid-template-rows: auto 1fr;
     grid-template-areas:
-      'sidebar header'
-      'sidebar main';
+      "sidebar header"
+      "sidebar main";
     height: 100vh;
   }
 
@@ -221,8 +221,8 @@
       grid-template-columns: 1fr;
       grid-template-rows: auto 1fr;
       grid-template-areas:
-        'header'
-        'main';
+        "header"
+        "main";
     }
 
     #sidebar {
@@ -303,12 +303,53 @@
 </style>
 <aside id="sidebar">
   <div class="sidebar-title">
-    <div class="sidebar-profile">
-      <img src="/images/profile.jpg" alt="Profile Picture" class="profile-picture" />
-      <div class="profile-name-box">
-        <span class="profile-name">{{ user.get_full_name }}</span>
+    <a href="{% url 'profile' %}" style="color: inherit">
+      <div class="sidebar-profile">
+        <img
+          src="{{ request.user.image }}"
+          style="
+            display: grid;
+            place-items: center;
+            border: 1px dashed rgba(255, 255, 255, 0.4);
+            color: azure;
+            font-size: xx-large;
+          "
+          alt="🇳🇬"
+          width="50px"
+          height="50px"
+          class="profile-picture"
+        />
+        <div class="profile-name-box">
+          <span class="profile-name">{{ request.user.first_name }}</span>
+        </div>
       </div>
-    </div>
+    </a>
+  </div>
+
+  <div class="closeSidebar" onclick="closeSidebar()">
+    <style>
+      .closeSidebar {
+        display: none;
+      }
+
+      @media screen and (max-width: 992px) {
+        .closeSidebar {
+          position: fixed;
+          top: 90px;
+          right: 10px;
+          background: rgb(23, 60, 92);
+
+          display: grid;
+          place-items: center;
+
+          padding: 5px !important;
+          font-weight: 900;
+          cursor: pointer;
+          min-height: 30px;
+        }
+      }
+    </style>
+    <span class="material-icons-outlined">close</span>
   </div>
 
   <ul class="sidebar-list">
@@ -395,7 +436,11 @@
         Library
       </a>
       <ul class="dropdown-menu">
-        <li><a href="{% url 'library:library_books_list' %}">View Library Books</a></li>
+        <li>
+          <a href="{% url 'library:library_books_list' %}"
+            >View Library Books</a
+          >
+        </li>
       </ul>
     </li>
     <li class="sidebar-list-item">
@@ -444,11 +489,17 @@
 
     <li class="sidebar-list-item">
       <a href="{% url 'logout_redirect' %}" id="logout">
-        <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          height="24"
+          viewBox="0 0 24 24"
+          width="24"
+        >
           <path d="M0 0h24v24H0z" fill="none" />
           <path
             d="M17 7l-1.41 1.41L18.17 11H8v2h10.17l-2.58 2.58L17 17l5-5zM4 5h8V3H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h8v-2H4V5z"
-            fill="#ffffff" />
+            fill="#ffffff"
+          />
         </svg>
         Logout
       </a>
