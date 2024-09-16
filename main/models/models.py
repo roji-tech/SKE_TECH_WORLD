@@ -57,7 +57,7 @@ class School(models.Model):
 class AcademicSession(models.Model):
 
     def __str__(self):
-        return f"{self.name} ({self.school.name}) {"-current" if self.is_current else ""}"
+        return f"{self.name} ({self.school.name}) {'-current' if self.is_current else ''}"
 
     class Meta:
         unique_together = ('school', 'name')
