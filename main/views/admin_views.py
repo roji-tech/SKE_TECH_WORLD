@@ -50,14 +50,7 @@ from main import mydecorators
 logger = logging.getLogger(__name__)
 
 
-def dashboard_redirect(request):
-    if request.user.is_superuser:
-        return redirect("myadmin")
-    elif request.user.groups.filter(role="TEACHER").exists():
-        return redirect("teachers")
-    elif request.user.groups.filter(role="STUDENT").exists():
-        return redirect("students")
-    return redirect("myadmin")
+
 
 
 class AddRequestToFormMixin(View):

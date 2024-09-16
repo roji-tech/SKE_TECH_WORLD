@@ -79,6 +79,9 @@ class StudentForm(forms.ModelForm):
             self.fields['session_admitted'].queryset = AcademicSession.get_school_sessions(
                 self.request)
 
+            self.fields['student_class'].queryset = SchoolClass.get_school_classes(
+                self.request)
+
     class Meta:
         model = Student
         fields = [
