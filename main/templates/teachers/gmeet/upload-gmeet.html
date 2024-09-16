@@ -1,0 +1,391 @@
+{% comment %} {% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Add Google Meet Session</title>
+  {% include "poppins_font.html" %}
+
+  <style>
+    /* Basic Page Styling */
+    body {
+      font-family: "Poppins", sans-serif;
+      background-color: #f0f0f0;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      justify-content: start;
+      align-items: center;
+      height: 100vh;
+    }
+
+
+
+    .container {
+      background-color: #fff;
+      padding: 30px;
+      border-radius: 8px;
+      box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+      width: 500px;
+      min-width: 400px;
+    }
+
+    .container p {
+      font-size: 1.2rem;
+      font-weight: bold;
+      text-align: center;
+      margin-bottom: 20px;
+      color: #333;
+    }
+
+    .contents {
+      padding: 20px;
+    }
+
+    /* Form styling */
+    form {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .inline-f {
+      margin-bottom: 20px;
+    }
+
+    .label {
+      font-weight: bold;
+      margin-bottom: 8px;
+      display: block;
+      color: #333;
+    }
+
+    input, textarea, select {
+      width: 100%;
+      padding: 10px;
+      font-size: 1rem;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      transition: border-color 0.3s ease;
+    }
+
+    input:focus, textarea:focus, select:focus {
+      border-color: #007bff;
+      outline: none;
+    }
+
+    .error-message {
+      color: #e74c3c;
+      font-size: 0.85rem;
+      margin-top: 5px;
+    }
+
+    /* Buttons */
+    .function-btn {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 20px;
+    }
+
+    button {
+      padding: 10px 20px;
+      font-size: 1rem;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    #add {
+      background-color: #28a745;
+      color: #fff;
+    }
+
+    #add:hover {
+      background-color: #218838;
+    }
+
+    #cancel {
+      background-color: #dc3545;
+      color: #fff;
+    }
+
+    #cancel:hover {
+      background-color: #c82333;
+    }
+
+    /* Responsive Design */
+    @media (max-width: 600px) {
+      .container {
+        width: 90%;
+        padding: 20px;
+      }
+
+      button {
+        font-size: 0.9rem;
+        padding: 8px 15px;
+      }
+    }
+  </style>
+</head>
+<body>
+  {% include "pages_header.html" %}
+
+  <div class="container">
+    <p>Add Google Meet Session</p>
+
+    <div class="contents">
+      <form id="meeting-form" method="post">
+        {% csrf_token %}
+
+        <div class="inline-f">
+          <label for="id_title" class="label">Title</label>
+          {{ form.title }}
+          <span class="error-message">{{ form.title.errors }}</span>
+        </div>
+
+        <div class="inline-f">
+          <label for="id_description" class="label">Description</label>
+          {{ form.description }}
+          <span class="error-message">{{ form.description.errors }}</span>
+        </div>
+
+        <div class="inline-f">
+          <label for="id_date_time" class="label">Date and Time</label>
+          {{ form.date_time }}
+          <span class="error-message">{{ form.date_time.errors }}</span>
+        </div>
+
+        <div class="inline-f">
+          <label for="id_created_by" class="label">Created By</label>
+          {{ form.created_by }}
+          <span class="error-message">{{ form.created_by.errors }}</span>
+        </div>
+
+        <div class="inline-f">
+          <label for="id_link" class="label">Meeting Link</label>
+          {{ form.link }}
+          <span class="error-message">{{ form.link.errors }}</span>
+        </div>
+
+        <div class="function-btn">
+          <button type="submit" id="add">Add Meeting</button>
+          <button
+            type="button"
+            id="cancel"
+            onclick="window.location.href='{% url 'teachers' %}'"
+          >
+            Cancel
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- JS for Overlay and Form Validation -->
+  <script src="{% static 'teachers/js/scripts.js' %}"></script>
+</body>
+</html>
+
+
+
+
+
+
+ {% endcomment %}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Google Meet Session</title>
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap"
+    />
+
+    <style>
+      /* Basic Reset */
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        max-width: 100%;
+      }
+
+      body {
+        font-family: "Poppins", sans-serif;
+        background-color: #f5f7fa;
+        display: flex;
+        flex-direction: column;
+        justify-content: start;
+        align-items: center;
+        height: 100vh;
+        margin: 0;
+        gap: 5rem;
+      }
+
+      .container {
+        background-color: #ffffff;
+        padding: 40px;
+        border-radius: 10px;
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+        width: 100%;
+        max-width: 600px;
+      }
+
+      .container h2 {
+        text-align: center;
+        margin-bottom: 20px;
+        color: #333;
+        font-weight: 600;
+      }
+
+      .form-group {
+        margin-bottom: 15px;
+      }
+
+      label {
+        font-weight: 600;
+        margin-bottom: 5px;
+        display: block;
+        color: #555;
+      }
+
+      input[type="text"],
+      input[type="datetime-local"],
+      input[type="url"],
+      textarea,
+      select {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        font-size: 16px;
+      }
+
+      textarea {
+        resize: vertical;
+        height: 100px;
+      }
+
+      .error {
+        color: red;
+        font-size: 14px;
+      }
+
+      .btn-group {
+        text-align: center;
+        margin-top: 20px;
+      }
+
+      button {
+        padding: 10px 20px;
+        border: none;
+        border-radius: 5px;
+        font-size: 16px;
+        cursor: pointer;
+      }
+
+      #add {
+        background-color: #0d6efd;
+        color: white;
+        margin-right: 10px;
+      }
+
+      #cancel {
+        background-color: #6c757d;
+        color: white;
+      }
+
+      button:hover {
+        opacity: 0.9;
+      }
+    </style>
+  </head>
+  <body>
+    {% include "pages_header.html" %}
+
+    <div class="container">
+      <h2>Add Google Meet Session</h2>
+      <form id="meeting-form" method="post">
+        {% csrf_token %}
+        <div class="form-group">
+          {{ form.title.label_tag }} {{ form.title }}
+          <span class="error">{{ form.title.errors }}</span>
+        </div>
+
+        <div class="form-group">
+          {{ form.subject.label_tag }} {{ form.subject }}
+          <span class="error">{{ form.subject.errors }}</span>
+        </div>
+
+        <div class="form-group">
+          {{ form.description.label_tag }} {{ form.description }}
+          <span class="error">{{ form.description.errors }}</span>
+        </div>
+
+        <div class="form-group">
+          {{ form.start_time.label_tag }} {{ form.start_time }}
+          <span class="error">{{ form.start_time.errors }}</span>
+        </div>
+
+        <div class="form-group">
+          {{ form.gmeet_link.label_tag }} {{ form.gmeet_link }}
+          <span class="error">{{ form.gmeet_link.errors }}</span>
+        </div>
+
+        <div class="btn-group">
+          <button type="submit" id="add">Add Meeting</button>
+          <button
+            type="button"
+            id="cancel"
+            onclick="window.location.href='{% url 'teachers' %}'"
+          >
+            Cancel
+          </button>
+        </div>
+      </form>
+    </div>
+  </body>
+</html>
