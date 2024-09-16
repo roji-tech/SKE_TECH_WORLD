@@ -3,6 +3,7 @@ from django.db import IntegrityError
 import logging
 import pprint
 from typing import Any
+from collections import defaultdict
 
 from django.db.models import Q
 from django.db.utils import IntegrityError
@@ -38,14 +39,8 @@ from main.models import (
     STUDENT, TEACHER, ADMIN, GmeetClass
 )
 # FORMS
-from main.forms import (
-    TeacherForm,
-    StudentForm,
-    TeacherUserForm,
-    StudentUserForm,
-    AcademicSessionForm,
-    ClassForm,
-)
+from main.forms import (AcademicSessionForm, ClassForm, StudentForm, StudentUserForm, SubjectForm,
+                        TeacherForm, TeacherUserForm)
 
 # CUSTOM DECORATORS
 from main import mydecorators
@@ -66,10 +61,15 @@ def dashboard_redirect(request):
 
 
 class AddRequestToFormMixin(View):
-    def get_form(self, form_class=None):
-        if form_class is None:
-            form_class = self.get_form_class()
-        return form_class(request=self.request, **self.get_form_kwargs())
+    # def get_form(self, form_class=None):
+    #     if form_class is None:
+    #         form_class = self.get_form_class()
+    #     return form_class(request=self.request, **self.get_form_kwargs())
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs["request"] = self.request  # Pass the user to the form
+        return kwargs
 
 
 @mydecorators.admin_is_authenticated
@@ -270,46 +270,46 @@ class DeleteSession(DeleteView):
 # CLASSES
 # CLASSES
 @mydecorators.admin_is_authenticated
-class ClassListView(ListView):
+class ClassListView(AddRequestToFormMixin, ListView):
     model = SchoolClass
     template_name = "myadmin/class_list.html"
     context_object_name = "classes"
 
-    def get_form(self, form_class=None):
-        if form_class is None:
-            form_class = self.get_form_class()
-        return form_class(request=self.request, **self.get_form_kwargs())
+    # def get_form(self, form_class=None):
+    #     if form_class is None:
+    #         form_class = self.get_form_class()
+    #     return form_class(request=self.request, **self.get_form_kwargs())
 
     def get_queryset(self):
         return SchoolClass.get_school_classes(request=self.request)
 
 
 @mydecorators.admin_is_authenticated
-class ClassDetailView(DetailView):
+class ClassDetailView(AddRequestToFormMixin, DetailView):
     model = SchoolClass
     template_name = "myadmin/class_detail.html"
     context_object_name = "class"
 
-    def get_form(self, form_class=None):
-        if form_class is None:
-            form_class = self.get_form_class()
-        return form_class(request=self.request, **self.get_form_kwargs())
+    # def get_form(self, form_class=None):
+    #     if form_class is None:
+    #         form_class = self.get_form_class()
+    #     return form_class(request=self.request, **self.get_form_kwargs())
 
     def get_queryset(self):
         return SchoolClass.get_school_classes(request=self.request)
 
 
 @mydecorators.admin_is_authenticated
-class ClassCreateView(CreateView):
+class ClassCreateView(AddRequestToFormMixin, CreateView):
     model = SchoolClass
     template_name = "myadmin/class_create.html"
     form_class = ClassForm
     success_url = reverse_lazy("list-classes")
 
-    def get_form(self, form_class=None):
-        if form_class is None:
-            form_class = self.get_form_class()
-        return form_class(request=self.request, **self.get_form_kwargs())
+    # def get_form(self, form_class=None):
+    #     if form_class is None:
+    #         form_class = self.get_form_class()
+    #     return form_class(request=self.request, **self.get_form_kwargs())
 
     def get_queryset(self):
         return SchoolClass.get_school_classes(request=self.request)
@@ -333,7 +333,7 @@ class ClassCreateView(CreateView):
 
 
 @mydecorators.admin_is_authenticated
-class ClassUpdateView(UpdateView):
+class ClassUpdateView(AddRequestToFormMixin, UpdateView):
     model = SchoolClass
     template_name = "myadmin/class_edit.html"
     # fields = ['name', 'academic_session', 'class_teacher', 'division']
@@ -343,10 +343,10 @@ class ClassUpdateView(UpdateView):
     def get_queryset(self):
         return SchoolClass.get_school_classes(request=self.request)
 
-    def get_form(self, form_class=None):
-        if form_class is None:
-            form_class = self.get_form_class()
-        return form_class(request=self.request, **self.get_form_kwargs())
+    # def get_form(self, form_class=None):
+    #     if form_class is None:
+    #         form_class = self.get_form_class()
+    #     return form_class(request=self.request, **self.get_form_kwargs())
 
 
 @mydecorators.admin_is_authenticated
@@ -424,10 +424,31 @@ class SubjectListView(ListView):
         return queryset
 
     def get_context_data(self, **kwargs):
+        class_id = self.request.GET.get('class_id', None)
+        search_query = self.request.GET.get('q', '').upper()
+        print(search_query, class_id)
+
+        subjects = self.get_queryset()
+        if class_id:
+            subjects = subjects.filter(school_class_id=class_id)
+        if search_query:
+            subjects = subjects.filter(name__icontains=search_query)
+
+        # Group subjects by class
+        grouped_subjects = defaultdict(list)
+        for subject in subjects:
+            grouped_subjects[subject.school_class.name].append(subject)
+
+        # Get all school classes for the dropdown
         context = super().get_context_data(**kwargs)
         # Add the list of classes to the context
         context["school_classes"] = SchoolClass.get_school_classes(
-            request=self.request)
+            request=self.request
+        )
+        context["subjects"] = grouped_subjects.items()
+        context["grouped_subjects"] = grouped_subjects
+        context["class_id"] = class_id
+        print(grouped_subjects.items())
         return context
 
 
@@ -487,16 +508,17 @@ class SubjectCreateView(CreateView):
 
 
 @mydecorators.admin_is_authenticated
-class SubjectUpdateView(UpdateView):
+class SubjectUpdateView(AddRequestToFormMixin, UpdateView):
     model = Subject
     template_name = "myadmin/subject/subject_edit.html"
     success_url = reverse_lazy("list-subjects")
 
     # Adjust these fields according to your Subject model
-    fields = ["name", "school_class"]
+    form_class = SubjectForm
     context_object_name = "subject"
 
     def get_queryset(self):
+        print(self.get_form_kwargs())
         return Subject.get_school_subjects(request=self.request)
 
 
@@ -554,7 +576,7 @@ class StudentDetailView(DetailView):
 
 
 @mydecorators.admin_is_authenticated
-class StudentCreateView(CreateView, AddRequestToFormMixin):
+class StudentCreateView(AddRequestToFormMixin, CreateView):
     model = User
     success_url = reverse_lazy("list-students")
     template_name = "myadmin/student/student_create.html"
@@ -592,15 +614,15 @@ class StudentCreateView(CreateView, AddRequestToFormMixin):
             {"user_form": user_form, "student_form": student_form},
         )
 
-    def get_form(self, form_class=None):
-        if form_class is None:
-            form_class = self.get_form_class()
-        return form_class(request=self.request, **self.get_form_kwargs())
+    # def get_form(self, form_class=None):
+    #     if form_class is None:
+    #         form_class = self.get_form_class()
+    #     return form_class(request=self.request, **self.get_form_kwargs())
 
-    def get_form_kwargs(self):
-        kwargs = super().get_form_kwargs()
-        kwargs["request"] = self.request  # Pass the user to the form
-        return kwargs
+    # def get_form_kwargs(self):
+    #     kwargs = super().get_form_kwargs()
+    #     kwargs["request"] = self.request  # Pass the user to the form
+    #     return kwargs
 
     def form_valid(self, form):
         # If you need to set any additional data on the model before saving, do it here

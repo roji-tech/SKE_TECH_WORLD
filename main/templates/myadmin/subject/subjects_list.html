@@ -20,26 +20,33 @@
       align-items: center;
       flex-direction: column;
       background-color: #f8f8f8;
-      padding: 20px;
+      gap: 3rem;
     }
 
     .table-datas {
-      border: 1px solid #b5adad;
+      border: 1px solid #e0e0e0;
       width: 90%;
-      background: #f8f7f788;
+      background: #ffffff;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      border-radius: 8px;
       margin-bottom: 10%;
     }
 
     .sub-rows {
-      border-bottom: 1px solid #b5adad;
       padding: 1em 2em;
-      background: #fff;
+      background: #f0f0f0;
+      border-radius: 8px 8px 0 0;
+      text-align: center;
+
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
     }
 
     .sub-rows p {
-      color: #525050;
-      font-weight: 500;
-      font-size: 1.2em;
+      color: #333;
+      font-weight: 600;
+      font-size: 1.4em;
     }
 
     .search-row {
@@ -48,24 +55,25 @@
       align-items: center;
       padding: 1em 2em;
       background: #fff;
+      border-bottom: 1px solid #e0e0e0;
     }
 
     .search-row span,
     .search-row input {
-      border: 1px solid #b5adad;
-      border-radius: 3px;
-      padding: 5px;
+      border: 1px solid #dcdcdc;
+      border-radius: 5px;
+      padding: 8px;
     }
 
     .search-row input {
       width: 50%;
-      height: 35px;
+      height: 40px;
       background: transparent;
     }
 
     select {
       border: none;
-      padding: 5px;
+      padding: 8px;
       outline: none;
       font-size: 1em;
     }
@@ -75,14 +83,26 @@
       border-collapse: collapse;
       margin-top: 10px;
       background: #fff;
+      border-radius: 0 0 8px 8px;
+    }
+
+    table th {
+      background-color: #f0f0f0;
+      color: #333;
+      font-weight: 600;
+      padding: 15px;
     }
 
     table,
     th,
     td {
-      border: 1px solid #b5adad;
-      padding: 1em;
+      border: 1px solid #e0e0e0;
+      padding: 15px;
       text-align: center;
+    }
+
+    table tr:nth-child(even) {
+      background-color: #f9f9f9;
     }
 
     a {
@@ -92,6 +112,26 @@
 
     a:hover {
       color: #03a73a;
+    }
+
+    button {
+      padding: 8px 20px;
+      background-color: #1b94c3;
+      color: #fff;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    button:hover {
+      background-color: #03a73a;
+    }
+
+    .function-btn {
+      display: flex;
+      justify-content: space-around;
+      margin: 1em 0;
     }
 
     /* Overlay Styles */
@@ -116,31 +156,22 @@
     }
 
     .overlay-content {
-      background-color: #fefefe;
+      background-color: #ffffff;
       padding: 20px;
-      border-radius: 5px;
-      box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+      border-radius: 10px;
+      box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
       text-align: center;
       position: relative;
     }
 
     .overlay-content p {
-      font-size: 1.2em;
+      font-size: 1.4em;
       margin-bottom: 20px;
     }
 
     .overlay-content button {
-      padding: 8px 20px;
-      margin: 0 5px;
-      cursor: pointer;
-      background-color: #1b94c3;
-      color: #fff;
-      border: none;
-      border-radius: 4px;
-    }
-
-    .overlay-content button:hover {
-      background-color: #03a73a;
+      padding: 10px 30px;
+      margin: 0 10px;
     }
 
     .overlay .close {
@@ -149,16 +180,21 @@
       right: 20px;
       cursor: pointer;
       font-size: 1.5em;
+      color: #ff5c5c;
     }
   </style>
 </head>
 
 <body>
-    {% include 'pages_header.html' %}
+  {% include 'pages_header.html' %}
 
-  <div class="table-datas">
+  {% comment %} <div class="table-datas">
     <div class="sub-rows">
-      <p>Subject Class List</p>
+      <p>Classes Subject List</p>
+
+      <a href="{% url 'add-subject' %}">
+        <i class="fa fa-plus" id="plus-icon" style="font-size: 23px">Add</i>
+      </a>
     </div>
 
     <div class="search-row">
@@ -194,7 +230,64 @@
       </tr>
       {% endfor %}
     </table>
-  </div>
+  </div> {% endcomment %}
+
+{% comment %} {{grouped_subjects }}
+<br>
+{{grouped_subjects.items }}
+<br>
+{{ subjects }} {% endcomment %}
+  <div class="table-datas">
+    <div class="sub-rows">
+        <p>Classes Subject List</p>
+        <a href="{% url 'add-subject' %}">
+            <i class="fa fa-plus" id="plus-icon" style="font-size: 23px">Add</i>
+        </a>
+    </div>
+
+    <div class="search-row">
+        <span>
+            <select name="class" id="classSelect">
+                <option value="">All Classes</option>
+                {% for class in school_classes %}
+                    <option value="{{ class.id }}" {% if class.id|stringformat:'s' == class_id|stringformat:'s' %}selected{% endif %}>
+                        {{ class.get_name_display }}  {{ class.division }}  ({{ class.academic_session.name }}
+
+                        {% if class.academic_session.is_current  %}
+                        current ✅
+                        {% else %}
+
+                        {% endif %})
+                    </option>
+                {% endfor %}
+            </select>
+        </span>
+        <input type="search" placeholder="Search" id="searchInput" value="{{ request.GET.q }}" />
+    </div>
+
+    {% for class_name, subjects_ in subjects %}
+    <h2>{{ class_name }}</h2>
+    <table>
+        <tr>
+            <th>*</th>
+            <th>Class Subject</th>
+            <th>Edit</th>
+            <th>Delete</th>
+        </tr>
+        {% for subject in subjects_ %}
+        <tr id="{{ subject.pk }}">
+            <td>{{ forloop.counter }}</td>
+            <td>{{ subject.name }}</td>
+            <td><a href="{% url 'update-subject' subject.pk %}">Edit🔁</a></td>
+            <td><a href="{% url 'delete-subject' subject.pk %}" class="delete">Delete🚮</a></td>
+        </tr>
+        {% endfor %}
+    </table>
+    {% empty %}
+    <p>No subjects available for this class.</p>
+    {% endfor %}
+</div>
+
 
   <!-- Delete Confirmation Overlay -->
   <div id="deleteOverlay" class="overlay">
@@ -205,6 +298,7 @@
       <button id="closeDeleteOverlay">No</button>
     </div>
   </div>
+
   <!-- Script for handling filtering and overlay -->
   <script>
     document.getElementById('classSelect').addEventListener('change', function () {
@@ -240,24 +334,7 @@
       }
     });
 
-    // Script for handling the delete confirmation overlay (unchanged)
-    var closeOverlay = document.querySelectorAll(".close");
-    closeOverlay.forEach(function (button) {
-      button.addEventListener("click", function () {
-        var overlay = button.closest(".overlay");
-        overlay.classList.remove("show");
-      });
-    });
-
-    window.addEventListener("click", function (event) {
-      var overlays = document.querySelectorAll(".overlay");
-      overlays.forEach(function (overlay) {
-        if (event.target === overlay) {
-          overlay.classList.remove("show");
-        }
-      });
-    });
-
+    // Script for handling the delete confirmation overlay
     var deleteButtons = document.querySelectorAll(".delete");
     var deleteOverlay = document.getElementById("deleteOverlay");
     var confirmDeleteButton = document.getElementById("confirmDelete");
@@ -276,60 +353,13 @@
       deleteOverlay.classList.remove("show");
       const deleteUrl = `{% url 'delete-subject' 0 %}`.replace('0', rowToDelete.id);
       window.location.href = deleteUrl;
-      rowToDelete.remove();
     });
 
     closeDeleteOverlayButton.addEventListener("click", function () {
       deleteOverlay.classList.remove("show");
     });
-  </script>
 
-
-  <!-- Script for Overlay -->
-  <script>
-    // Close the overlay when the user clicks on the close button (x)
-    var closeOverlay = document.querySelectorAll(".close");
-    closeOverlay.forEach(function (button) {
-      button.addEventListener("click", function () {
-        var overlay = button.closest(".overlay");
-        overlay.classList.remove("show");
-      });
-    });
-
-    // Close the overlay when the user clicks outside of it
-    window.addEventListener("click", function (event) {
-      var overlays = document.querySelectorAll(".overlay");
-      overlays.forEach(function (overlay) {
-        if (event.target === overlay) {
-          overlay.classList.remove("show");
-        }
-      });
-    });
-
-    // Show the delete confirmation overlay
-    var deleteButtons = document.querySelectorAll(".delete");
-    var deleteOverlay = document.getElementById("deleteOverlay");
-    var confirmDeleteButton = document.getElementById("confirmDelete");
-    var closeDeleteOverlayButton =
-      document.getElementById("closeDeleteOverlay");
-    var rowToDelete;
-
-    deleteButtons.forEach(function (button) {
-      button.addEventListener("click", function (event) {
-        event.preventDefault();
-        rowToDelete = button.closest("tr");
-        deleteOverlay.classList.add("show");
-      });
-    });
-
-    // Confirm delete action
-    confirmDeleteButton.addEventListener("click", function () {
-      rowToDelete.remove();
-      deleteOverlay.classList.remove("show");
-    });
-
-    // Close the delete overlay
-    closeDeleteOverlayButton.addEventListener("click", function () {
+    document.querySelector(".close").addEventListener("click", function () {
       deleteOverlay.classList.remove("show");
     });
   </script>

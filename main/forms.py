@@ -239,20 +239,47 @@ class ClassForm(forms.ModelForm):
         return self.cleaned_data
 
 
+# class SubjectForm(forms.ModelForm):
+#     class Meta:
+#         model = Subject
+#         fields = ['school_class', 'name']
+#         widgets = {
+#             'school_class': forms.Select(attrs={'class': 'input', 'placeholder': 'Select'}),
+#             'name': forms.TextInput(attrs={'class': 'input', 'placeholder': 'Enter Subject Name'}),
+#         }
+
 class SubjectForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        # Extract the request object from the keyword arguments
+        self.request = kwargs.pop('request', None)
+        super().__init__(*args, **kwargs)
+
+        print(self.fields)
+        if self.request:
+            self.fields['teacher'].queryset = Teacher.get_school_teachers(
+                self.request)
+
     class Meta:
         model = Subject
-        fields = ['school_class', 'name']
+        fields = ["name", "school_class", "teacher"]
         widgets = {
-            'school_class': forms.Select(attrs={'class': 'input', 'placeholder': 'Select'}),
-            'name': forms.TextInput(attrs={'class': 'input', 'placeholder': 'Enter Subject Name'}),
+            'name': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'Enter Subject Name',
+            }),
+            'school_class': forms.Select(attrs={
+                'class': 'form-control',
+            }),
+            'teacher': forms.Select(attrs={
+                'class': 'form-control',
+            }),
         }
 
 
 class GoogleMeetForm(forms.ModelForm):
     class Meta:
         model = GmeetClass
-        fields = [ 'title', 'subject', 'description',
+        fields = ['title', 'subject', 'description',
                   'start_time', 'gmeet_link']
         widgets = {
             'start_time': forms.DateTimeInput(attrs={'type': 'datetime-local'}),

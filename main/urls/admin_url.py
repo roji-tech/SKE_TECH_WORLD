@@ -14,7 +14,7 @@ from main.views.admin_views import (
 
     TeacherDeleteView, TeacherListView, TeacherUpdateView, UpdateSession,
 
-    GmeetListView, dashboard_redirect, 
+    GmeetListView, dashboard_redirect,
 )
 
 from ..views import AdminsHome, RegisterAndRegisterSchool, AdminsHelp
