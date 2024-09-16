@@ -57,7 +57,7 @@ class School(models.Model):
 class AcademicSession(models.Model):
 
     def __str__(self):
-        return f"{self.name} ({self.school.name})"
+        return f"{self.name} ({self.school.name}) {":current ✅" if self.is_current else ""}"
 
     class Meta:
         unique_together = ('school', 'name')
@@ -70,6 +70,9 @@ class AcademicSession(models.Model):
     next_session_begins = models.DateField(blank=True, null=True)
     is_current = models.BooleanField(default=False)
     max_exam_score = models.SmallIntegerField(default=60)
+
+    class Meta:
+        ordering = ['-is_current']
 
     @staticmethod
     def get_school_sessions(request):
@@ -105,7 +108,7 @@ class AcademicSession(models.Model):
         current_sessions = AcademicSession.objects.filter(
             school=self.school, is_current=True
         )
-        print(current_sessions)
+        print(self.is_current, current_sessions)
 
         # If this session is marked as current, ensure all others are not
         if self.is_current:
@@ -205,6 +208,8 @@ class SchoolClass(models.Model):
     CLASS_CATEGORIES = (
         ("ART", "Art Class"),
         ("SCIENCE", "Science Class"),
+        ("PRIMARY", "Primary Classes"),
+        ("JUNIOR SEC", "Junior Secondary Classes"),
         ("SCIENCE_TECH", "Science and Technology Class"),
         ("COMMERCIAL", "Commercial Class"),
     )

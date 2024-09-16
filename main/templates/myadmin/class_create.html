@@ -9,19 +9,165 @@
     <link rel="stylesheet" href="{% static 'css/myadmin/class/edit.css' %}" />
 
     <style>
+      /* Body and general layout */
       body {
+        font-family: "Arial", sans-serif;
+        margin: 0;
+        padding: 0;
         display: flex;
         flex-direction: column;
+        justify-content: start;
+        gap: 3rem;
+        align-items: center;
+        min-height: 100vh;
+        background-color: #f4f4f9;
+      }
 
-        margin: 0;
+      .container {
+        background: white;
+        padding: 30px;
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        max-width: 600px;
+        width: 100%;
       }
 
       .title-header {
         display: flex;
         justify-content: space-between;
         align-items: center;
+        margin-bottom: 20px;
       }
 
+      .title-header p {
+        font-size: 1.5rem;
+        color: #333;
+        font-weight: 600;
+      }
+
+      .title-header button {
+        background-color: #007bff;
+        color: #fff;
+        border: none;
+        padding: 10px 15px;
+        border-radius: 5px;
+        font-size: 1rem;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+      }
+
+      .title-header button:hover {
+        background-color: #0056b3;
+      }
+
+      .contents {
+        margin-top: 20px;
+      }
+
+      .contents form {
+        display: flex;
+        flex-direction: column;
+      }
+
+      .contents form p {
+        margin-bottom: 15px;
+      }
+
+      select,
+      input[type="text"] {
+        width: 100%;
+        padding: 10px;
+        border-radius: 5px;
+        border: 1px solid #ccc;
+        transition: border-color 0.3s ease;
+        font-size: 1rem;
+      }
+
+      select:focus,
+      input[type="text"]:focus {
+        border-color: #007bff;
+      }
+
+      .function-btn {
+        display: flex;
+        justify-content: flex-end;
+        gap: 10px;
+        margin-top: 20px;
+      }
+
+      .function-btn button {
+        padding: 10px 20px;
+        border-radius: 5px;
+        border: none;
+        font-size: 1rem;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+      }
+
+      #add {
+        background-color: #28a745;
+        color: white;
+      }
+
+      #add:hover {
+        background-color: #218838;
+      }
+
+      #cancel {
+        background-color: #dc3545;
+        color: white;
+      }
+
+      #cancel:hover {
+        background-color: #c82333;
+      }
+
+      /* Modal styles */
+      .modal {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.6);
+        justify-content: center;
+        align-items: center;
+        z-index: 10;
+      }
+
+      .modal-content {
+        background-color: white;
+        padding: 20px;
+        border-radius: 8px;
+        text-align: center;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        width: 100%;
+        max-width: 400px;
+      }
+
+      .modal-content p {
+        margin-bottom: 20px;
+        font-size: 1.2rem;
+        color: #333;
+      }
+
+      .modal-content button {
+        background-color: #007bff;
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 5px;
+        font-size: 1rem;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+      }
+
+      .modal-content button:hover {
+        background-color: #0056b3;
+      }
+
+      /* Additional spacing for the custom select */
       .custom-select-class {
         border: 2px solid #007bff;
         padding: 8px;
@@ -29,38 +175,33 @@
         width: 100%;
       }
 
-      .custom-option-class {
-        font-weight: bold;
-      }
+      /* Responsive Design */
+      @media (max-width: 768px) {
+        .title-header p {
+          font-size: 1.2rem;
+        }
 
-      form p {
-        display: flex;
-        gap: 10px;
-      }
-
-      select {
-        width: 100%;
-      }
-
-      button {
-        cursor: pointer;
+        .contents form p {
+          font-size: 0.9rem;
+        }
       }
     </style>
   </head>
   <body>
-    <!-- Edit starts -->
+    {% include "pages_header.html" %}
+    <!-- Add Class Form -->
     <div class="container">
       <div class="title-header">
-        <p><span id="plus"></span>Add Class</p>
-        <p>
-          <a href="{% url 'list-classes' %}">
-            <button id="cancel" type="button">Class List</button>
-          </a>
-        </p>
+        <p>Add Class</p>
+        <a href="{% url 'list-classes' %}">
+          <button id="cancel" type="button">Class List</button>
+        </a>
       </div>
       <div class="contents">
         <form method="post">
-          {% csrf_token %} {{ form.as_p }}
+          {% csrf_token %}
+          <div class="errors">{{ form.non_field_errors }}</div>
+          {{ form.as_p }}
           <div class="function-btn">
             <button type="submit" id="add">Add</button>
             <a href="{% url 'list-classes' %}">
@@ -70,7 +211,6 @@
         </form>
       </div>
     </div>
-    <!-- Edit ends -->
 
     <!-- Update Confirmation Modal -->
     <div id="updateModal" class="modal">
@@ -91,32 +231,19 @@
     </div>
 
     <script>
-      document
-        .getElementById("class-select")
-        .addEventListener("change", function () {
-          var otherClassContainer = document.getElementById(
-            "other-class-container"
-          );
-          if (this.value === "Other") {
-            otherClassContainer.style.display = "flex";
-          } else {
-            otherClassContainer.style.display = "none";
-          }
-        });
-
+      // Toggle Modal Visibility
       document
         .getElementById("cancel")
         .addEventListener("click", function (event) {
           event.preventDefault();
-          document.getElementById("cancelModal").style.display = "block";
+          document.getElementById("cancelModal").style.display = "flex";
         });
 
       document
         .getElementById("confirmUpdate")
         .addEventListener("click", function () {
-          // Add your update logic here
           document.getElementById("updateModal").style.display = "none";
-          alert("Class updated successfully");
+          alert("Class added successfully.");
         });
 
       document
@@ -128,8 +255,6 @@
       document
         .getElementById("confirmCancel")
         .addEventListener("click", function () {
-          // Add your cancel logic here
-          document.getElementById("cancelModal").style.display = "none";
           window.location.href = "{% url 'list-classes' %}";
         });
 
@@ -139,11 +264,13 @@
           document.getElementById("cancelModal").style.display = "none";
         });
 
+      // Close modal when clicking outside the modal
       window.onclick = function (event) {
+        if (event.target == document.getElementById("cancelModal")) {
+          document.getElementById("cancelModal").style.display = "none";
+        }
         if (event.target == document.getElementById("updateModal")) {
           document.getElementById("updateModal").style.display = "none";
-        } else if (event.target == document.getElementById("cancelModal")) {
-          document.getElementById("cancelModal").style.display = "none";
         }
       };
     </script>

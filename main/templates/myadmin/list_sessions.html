@@ -13,7 +13,8 @@
 
       body {
         display: flex;
-        justify-content: center;
+        justify-content: start;
+        flex-direction: column;
         align-items: center;
         background-color: #f0f0f0;
         font-family: "Poppins", sans-serif;
@@ -131,6 +132,7 @@
     </style>
   </head>
   <body>
+    {% include "pages_header.html" %}
     <div class="container">
       <div class="add-division">
         <p><span id="plus"></span> Academic Session List</p>

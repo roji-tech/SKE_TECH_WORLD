@@ -1,3 +1,4 @@
+from main.models import User
 from .teacher_views import *
 from .admin_views import *
 from .student_views import *
@@ -19,12 +20,12 @@ from django.contrib.auth import logout
 class DashboardRedirectView(LoginRequiredMixin, View):
     def get(self, request, *args, **kwargs):
         # Check user's role and redirect accordingly
-        user = request.user
-        if user.role == 'student':
+        user: User = request.user
+        if user.is_student:
             return redirect('students')
-        elif user.role == 'teacher':
+        elif user.is_teacher:
             return redirect('teachers')
-        elif user.role == 'admin':
+        elif user.is_admin:
             return redirect('myadmin')
         else:
             # If no matching role, redirect to a default dashboard

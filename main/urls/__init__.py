@@ -11,6 +11,7 @@ from django.views.generic import TemplateView
 from main.views.settings import SettingView
 
 urlpatterns = [
+    path("accounts/login/", TemplateView.as_view(template_name="signin.html"), name='logout'),
     path("", TemplateView.as_view(template_name="index.html"), name="home"),
     path('logout/', LogoutRedirectView.as_view(), name='logout_redirect'),
     path('dashboard/', DashboardRedirectView.as_view(), name='dashboard_redirect'),

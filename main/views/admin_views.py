@@ -1,4 +1,7 @@
+from django.forms import ValidationError
+from django.db import IntegrityError
 import logging
+import pprint
 from typing import Any
 
 from django.db.models import Q
@@ -194,70 +197,34 @@ class ListSession(ListView):
 
 
 @mydecorators.admin_is_authenticated
-class AddSession(View):
+class AddSession(CreateView):
+    model = AcademicSession
     template_name = "myadmin/add_session.html"
+    form_class = AcademicSessionForm
+    success_url = reverse_lazy("list-sessions")
 
-    def get(self, request, *args, **kwargs):
-        form = AcademicSessionForm()
-        return render(request, self.template_name, {"form": form})
-
-    def post(self, request, *args, **kwargs):
-        form = AcademicSessionForm(request.POST)
-
+    def form_valid(self, form):
+        form.instance.school = School.get_user_school(self.request.user)
         try:
-            user = self.request.user
-            school = School.objects.filter(owner=user).first()
+            if AcademicSession.objects.filter(school=form.instance.school, name=form.instance.name).exists():
+                form.add_error(
+                    'name',  "An academic session with this name already exists for your school. Please choose a different name.")
+                return self.form_invalid(form)
 
-            if form.is_valid():
-                start_date = form.cleaned_data.get("start_date")
-                end_date = form.cleaned_data.get("end_date")
-                _name = form.cleaned_data.get("name")
-                school_name = ""
+            return super().form_valid(form)
 
-                if _name:
-                    school_name = _name
-                else:
-                    school_name = f"{start_date.year}-{end_date.year}"
-                print(start_date, end_date, _name, school_name, school)
-                print(request.POST)
+        except IntegrityError as e:
+            print(e)
+            form.add_error(
+                None,  "An academic session with this name already exists for your school. Please choose a different name.")
+            return self.form_invalid(form)
 
-                # is_current = form.cleaned_data.get('is_current')
-                # next_session_begins = form.cleaned_data.get('next_session_begins')
-                # max_exam_score = form.cleaned_data.get('max_exam_score')
-
-                # Create and save the AcademicSession instance
-                session = AcademicSession(
-                    school_id=school.id,  # Adjust as needed
-                    start_date=start_date,
-                    end_date=end_date,
-                    # is_current=is_current,
-                    # next_session_begins=next_session_begins,
-                    # max_exam_score=max_exam_score
-                )
-                session.save()
-
-                messages.success(request, "Academic session added successfully!")
-                # Redirect to a relevant page
-                return redirect("/admin/sessions/")
-            else:
-                print(request.POST)
-                print("Error adding academic session. Please try again.")
-
-        # except School.DoesNotExist:
-        #     messages.error(
-        #         request, 'School not found. Please ensure your account is linked to a school.')
-        except IntegrityError:
-            messages.error(
-                request,
-                "This academic session already exists. Please enter a different session.",
-            )
         except Exception as e:
-            print(e)
-            messages.error(request, "Error adding academic session. Please try again.")
-            print(e)
-
-        form = AcademicSessionForm()
-        return render(request, self.template_name, {"form": form})
+            # Handle unexpected errors
+            pprint.pprint(e)
+            form.add_error(
+                None, 'An unexpected error occurred. Please try again.')
+            return self.form_invalid(form)
 
 
 @mydecorators.admin_is_authenticated
@@ -417,7 +384,8 @@ class TermDetailView(DetailView):
 class TermCreateView(CreateView):
     model = Term
     template_name = "myadmin/term_form.html"
-    fields = ["academic_session", "name", "start_date", "end_date", "next_term_begins"]
+    fields = ["academic_session", "name",
+              "start_date", "end_date", "next_term_begins"]
     success_url = reverse_lazy("term-list")
 
 
@@ -425,7 +393,8 @@ class TermCreateView(CreateView):
 class TermUpdateView(UpdateView):
     model = Term
     template_name = "myadmin/term_form.html"
-    fields = ["academic_session", "name", "start_date", "end_date", "next_term_begins"]
+    fields = ["academic_session", "name",
+              "start_date", "end_date", "next_term_begins"]
     success_url = reverse_lazy("term-list")
 
 
@@ -457,7 +426,8 @@ class SubjectListView(ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         # Add the list of classes to the context
-        context["school_classes"] = SchoolClass.get_school_classes(request=self.request)
+        context["school_classes"] = SchoolClass.get_school_classes(
+            request=self.request)
         return context
 
 
@@ -492,7 +462,7 @@ class SubjectCreateView(CreateView):
         context = super().get_context_data(**kwargs)
         context["classes"] = SchoolClass.get_school_classes(self.request)
         return context
-    
+
     # def get(self, request, *args, **kwargs):
     #     return render(request, self.template_name)
 
@@ -570,7 +540,8 @@ class StudentListView(ListView):
         if class_filter:
             # Assuming you have a relation between Teacher and Class
             # Adjust the filter according to your actual model relationships
-            queryset = queryset.filter(student_class__name__icontains=class_filter)
+            queryset = queryset.filter(
+                student_class__name__icontains=class_filter)
 
         return queryset.distinct()
 
@@ -658,7 +629,8 @@ class StudentUpdateView(UpdateView):
     def post(self, request, pk, *args, **kwargs):
         student = get_object_or_404(Student, pk=pk)
         user_form = StudentUserForm(request.POST, instance=student.user)
-        student_form = StudentForm(request.POST, instance=student, request=self.request)
+        student_form = StudentForm(
+            request.POST, instance=student, request=self.request)
 
         if user_form.is_valid() and student_form.is_valid():
             user_form.save()
@@ -719,7 +691,8 @@ class TeacherListView(ListView):
         if class_filter:
             # Assuming you have a relation between Teacher and Class
             # Adjust the filter according to your actual model relationships
-            queryset = queryset.filter(subjects__school_class__name=class_filter)
+            queryset = queryset.filter(
+                subjects__school_class__name=class_filter)
 
         return queryset.distinct()
 
