@@ -66,3 +66,33 @@ class ClassNoteListView(ListView):  # ClassNote ListView with filters
     def get_queryset(self):  # Assuming class is passed as a GET param
         school_class = self.request.GET.get('class')
         return ClassNote.filter_by_class(school_class)
+
+
+# def upload_lesson_plan(request, pk):
+#     lesson_plan = get_object_or_404(LessonPlan, pk=pk)
+#     if request.method == "POST":
+
+#         form = LessonPlanForm(request.POST, request.FILES,
+#                               instance=lesson_plan)
+#         if form.is_valid():
+#             lesson_plan_instance = form.save(commit=False)
+#             lesson_plan_instance.uploaded_by = request.user
+#             lesson_plan_instance.save()
+#             return redirect("lessons_lists")
+
+#     else:
+
+#         form = LessonPlanForm(instance=lesson_plan)
+#         return render(
+#             request,
+#             "teachers/lessonplan/edit-lesson-note.html",
+#             {"form": form, "lesson_plan": lesson_plan},
+#         )
+
+
+# def lessons_list(request):
+#     lesson_plans = LessonPlan.objects.all()
+#     return render(
+#         request, "teachers/notes/lessonNoteList.html", {
+#             "lesson_plans": lesson_plans}
+#     )

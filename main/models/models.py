@@ -39,9 +39,19 @@ class School(models.Model):
 
     @staticmethod
     def get_user_school(user: User):
-        if user.role == OWNER:
-            return School.objects.filter(owner=user).first()
-        return user.school
+        try:
+            if user.is_admin:
+                # For owners or admins, return the school where they are the owner
+                return School.objects.filter(owner=user).first()
+            elif user.is_teacher:
+                # For teachers, return the school associated with their teacher profile
+                return user.teacher_profile.school
+            elif user.is_student:
+                # For students, return the school associated with their student profile
+                return user.student_profile.school
+        except Exception as e:
+            raise e
+        # end try
 
 
 class AcademicSession(models.Model):
@@ -359,7 +369,7 @@ class GmeetClass(models.Model):
 
     def __str__(self):
         try:
-            return f"{self.subject.name} - {self.subject.school_class.name} ({self.start_time})"
+            return f"{self.title} - ({self.start_time})"
         except Exception as e:
             print(e)
             return f"Gmeet"
@@ -388,23 +398,24 @@ class GmeetClass(models.Model):
         # Get the user's school using the method from the School model
         school: School = School.get_user_school(request.user)
 
-        print(school, cls.filter_by_school(request).values(
-            "created_by", "start_time", "id"))
         # Check if the user is an admin
-        if request.user.role == ADMIN or request.user.role == OWNER:
+        if request.user.is_admin:
             # Admin or owner can view all GmeetClass for the school
             # return cls.objects.filter(subject__school_class__school=school)
-            return cls.filter_by_school(request)
+            return cls.filter_by_school(request).select_related("created_by")
 
         # Check if the user is a subject teacher
-        elif request.user.role == TEACHER:
+        elif request.user.is_teacher:
             # Teachers can only view the GmeetClass for the subjects they teach
-            return cls.objects.filter(subject__teacher=request.user)
+            return cls.objects.filter(
+                Q(created_by=request.user) |
+                Q(subject__teacher__user=request.user)
+            ).select_related("created_by")
 
         # Check if the user is a student
-        elif request.user.role == STUDENT:
+        elif request.user.is_student:
             # Students can only view GmeetClass for their school class
-            return cls.objects.filter(subject__school_class=request.user.student_profile.school_class)
+            return cls.objects.filter(subject__school_class=request.user.student_profile.school_class).select_related("created_by")
 
         # In case the user has no matching role, return an empty queryset
         return cls.objects.none()
@@ -444,20 +455,20 @@ class LessonPlan(models.Model):
         school: School = School.get_user_school(request.user)
 
         print(school, cls.filter_by_school(request).values(
-            "created_by", "start_time", "id"))
+            "uploaded_by", "id"))
         # Check if the user is an admin
-        if request.user.role == ADMIN or request.user.role == OWNER:
+        if request.user.is_admin:
             # Admin or owner can view all GmeetClass for the school
             # return cls.objects.filter(subject__school_class__school=school)
             return cls.filter_by_school(request)
 
         # Check if the user is a subject teacher
-        elif request.user.role == TEACHER:
+        elif request.user.is_teacher:
             # Teachers can only view the GmeetClass for the subjects they teach
-            return cls.objects.filter(subject__teacher=request.user)
+            return cls.objects.filter(subject__teacher=request.user.teacher_profile)
 
         # Check if the user is a student
-        elif request.user.role == STUDENT:
+        elif request.user.is_student:
             # Students can only view GmeetClass for their school class
             return cls.objects.filter(subject__school_class=request.user.student_profile.school_class)
 

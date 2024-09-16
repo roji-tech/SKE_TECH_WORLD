@@ -224,19 +224,22 @@
               <th>Meeting Title</th>
               <th>Description</th>
               <th>Time and Date</th>
-              <th>Created By</th>
-              <th>Link</th>
+              <th>Uploaded By</th>
               <th>Actions</th>
             </thead>
 
-            {% for plan in lesson_plans %}
+            {{ lesson_plans }} {% for plan in lesson_plans %}
             <tr>
               <td>{{ forloop.counter }}</td>
               <td>{{plan.title}}</td>
               <td>{{ plan.subject }}</td>
               <td>{{ plan.school_class }}</td>
+              <td>{{ plan.uploaded_by.full_name }}</td>
 
               <td>
+                <span class="edit-action">
+                  <a href="{% url 'lessonplan-update' plan.pk %}"> View </a>
+                </span>
                 <span class="edit-action">
                   <a href="{% url 'lessonplan-update' plan.pk %}"> Edit </a>
                 </span>

@@ -37,7 +37,7 @@ class StudentsHome(View):
         user.student = student_info
         pprint(user)
         # Custom logic here
-        return render(request, "students/index.html", {"user": user, "student": student_info})
+        return render(request, "students/index.html", {"user": user})
 
 
 class StudentGoogleMeetListView(ListView):

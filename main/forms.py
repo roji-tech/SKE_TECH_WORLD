@@ -252,7 +252,7 @@ class SubjectForm(forms.ModelForm):
 class GoogleMeetForm(forms.ModelForm):
     class Meta:
         model = GmeetClass
-        fields = ['subject', 'description',
+        fields = [ 'title', 'subject', 'description',
                   'start_time', 'gmeet_link']
         widgets = {
             'start_time': forms.DateTimeInput(attrs={'type': 'datetime-local'}),

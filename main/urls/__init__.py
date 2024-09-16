@@ -38,7 +38,7 @@ urlpatterns += [
          GmeetClassDeleteView.as_view(), name='gmeetclass-delete'),
 
     # LessonPlan URLs
-    path('lesson-plans/', LessonPlanListView.as_view(), name='lessonplan-list'),
+    path('lesson-plans/', LessonPlanListView.as_view(), name='list-lessonplans'),
     path('lesson-plans/<int:pk>/', LessonPlanDetailView.as_view(),
          name='lessonplan-detail'),
     path('lesson-plans/create/', LessonPlanCreateView.as_view(),
@@ -58,4 +58,11 @@ urlpatterns += [
          ClassNoteUpdateView.as_view(), name='classnote-update'),
     path('class-notes/<int:pk>/delete/',
          ClassNoteDeleteView.as_view(), name='classnote-delete'),
+
+
+    path('exam/',
+         ClassNoteDeleteView.as_view(), name='exam'),
+
+    path('comingsoon/',
+         TemplateView.as_view(template_name="comingsoon.html"), name='comingsoon'),
 ]

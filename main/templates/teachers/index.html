@@ -56,8 +56,8 @@
             G-meet Classes
           </a>
           <ul class="dropdown-menu">
-            <li><a href="{% url 'add_gmeet' %}">Upload Google Meet Classes ‎ ‎ ‎ ‎ ‎ </a></li>
-            <li><a href="{% url 'edit_gmeet' %}">Edit Google Meet Classes</a></li>
+            <li><a href="{% url 'gmeetclass-create' %}">Upload Google Meet Classes ‎ ‎ ‎ ‎ ‎ </a></li>
+            <li><a href="{% url 'gmeetclass-list' %}">Google Meet Classes</a></li>
           </ul>
         </li>
         <ul class="sidebar-list">
@@ -67,8 +67,8 @@
               Lesson Plan
             </a>
             <ul class="dropdown-menu">
-              <li><a href="{% url 'upload_lesson_plan' %}">Upload Lesson Plan‎ ‎ ‎ ‎ ‎ </a></li>
-              <li><a href="{% url 'lessons_lists' %}">Lesson Plan List ‎ ‎ ‎ ‎ ‎ </a></li>
+              <li><a href="{% url 'lessonplan-create' %}">Upload Lesson Plan‎ ‎ ‎ ‎ ‎ </a></li>
+              <li><a href="{% url 'list-lessonplans' %}">Lesson Plan List ‎ ‎ ‎ ‎ ‎ </a></li>
 
 
 
@@ -82,8 +82,8 @@
                 Notes
               </a>
               <ul class="dropdown-menu">
-                <li><a href="/updated/note/uploadNote.html">Add Notes ‎ ‎ ‎ ‎ ‎ </a></li>
-                <li><a href="/updated/note/TeachersNote.html"> Notes list‎ ‎ ‎ ‎ ‎ </a></li>
+                <li><a href="{% url 'comingsoon' %}">Add Notes ‎ ‎ ‎ ‎ ‎ </a></li>
+                <li><a href="{% url 'comingsoon' %}"> Notes list‎ ‎ ‎ ‎ ‎ </a></li>
 
 
 
@@ -106,7 +106,7 @@
                     Examination
                   </a>
                   <ul class="dropdown-menu">
-                    <li><a href="/updated/exam/examinations.html">View Examination Papers ‎ ‎ ‎ ‎ ‎ </a></li>
+                    <li><a href="{% url 'comingsoon' %}">View Examination Papers ‎ ‎ ‎ ‎ ‎ </a></li>
 
                   </ul>
                 </li>
@@ -117,7 +117,7 @@
                       Homework
                     </a>
                     <ul class="dropdown-menu">
-                      <li><a href="/updated/homework/homework.html">Add Assignments ‎ ‎ ‎ ‎ ‎ </a></li>
+                      <li><a href="{% url 'comingsoon' %}">Add Assignments ‎ ‎ ‎ ‎ ‎ </a></li>
 
                     </ul>
                   </li>
@@ -129,7 +129,7 @@
                         Results
                       </a>
                       <ul class="dropdown-menu">
-                        <li><a href="/updated/results/results.html">Add Results ‎ ‎ ‎ ‎ ‎ </a></li>
+                        <li><a href="{% url 'comingsoon' %}">Add Results ‎ ‎ ‎ ‎ ‎ </a></li>
                       </ul>
                     </li>
 
