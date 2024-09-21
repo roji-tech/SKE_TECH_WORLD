@@ -18,8 +18,8 @@ class Quiz(models.Model):
     subject = models.ForeignKey(Subject,  on_delete=models.CASCADE)
     created_by: User = models.ForeignKey(
         settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    start_time = models.DateTimeField(null=True, blank=True)
-    end_time = models.DateTimeField(null=True, blank=True)
+    start_date = models.DateTimeField(null=True, blank=True)
+    end_date = models.DateTimeField(null=True, blank=True)
 
     def academic_session(self) -> AcademicSession:
         return self.term.academic_session

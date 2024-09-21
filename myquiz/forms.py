@@ -7,7 +7,7 @@ from main.models import School
 class QuizForm(forms.ModelForm):
     class Meta:
         model = Quiz
-        fields = ['title', 'quiz_type', 'school_class', 'subject', 'start_time', 'end_time', 'term']
+        fields = ['title', 'quiz_type', 'school_class', 'subject', 'start_date', 'end_date', 'term']
 
     def __init__(self, *args, **kwargs):
         request = kwargs.pop('request', None)

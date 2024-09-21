@@ -11,7 +11,7 @@ class QuestionInline(admin.TabularInline):
 @admin.register(Quiz)
 class QuizAdmin(admin.ModelAdmin):
     list_display = ('title', 'quiz_type', 'school_class', 'subject',
-                    'term', 'academic_session', 'created_by', 'start_time', 'end_time')
+                    'term', 'academic_session', 'created_by', 'start_date', 'end_date')
     list_filter = ('quiz_type', 'school_class', 'subject', 'term', AcademicSessionFilter)
     search_fields = ('title', 'school_class__name', 'subject__name')
     inlines = [QuestionInline]
