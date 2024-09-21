@@ -8,6 +8,8 @@ urlpatterns = [
     path('djangoadmin/', admin.site.urls),
     path('', include("main.urls")),
     path('library/', include("library.urls")),
+    path('myquiz/', include("myquiz.urls")),
+    path('report/', include('report.urls')),
 ]
 
 if settings.DEBUG:

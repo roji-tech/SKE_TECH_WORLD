@@ -1,4 +1,6 @@
+from django.shortcuts import render
 from main.models import User
+from main.models.models import School
 from .teacher_views import *
 from .admin_views import *
 from .student_views import *
@@ -8,7 +10,7 @@ from .settings import *
 from .gmeet_views import *
 from .lesson_plan_views import *
 from .class_note_views import *
-
+from .profile_views import *
 
 from django.shortcuts import redirect
 from django.views import View

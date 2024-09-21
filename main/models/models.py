@@ -1,10 +1,10 @@
 from django.contrib.auth import get_user_model
-from datetime import date
+from datetime import timedelta
 
 from django.utils.crypto import get_random_string
 import main.models.models
 from .users import ADMIN, OWNER, STUDENT, TEACHER
-from django.db import models
+from django.db import models, transaction
 import string
 from django.db.models import Q
 
@@ -81,13 +81,20 @@ class AcademicSession(models.Model):
         return AcademicSession.objects.filter(school=school)
 
     def save(self, *args, **kwargs):
-        if not self.name:  # Set the name only if it's not already set
-            try:
-                self.name = f"{self.start_date.year}-{self.end_date.year}"
-            except Exception as e:
-                year1 = get_year_from_date(self.start_date)
-                year2 = get_year_from_date(self.end_date)
-                self.name = f"{year1}-{year2}"
+        _name = ""
+
+        try:
+            _name = f"{self.start_date.year}-{self.end_date.year}"
+        except Exception as e:
+            year1 = get_year_from_date(self.start_date)
+            year2 = get_year_from_date(self.end_date)
+            _name = f"{year1}-{year2}"
+
+        if self.name != _name:
+            self.name = _name
+
+        if not self.name:
+            self.name = _name
 
         # Attempt to split and convert the name parts to integers
         try:
@@ -127,6 +134,138 @@ class AcademicSession(models.Model):
 
         # Call the parent class's save method
         super().save(*args, **kwargs)
+        # Create terms and classes automatically after the session is saved
+        self.create_terms()
+
+    def create_terms(self):
+        """Creates 1st, 2nd, and 3rd terms for the academic session."""
+        term_names = ['1st', '2nd', '3rd']
+        total_days = (self.end_date - self.start_date).days
+        term_duration = total_days // 3
+
+        # Define the start date for the first term
+        current_start_date = self.start_date
+
+        for index, term_name in enumerate(term_names):
+            if index == 2:  # Last term, ensure the end date matches the session end date
+                current_end_date = self.end_date
+            else:
+                current_end_date = current_start_date + \
+                    timedelta(days=term_duration)
+
+            # Create or get the term
+            Term.objects.get_or_create(
+                academic_session=self,
+                name=term_name,
+                defaults={
+                    'start_date': current_start_date,
+                    'end_date': current_end_date,
+                }
+            )
+
+            # Set the start date for the next term
+            current_start_date = current_end_date + timedelta(days=1)
+
+    def create_all_classes(self):
+        """Creates different sets of classes and associated subjects."""
+        class_sets = {
+            'PRIMARY': ['PRY1', 'PRY2', 'PRY3', 'PRY4', 'PRY5', 'PRY6'],
+            'JSS': ['JS1', 'JS2', 'JS3'],
+            'SSS': ['SS1', 'SS2', 'SS3'],
+            'BASIC': ['BASIC1', 'Basic2', 'Basic3', 'Basic4', 'Basic5', 'Basic6'],
+            'KG': ['KG1', 'KG2', 'KG3'],
+        }
+        default_subjects = ['English', 'Mathematics']
+
+        for class_group, classes in class_sets.items():
+            for class_name in classes:
+                school_class, created = SchoolClass.objects.get_or_create(
+                    academic_session=self, name=class_name)
+
+                # Create default subjects for each class
+                if created:
+                    for subject_name in default_subjects:
+                        Subject.objects.get_or_create(
+                            school_class=school_class, name=subject_name
+                        )
+
+    def create_primary5_classes(self):
+        # Create Primary 1 to 5 classes
+        for i in range(1, 6):
+            school_class = SchoolClass.objects.create(
+                name=f'PRY{i}',
+                academic_session=self,
+            )
+            self.create_subjects_for_class(school_class)
+
+    def create_primary_classes(self):
+        # Create Primary 1 to 6 classes
+        for i in range(1, 7):
+            school_class = SchoolClass.objects.create(
+                name=f'PRY{i}',
+                academic_session=self,
+            )
+            self.create_subjects_for_class(school_class)
+
+    def create_jss_classes(self):
+        # Create JSS1 to JSS3 classes
+        for i in range(1, 4):
+            school_class = SchoolClass.objects.create(
+                name=f'JS{i}',
+                academic_session=self,
+            )
+            self.create_subjects_for_class(school_class)
+
+    def create_sss_classes(self):
+        # Create SSS1 to SSS3 classes
+        for i in range(1, 4):
+            school_class = SchoolClass.objects.create(
+                name=f'SS{i}',
+                academic_session=self,
+            )
+            self.create_subjects_for_class(school_class)
+
+    def create_kg_classes(self):
+        # Create KG1 to KG3 classes
+        for i in range(1, 4):
+            school_class = SchoolClass.objects.create(
+                name=f'KG{i}',
+                academic_session=self,
+            )
+            self.create_subjects_for_class(school_class)
+
+    def create_basic_classes(self):
+        # Create Basic 1 to Basic 6 classes
+        for i in range(1, 7):
+            school_class = SchoolClass.objects.create(
+                name=f'BASIC{i}',
+                academic_session=self,
+            )
+            self.create_subjects_for_class(school_class)
+
+    def create_subjects_for_class(self, school_class):
+        # Create subjects for a given class (English and Mathematics)
+        subjects = ['English', 'Mathematics']
+        for subject in subjects:
+            Subject.objects.create(
+                name=subject,
+                school_class=school_class
+            )
+
+    @classmethod
+    @transaction.atomic
+    def create_default_setup(cls, session_name, start_date, end_date, school):
+        """Method to create a new academic session and all related data."""
+        academic_session = cls.objects.create(
+            school=school,
+            name=session_name,
+            start_date=start_date,
+            end_date=end_date,
+            is_current=True
+        )
+        academic_session.create_terms()
+        academic_session.create_all_classes()
+        return academic_session
 
 
 class Term(models.Model):
@@ -138,9 +277,10 @@ class Term(models.Model):
     academic_session = models.ForeignKey(
         AcademicSession, on_delete=models.CASCADE, related_name='terms')
     name = models.CharField(max_length=4, choices=TERM_CHOICES)
-    start_date = models.DateField()
-    end_date = models.DateField()
+    start_date = models.DateField(null=True, blank=True)
+    end_date = models.DateField(null=True, blank=True)
     next_term_begins = models.DateField(null=True, blank=True)
+    is_current = models.BooleanField(default=False)
 
     class Meta:
         unique_together = ('academic_session', 'name')
@@ -237,9 +377,10 @@ class SchoolClass(models.Model):
 
     def __str__(self):
         try:
-            return f"{self.name} {self.division.name if self.division else ''} ({self.academic_session.name})"
+            return f"{self.get_name_display()} {self.division.name if self.division else ''} ({self.academic_session.name})"
         except:
-            return f"{self.name}({self.academic_session.name})"
+            return f"{self.get_name_display()} ({self.academic_session.name})"
+            # return f"{self.name}({self.academic_session.name})"
 
     @classmethod
     def get_school_classes(cls, request):
@@ -257,70 +398,6 @@ class SchoolClass(models.Model):
         return cls.objects.filter(
             academic_session__school=school
         ).values_list('id', flat=True)
-
-
-class Student(models.Model):
-    reg_no = models.CharField(
-        max_length=20, null=True, blank=True, unique=True)
-    student_id = models.CharField(
-        max_length=20, unique=True, null=True, blank=True)
-    school = models.ForeignKey(
-        School, on_delete=models.CASCADE, related_name='students')
-    user = models.OneToOneField(
-        User, on_delete=models.CASCADE, related_name='student_profile')
-    date_of_birth = models.DateField()
-    # admission_date = models.DateField(default=date.today)
-    student_class = models.ForeignKey(
-        SchoolClass, on_delete=models.CASCADE, related_name='students', null=True, blank=True)
-
-    session_admitted = models.ForeignKey(
-        AcademicSession, on_delete=models.CASCADE, null=True, blank=True)  # e.g., 2023/2024
-
-    def get_school_students(request):
-        user = request.user
-        school = School.get_user_school(user)
-        return Student.objects.filter(school=school).select_related("user", "student_class").order_by("student_class")
-
-    @property
-    def full_name(self):
-        return f"{self.user.full_name}"
-
-    @property
-    def email(self):
-        return f"{self.user.email}"
-
-    @property
-    def klass(self):
-        return f"{self.student_class.name} {self.student_class.division}"
-
-    @property
-    def student_age(self):
-        # Helper method to calculate the student's age
-        today = date.today()
-        return today.year - self.date_of_birth.year - (
-            (today.month, today.day) < (
-                self.date_of_birth.month, self.date_of_birth.day)
-        )
-
-    def __str__(self):
-        return f"{self.id} - {self.user.full_name}"
-
-    @property
-    def full_name(self):
-        return f"{self.user.full_name}"
-
-    # def save(self, *args, **kwargs):
-    #     # Save the instance first to generate the ID
-    #     print(self.id, "Printing ID from Student save method")
-    #     if not self.id:
-    #         super().save(*args, **kwargs)  # Save first to get the ID
-    #     print(self.id, "Printing ID from Student save method")
-
-    #     # Ensure reg_no is available before updating student_id
-    #     if self.reg_no:
-    #         self.student_id = f"STU-{self.session_admitted}-{self.reg_no}"
-
-    #     super().save(*args, **kwargs)  # Save again with updated student_idI
 
 
 class Subject(models.Model):
@@ -355,6 +432,70 @@ class Subject(models.Model):
         else:
             # Return an empty QuerySet if the user doesn't belong to a school
             return Subject.objects.none()
+
+
+class Student(models.Model):
+    reg_no = models.CharField(
+        max_length=20, null=True, blank=True, unique=True)
+    student_id = models.CharField(
+        max_length=20, unique=True, null=True, blank=True)
+    school = models.ForeignKey(
+        School, on_delete=models.CASCADE, related_name='students')
+    user = models.OneToOneField(
+        User, on_delete=models.CASCADE, related_name='student_profile')
+    date_of_birth = models.DateField()
+    # admission_date = models.DateField(default=date.today)
+    student_class = models.ForeignKey(
+        SchoolClass, on_delete=models.CASCADE, related_name='students', null=True, blank=True)
+
+    session_admitted = models.ForeignKey(
+        AcademicSession, on_delete=models.CASCADE, null=True, blank=True)  # e.g., 2023/2024
+
+    def get_school_students(request):
+        user = request.user
+        school = School.get_user_school(user)
+        return Student.objects.filter(school=school).select_related("user", "student_class").order_by("student_class")
+
+    @property
+    def full_name(self):
+        return f"{self.user.full_name}"
+
+    @property
+    def email(self):
+        return f"{self.user.email}"
+
+    @property
+    def klass(self):
+        return f"{self.student_class.get_name_display} {self.student_class.division}"
+
+    @property
+    def student_age(self):
+        # Helper method to calculate the student's age
+        today = date.today()
+        return today.year - self.date_of_birth.year - (
+            (today.month, today.day) < (
+                self.date_of_birth.month, self.date_of_birth.day)
+        )
+
+    def __str__(self):
+        return f"{self.id} - {self.user.full_name}"
+
+    @property
+    def full_name(self):
+        return f"{self.user.full_name}"
+
+    # def save(self, *args, **kwargs):
+    #     # Save the instance first to generate the ID
+    #     print(self.id, "Printing ID from Student save method")
+    #     if not self.id:
+    #         super().save(*args, **kwargs)  # Save first to get the ID
+    #     print(self.id, "Printing ID from Student save method")
+
+    #     # Ensure reg_no is available before updating student_id
+    #     if self.reg_no:
+    #         self.student_id = f"STU-{self.session_admitted}-{self.reg_no}"
+
+    #     super().save(*args, **kwargs)  # Save again with updated student_idI
 
 
 class GmeetClass(models.Model):

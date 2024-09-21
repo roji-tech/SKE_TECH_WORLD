@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Profile Settings</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        background-color: #f4f6f9;
+        margin: 0;
+        padding: 0;
+      }
+
+      .container {
+        max-width: 800px;
+        margin: 50px auto;
+        background-color: #ffffff;
+        padding: 30px;
+        border-radius: 8px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      }
+
+      h2 {
+        text-align: center;
+        color: #333;
+      }
+
+      .profile-section {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 30px;
+      }
+
+      .profile-section img {
+        max-width: 150px;
+        border-radius: 50%;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      }
+
+      .profile-info {
+        flex: 1;
+        padding-left: 30px;
+      }
+
+      .profile-info h3 {
+        color: #5cb85c;
+      }
+
+      .info-group {
+        margin-bottom: 20px;
+        display: flex;
+        align-items: center;
+        gap: 20px;
+      }
+
+      .info-group label {
+        font-weight: bold;
+        color: #555;
+      }
+
+      .info-group span {
+        font-size: 16px;
+      }
+
+      .edit-btn {
+        display: inline-block;
+        margin-top: 20px;
+        padding: 10px 20px;
+        background-color: #5cb85c;
+        color: white;
+        text-align: center;
+        border-radius: 5px;
+        text-decoration: none;
+      }
+
+      .edit-btn:hover {
+        background-color: #4cae4c;
+      }
+
+      .role-badge {
+        display: inline-block;
+        padding: 5px 10px;
+        background-color: #007bff;
+        color: white;
+        border-radius: 5px;
+        font-size: 12px;
+      }
+
+      .admin-info,
+      .teacher-info,
+      .student-info {
+        margin-top: 20px;
+        padding: 20px;
+        background-color: #f9f9f9;
+        border-radius: 5px;
+        box-shadow: 0 1px 5px rgba(0, 0, 0, 0.1);
+      }
+
+      .admin-info h3,
+      .teacher-info h3,
+      .student-info h3 {
+        color: #333;
+        margin-bottom: 10px;
+      }
+
+      .admin-info ul,
+      .teacher-info ul,
+      .student-info ul {
+        list-style: none;
+        padding-left: 0;
+      }
+
+      .admin-info ul li,
+      .teacher-info ul li,
+      .student-info ul li {
+        margin-bottom: 10px;
+        font-size: 16px;
+      }
+    </style>
+  </head>
+
+  <body>
+    {% include "pages_header.html" %}
+
+    <div class="container">
+      <h2>Profile Settings</h2>
+
+      <div class="profile-section">
+        <img
+          src="{{ user.image|default:'https://via.placeholder.com/150' }}"
+          alt="Profile Image"
+        />
+
+        <div class="profile-info">
+          <h3>
+            {{ user.full_name }}
+            <span class="role-badge">{{ user.get_user_role }}</span>
+          </h3>
+
+          <div class="info-group">
+            <label>Email:</label>
+            <span>{{ user.email }}</span>
+          </div>
+
+          <div class="info-group">
+            <label>Phone:</label>
+            <span>{{ user.phone }}</span>
+          </div>
+
+          <div class="info-group">
+            <label>Gender:</label>
+            <span>{{ user.get_gender_display }}</span>
+          </div>
+
+          <a href="{% url 'edit_profile' %}" class="edit-btn">Edit Profile</a>
+        </div>
+      </div>
+
+      <!-- Role-specific sections -->
+      {% if user.is_admin %}
+      <div class="admin-info">
+        <h3>Admin Information</h3>
+        <ul>
+          <li><b>School:</b> {{ user.school.name }}</li>
+          <li><b>Role:</b> {{ user.get_user_role }}</li>
+          <li><b>Manage Teachers and Students</b></li>
+        </ul>
+      </div>
+      {% endif %} {% if user.is_teacher %}
+      <div class="teacher-info">
+        <h3>Teacher Information</h3>
+        <ul>
+          <li><em>School:</em> {{ user.school.name }}</li>
+          <li><em>Department:</em> {{ user.teacher_profile.department }}</li>
+          <li><em>Phone:</em> {{ user.phone }}</li>
+          <li><em>Email:</em> {{ user.email }}</li>
+        </ul>
+      </div>
+      {% endif %} {% if user.is_student %}
+      <div class="student-info">
+        <h3>Student Information</h3>
+        <ul>
+          <li>School: {{ user.student_profile.school.name }}</li>
+          <li>Class: {{ user.student_profile.klass }}</li>
+          <li>Registration Number: {{ user.student_profile.reg_no }}</li>
+          <li>Date of Birth: {{ user.student_profile.date_of_birth }}</li>
+          <li>Age: {{ user.student_profile.student_age }} years</li>
+        </ul>
+      </div>
+      {% endif %}
+    </div>
+  </body>
+</html>

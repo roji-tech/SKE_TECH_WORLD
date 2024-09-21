@@ -1,3 +1,4 @@
+from .models import Term
 from django import forms
 from library.models import LibraryBook
 from main.models.models import (
@@ -178,6 +179,18 @@ class AcademicSessionForm(forms.ModelForm):
             'end_date': forms.DateInput(attrs={'type': 'date', "id": "end_date"}),
             'name': forms.TextInput(attrs={'type': 'text', "id": "name", "placeholder": "2024-2025 ( optional )"}),
             # 'next_session_begins': forms.DateInput(attrs={'type': 'date'}),
+        }
+
+
+class TermForm(forms.ModelForm):
+    class Meta:
+        model = Term
+        fields = ['name', 'start_date', 'end_date',
+                  'next_term_begins', 'is_current']
+        widgets = {
+            'start_date': forms.DateInput(attrs={'type': 'date'}),
+            'end_date': forms.DateInput(attrs={'type': 'date'}),
+            'next_term_begins': forms.DateInput(attrs={'type': 'date'}),
         }
 
 

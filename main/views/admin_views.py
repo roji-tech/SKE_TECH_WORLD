@@ -1,3 +1,5 @@
+from main.models.models import AcademicSession
+from ..forms import TermForm
 from django.forms import ValidationError
 from django.db import IntegrityError
 import logging
@@ -36,7 +38,7 @@ from django.views.generic import (
 from main.models import (
     User, AcademicSession, School, SchoolSettings,
     Student, Subject, Teacher, Term, SchoolClass,
-    STUDENT, TEACHER, ADMIN, GmeetClass
+    STUDENT, TEACHER, ADMIN, GmeetClass, Term
 )
 # FORMS
 from main.forms import (AcademicSessionForm, ClassForm, StudentForm, StudentUserForm, SubjectForm,
@@ -48,9 +50,6 @@ from main import mydecorators
 
 # Set up a logger for the application
 logger = logging.getLogger(__name__)
-
-
-
 
 
 class AddRequestToFormMixin(View):
@@ -897,3 +896,63 @@ class GmeetDeleteView(DeleteView):
     model = GmeetClass
     template_name = "myadmin/gmeetdelete.html"
     success_url = reverse_lazy("list-settings")
+
+
+def session_detail_view(request, pk):
+    session: AcademicSession = get_object_or_404(AcademicSession, id=pk)
+    # session = session.select_related("classes")
+    print(session.classes)
+    return render(request, 'myadmin/session_detail.html', {'session': session})
+
+
+def edit_term_view(request, session_id, term_id):
+    term: Term = get_object_or_404(Term, id=term_id)
+
+    if request.method == 'POST':
+        form = TermForm(request.POST, instance=term)
+        if form.is_valid():
+            form.save()
+            return redirect('session_detail', pk=term.academic_session.id)
+    else:
+        form = TermForm(instance=term)
+    return render(request, 'myadmin/add_term.html', {'form': form, 'term': term})
+
+
+def add_term_view(request, session_id):
+    session = get_object_or_404(AcademicSession, id=session_id)
+    if request.method == 'POST':
+        form = TermForm(request.POST)
+        if form.is_valid():
+            term = form.save(commit=False)
+            term.academic_session = session
+            term.save()
+            return redirect('session_detail', pk=session.id)
+    else:
+        form = TermForm()
+    return render(request, 'myadmin/add_term.html', {'form': form, 'session': session})
+
+# views.py
+
+
+def add_edit_term(request, session_id, term_id=None):
+    session = get_object_or_404(AcademicSession, id=session_id)
+    term = None
+
+    if term_id:
+        term = get_object_or_404(Term, id=term_id)
+
+    if request.method == 'POST':
+        form = TermForm(request.POST, instance=term)
+        if form.is_valid():
+            new_term = form.save(commit=False)
+            new_term.academic_session = session
+            new_term.save()
+            return redirect('session_detail', session_id=session.id)
+    else:
+        form = TermForm(instance=term)
+
+    return render(request, 'myadmin/add_term.html', {
+        'form': form,
+        'session': session,
+        'term': term,
+    })

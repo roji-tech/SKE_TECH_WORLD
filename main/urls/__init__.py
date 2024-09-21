@@ -27,7 +27,8 @@ urlpatterns += auth_urlpatterns
 
 
 urlpatterns += [
-    path('profile/', GmeetClassListView.as_view(), name='profile'),
+    path('profile/update/', edit_profile, name='edit_profile'),
+    path('profile/', profile_settings, name='profile'),
 
     # GmeetClass URLs
     path('gmeet-classes/', GmeetClassListView.as_view(), name='gmeetclass-list'),
