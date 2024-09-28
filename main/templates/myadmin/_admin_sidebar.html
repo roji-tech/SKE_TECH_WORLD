@@ -306,7 +306,9 @@
     <a href="{% url 'profile' %}" style="color: inherit">
       <div class="sidebar-profile">
         <img
-          src="{{ request.user.image }}"
+          {% if request.user.image %}
+          src="{{ request.user.image.url }}"
+          {% endif %}
           style="
             display: grid;
             place-items: center;

@@ -26,7 +26,7 @@ class TeacherUserForm(forms.ModelForm):
     class Meta:
         model = User
         fields = ['first_name', 'last_name',
-                  'gender', 'email', "phone"]
+                  'gender', 'email', "phone", "image"]
 
         widgets = {
             'first_name': forms.TextInput(attrs={
@@ -35,7 +35,7 @@ class TeacherUserForm(forms.ModelForm):
                 'required': 'required'
             }),
             'last_name': forms.TextInput(attrs={
-                'placeholder': 'Enter Name',
+                'placeholder': 'Enter Surname',
                 'class': 'input',
                 'required': 'required'
             }),
@@ -49,12 +49,13 @@ class TeacherUserForm(forms.ModelForm):
                 'required': 'required'
             }),
             'phone': forms.TextInput(attrs={
-                'placeholder': 'Enter Email',
+                'placeholder': 'Enter Phone Number',
                 'class': 'input',
             }),
-            # 'image': forms.ClearableFileInput(attrs={
-            #     'onchange': 'previewImage(this);'
-            # })
+            'image': forms.ClearableFileInput(attrs={
+                'onchange': 'previewImage(this);',
+                "required": ""
+            })
         }
 
     password = forms.CharField(

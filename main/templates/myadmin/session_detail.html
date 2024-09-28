@@ -160,8 +160,8 @@
             <ul class="list-group">
               {% for school_class in session.classes.all %}
               <li class="list-group-item">
-                {{ school_class.name }} {{ school_class.division }} ({{
-                school_class.category }})
+                {{ school_class.name }} {{ school_class.division }}
+                <span> ({{ school_class.category }}) </span>
               </li>
               {% endfor %}
             </ul>

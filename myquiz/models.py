@@ -17,7 +17,10 @@ class Quiz(models.Model):
     term = models.ForeignKey(Term,  on_delete=models.CASCADE)
     subject = models.ForeignKey(Subject,  on_delete=models.CASCADE)
     created_by: User = models.ForeignKey(
-        settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        limit_choices_to={'role__in': ["teacher"]},
+    )
     start_date = models.DateTimeField(null=True, blank=True)
     end_date = models.DateTimeField(null=True, blank=True)
 
@@ -32,12 +35,14 @@ class Question(models.Model):
     quiz = models.ForeignKey(
         Quiz, on_delete=models.CASCADE, related_name='questions')
     question_text = models.CharField(max_length=200)
-    option_1 = models.CharField(max_length=200)
-    option_2 = models.CharField(max_length=200)
-    option_3 = models.CharField(max_length=200)
-    option_4 = models.CharField(max_length=200)
+    option_1 = models.CharField(max_length=200, default="")
+    option_2 = models.CharField(max_length=200, default="")
+    option_3 = models.CharField(max_length=200, default="")
+    option_4 = models.CharField(max_length=200, default="")
     correct_answer = models.CharField(max_length=200)
-    image = models.ImageField(upload_to='quiz_images/', null=True, blank=True)
+    exclude = models.BooleanField(default=False)
+    image = models.ImageField(
+        upload_to='quiz_images/%Y/%m/%d/', null=True, blank=True)
 
     def __str__(self):
         return self.question_text
@@ -48,7 +53,7 @@ class QuestionBank(models.Model):
         Subject, on_delete=models.CASCADE, related_name='question_bank')
     question_text = models.TextField()
     image = models.ImageField(
-        upload_to='question_bank_images/', blank=True, null=True)
+        upload_to='question_bank_images/%Y/%m/%d/', blank=True, null=True)
 
     def __str__(self):
         return f"Question for {self.subject.name}"
@@ -67,6 +72,9 @@ class Result(models.Model):
     student = models.ForeignKey(Student, on_delete=models.CASCADE)
     quiz = models.ForeignKey(Quiz, on_delete=models.CASCADE)
     score = models.FloatField()
+
+    def __str__(self):
+        return f'{self.student} - {self.quiz.title}: {self.score}'
 
     def calculate_total_score(self):
         total_questions = self.quiz.questions.count()
@@ -113,3 +121,6 @@ class SessionResult(models.Model):
         self.total_score = sum(
             term.total_score for term in term_results) / len(terms)
         self.save()
+
+
+# class CardPin(model)

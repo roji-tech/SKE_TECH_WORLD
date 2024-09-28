@@ -30,7 +30,8 @@ class School(models.Model):
     address = models.TextField(default="")
     phone = models.CharField(max_length=15)
     email = models.EmailField()
-    logo = models.URLField(default="")
+    logo = models.ImageField(upload_to='school_logos/',
+                             default="logo.png", null=True, blank=True,)
     created_at = models.DateTimeField(auto_now_add=True)
     short_name = models.CharField(max_length=6, null=True, blank=True)
 
@@ -641,7 +642,8 @@ class ClassNote(models.Model):
         SchoolClass, on_delete=models.CASCADE, related_name='+')
     content = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
-    attachment = models.URLField()
+    attachment = models.FileField(
+        upload_to='class_notes_attachments/', null=True, blank=True)
 
     def __str__(self):
         return f"Note for {self.lesson_plan.subject.name} ({self.lesson_plan.subject.school_class.name})"

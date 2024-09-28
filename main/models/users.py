@@ -52,7 +52,7 @@ class User(AbstractUser):
     email = models.EmailField(_('email address'), unique=True)
     role = models.CharField(max_length=10, choices=ROLE_CHOICES)
     gender = models.CharField(max_length=1, choices=GENDER_CHOICES)
-    image = models.URLField(blank=True, null=True)
+    image = models.ImageField(blank=True, null=True)
     phone = models.CharField(max_length=20, default="+234----")
 
     objects = UserManager()

@@ -11,6 +11,7 @@ INSTALLED_APPS = [
     'django_extensions',
     'django_seed',
     'django_filters',
+    'storages',
 
     'main',
     'library',

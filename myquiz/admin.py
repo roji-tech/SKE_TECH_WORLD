@@ -1,5 +1,5 @@
 from django.contrib import admin
-from myquiz.admin_filters import AcademicSessionFilter
+from myquiz.admin_filters import AcademicSessionFilter, ActiveQuizFilter
 from .models import Quiz, Question, QuestionBank, StudentAnswer, Result, TermResult, SessionResult
 
 
@@ -8,13 +8,26 @@ class QuestionInline(admin.TabularInline):
     extra = 1  # Number of extra blank question fields
 
 
+@admin.action(description='Activate selected quizzes')
+def activate_quizzes(self, request, queryset):
+    # Assuming you add an `is_active` field to Quiz
+    queryset.update(is_active=True)
+
+
+@admin.action(description='Deactivate selected quizzes')
+def deactivate_quizzes(self, request, queryset):
+    queryset.update(is_active=False)
+
+
 @admin.register(Quiz)
 class QuizAdmin(admin.ModelAdmin):
-    list_display = ('title', 'quiz_type', 'school_class', 'subject',
+    list_display = ('title', "id", 'quiz_type', 'school_class', 'subject',
                     'term', 'academic_session', 'created_by', 'start_date', 'end_date')
-    list_filter = ('quiz_type', 'school_class', 'subject', 'term', AcademicSessionFilter)
+    list_filter = ('quiz_type', 'school_class', 'subject',
+                   'term', AcademicSessionFilter, ActiveQuizFilter)
     search_fields = ('title', 'school_class__name', 'subject__name')
     inlines = [QuestionInline]
+    actions = [activate_quizzes, deactivate_quizzes]  # Add your custom actions
 
 
 @admin.register(Question)
@@ -41,7 +54,8 @@ class StudentAnswerAdmin(admin.ModelAdmin):
 class ResultAdmin(admin.ModelAdmin):
     list_display = ('student', 'quiz', 'score')
     list_filter = ('quiz', 'student')
-    search_fields = ('student__name', 'quiz__title')
+    search_fields = ('student__name__icontains', 'quiz__title__icontains')
+    readonly_fields = ('score',)  # Prevent manual editing of the score
 
 
 @admin.register(TermResult)
@@ -50,6 +64,7 @@ class TermResultAdmin(admin.ModelAdmin):
                     'academic_session', 'total_score')
     list_filter = ('school_class', 'term', 'academic_session')
     search_fields = ('student__name', 'school_class__name')
+    readonly_fields = ('total_score',)  # Prevent manual editing of the score
 
 
 @admin.register(SessionResult)

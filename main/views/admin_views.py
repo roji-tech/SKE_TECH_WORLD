@@ -584,7 +584,7 @@ class StudentCreateView(AddRequestToFormMixin, CreateView):
         )
 
     def post(self, request, *args, **kwargs):
-        user_form = StudentUserForm(request.POST)
+        user_form = StudentUserForm(request.POST, request.FILES, )
         student_form = StudentForm(request.POST, request=self.request)
 
         if user_form.is_valid() and student_form.is_valid():
@@ -736,7 +736,7 @@ class TeacherCreateView(CreateView):
         )
 
     def post(self, request, *args, **kwargs):
-        user_form = TeacherUserForm(request.POST)
+        user_form = TeacherUserForm(request.POST,  request.FILES)
         teacher_form = TeacherForm(request.POST)
         if user_form.is_valid() and teacher_form.is_valid():
             user = user_form.save(commit=False)
@@ -770,6 +770,7 @@ class TeacherUpdateView(UpdateView):
         teacher = get_object_or_404(Teacher, pk=pk)
         user_form = TeacherUserForm(instance=teacher.user)
         teacher_form = TeacherForm(instance=teacher)
+
         return render(
             request,
             self.template_name,
@@ -778,7 +779,8 @@ class TeacherUpdateView(UpdateView):
 
     def post(self, request, pk, *args, **kwargs):
         teacher = get_object_or_404(Teacher, pk=pk)
-        user_form = TeacherUserForm(request.POST, instance=teacher.user)
+        user_form = TeacherUserForm(
+            request.POST, request.FILES, instance=teacher.user)
         teacher_form = TeacherForm(request.POST, instance=teacher)
         if user_form.is_valid() and teacher_form.is_valid():
             user_form.save()

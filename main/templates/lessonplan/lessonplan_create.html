@@ -1,212 +1,359 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Edit Lesson Plan</title>
-    <link rel="stylesheet" href="lessonNote.css" />
-    <style>
-      @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap");
 
-      * {
-        font-family: "Poppins", sans-serif;
-      }
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Edit Lesson Plan</title>
 
-      body {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        flex-direction: column;
-      }
+  <!-- External Stylesheets -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+    rel="stylesheet" />
 
-      .container {
-        display: flex;
-        flex-direction: column;
-        width: 80%;
-        background: #f8f7f788;
-        /* margin: 15% auto; */
-        box-shadow: 0.1px 0.1px 0.3px;
-        z-index: 100;
-      }
+  <style>
+    @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap");
 
-      .add-division {
-        padding-left: 20px;
-      }
+    * {
+      font-family: "Poppins", sans-serif;
+    }
 
-      .add-division p {
-        margin: 20px;
-        color: #1b94c3;
-        font-weight: unset;
-        font-family: sans-serif;
-        font-size: large;
-      }
+    body {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+    }
 
-      .contents {
-        display: flex;
-        flex-direction: column;
-        border-top: 1px solid #b5adad;
-        border-bottom: 1px solid #b5adad;
-        padding: 20px;
-        background: white;
-      }
+    .container {
+      display: flex;
+      flex-direction: column;
+      width: 80%;
+      background: #f8f7f788;
+      /* margin: 15% auto; */
+      box-shadow: 0.1px 0.1px 0.3px;
+      z-index: 100;
+    }
 
+    .add-division {
+      padding-left: 20px;
+    }
+
+    .add-division p {
+      margin: 20px;
+      color: #1b94c3;
+      font-weight: unset;
+      font-family: sans-serif;
+      font-size: large;
+    }
+
+    .contents {
+      display: flex;
+      flex-direction: column;
+      border-top: 1px solid #b5adad;
+      border-bottom: 1px solid #b5adad;
+      padding: 20px;
+      background: white;
+    }
+
+    .inline-f {
+      display: flex;
+      justify-content: space-between;
+      margin: 20px 0;
+    }
+
+    .class {
+      font-size: larger;
+      width: 20%;
+      text-align: center;
+      display: flex;
+      justify-content: end;
+      align-items: center;
+    }
+
+    .input {
+      width: 70%;
+      height: 35px;
+      background: transparent;
+      border: 1px solid #b5adad;
+    }
+
+    input::placeholder {
+      font-size: large;
+    }
+
+    #ast {
+      color: red;
+      font-size: large;
+      font-size: larger;
+      width: 10%;
+      text-align: center;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .function-btn {
+      text-align: end;
+      padding: 2%;
+    }
+
+    #add {
+      padding: 10px 15px;
+      background: #1bc329;
+      color: white;
+      border-radius: 3px;
+      border: 0;
+      font-weight: 500;
+    }
+
+    #cancel {
+      padding: 10px 15px;
+      background: #fff;
+      border-radius: 3px;
+      border: 1px solid #b5adad;
+      font-weight: 500;
+    }
+
+    abbr {
+      text-decoration: none;
+    }
+  </style>
+
+  <style>
+    /* Add CSS for the overlay and popup */
+    .overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.5);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+    }
+
+    .popup {
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      text-align: center;
+    }
+
+    .popup button {
+      margin: 10px;
+    }
+  </style>
+  <style>
+    body {
+      background-color: #f9f9f9;
+      font-family: "Poppins", sans-serif;
+      margin: 0;
+      padding: 0;
+    }
+
+    .container {
+      max-width: 800px;
+      margin: 50px auto;
+      background-color: #ffffff;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      border-radius: 12px;
+      padding: 30px;
+    }
+
+    .header {
+      text-align: center;
+      margin-bottom: 40px;
+    }
+
+    .header p {
+      font-size: 24px;
+      font-weight: 600;
+      color: #03a73a;
+    }
+
+    form {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
+
+    label {
+      font-size: 16px;
+      color: #333;
+    }
+
+    input[type="text"],
+    input[type="email"],
+    input[type="file"],
+    select {
+      padding: 10px;
+      font-size: 14px;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      width: 100%;
+      box-sizing: border-box;
+    }
+
+    input[type="file"] {
+      cursor: pointer;
+    }
+
+    .inline-f {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .inline-f label {
+      flex: 1;
+      text-align: right;
+      margin-right: 20px;
+    }
+
+    .input-container {
+      flex: 2;
+    }
+
+    button[type="submit"],
+    button[type="reset"] {
+      background-color: #03a73a;
+      color: white;
+      border: none;
+      padding: 12px 20px;
+      border-radius: 6px;
+      font-size: 16px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+      margin-top: 20px;
+    }
+
+    button[type="reset"] {
+      background-color: #e0e0e0;
+      color: #333;
+      margin-left: 10px;
+    }
+
+    button:hover {
+      background-color: #028e30;
+    }
+
+    /* Image Preview Styling */
+    #imagePreview {
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      overflow: hidden;
+      background-color: #e0e0e0;
+      margin: 0 auto;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      object-fit: cover;
+      margin-bottom: 20px;
+    }
+
+    #imagePreview img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .button-group {
+      text-align: center;
+    }
+
+    .error {
+      color: red;
+      font-size: 12px;
+      margin-top: 5px;
+    }
+
+    /* Mobile Responsive */
+    @media (max-width: 768px) {
       .inline-f {
-        display: flex;
-        justify-content: space-between;
-        margin: 20px 0;
-      }
-
-      .class {
-        font-size: larger;
-        width: 20%;
-        text-align: center;
-        display: flex;
-        justify-content: end;
-        align-items: center;
-      }
-
-      .input {
-        width: 70%;
-        height: 35px;
-        background: transparent;
-        border: 1px solid #b5adad;
-      }
-
-      input::placeholder {
-        font-size: large;
-      }
-
-      #ast {
-        color: red;
-        font-size: large;
-        font-size: larger;
-        width: 10%;
-        text-align: center;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-      }
-
-      .function-btn {
-        text-align: end;
-        padding: 2%;
-      }
-
-      #add {
-        padding: 10px 15px;
-        background: #1bc329;
-        color: white;
-        border-radius: 3px;
-        border: 0;
-        font-weight: 500;
-      }
-
-      #cancel {
-        padding: 10px 15px;
-        background: #fff;
-        border-radius: 3px;
-        border: 1px solid #b5adad;
-        font-weight: 500;
-      }
-
-      abbr {
-        text-decoration: none;
-      }
-    </style>
-
-    <style>
-      /* Add CSS for the overlay and popup */
-      .overlay {
-        position: fixed;
-        top: 0;
-        left: 0;
+        flex-direction: column;
+        align-items: flex-start;
         width: 100%;
-        height: 100%;
-        background: rgba(0, 0, 0, 0.5);
-        display: none;
-        justify-content: center;
-        align-items: center;
-        z-index: 1000;
+        gap: 5px;
+        margin-bottom: 8px;
       }
 
-      .popup {
-        background: white;
-        padding: 20px;
-        border-radius: 10px;
-        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-        text-align: center;
+      .inline-f label {
+        text-align: left;
+        margin-bottom: 2px;
       }
 
-      .popup button {
-        margin: 10px;
+      .inline-f input,
+      .inline-f .input-container {
+        width: 100% !important;
       }
-    </style>
-  </head>
-  <body>
-    {% include 'pages_header.html' %}
-    <div class="container">
-      <div class="add-division">
-        <p>Upload Lesson Note</p>
-      </div>
+    }
+  </style>
+</head>
 
-      <div class="contents">
-        <form>
-          <div class="inline-f">
-            <label for="Class" class="class">Class</label>
-            <input type="text" placeholder="Class" required class="input" />
-          </div>
-          <div class="inline-f">
-            <label for="Subject" class="class">Subject</label>
-            <input type="text" placeholder="Subject" required class="input" />
-          </div>
-          <div class="inline-f">
-            <label for="uploaded By" class="class">Content</label>
-            <input
-              type="text"
-              placeholder="uploaded By"
-              required
-              class="input"
-            />
-          </div>
-          <div class="inline-f">
-            <label for="uploaded file" class="class">Select file</label>
-            <input type="file" />
-          </div>
-        </form>
-      </div>
-
-      <div class="function-btn">
-        <button id="add" onclick="showEditPopup(event)">Upload</button>
-        <button id="cancel">Cancel</button>
-      </div>
+<body>
+  {% include 'pages_header.html' %}
+  <div class="container">
+    <div class="add-division">
+      <p>Upload Lesson Note</p>
     </div>
 
-    <!-- Popup Overlay -->
-    <div id="overlay" class="overlay">
-      <div class="popup">
-        <p>Are you sure you want to Add this lesson plan?</p>
-        <button onclick="confirmEdit()">Yes</button>
-        <button onclick="closePopup()">No</button>
-      </div>
+    <div class="contents">
+      <form id="lessonForm" method="post" enctype="multipart/form-data">
+        {% csrf_token %} {% for field in form %}
+        <div class="inline-f">
+          <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+          <div class="input-container">
+            {{ field }} {% if field.errors %}
+            <div class="error">{{ field.errors }}</div>
+            {% endif %}
+          </div>
+        </div>
+        {% endfor %}
+        <div class="function-btn button-group"">
+          <button type=" button" id="add" onclick="showEditPopup(event)">Upload</button>
+          <button type="reset" id="cancel">Cancel</button>
+        </div>
+      </form>
     </div>
 
-    <script>
-      function showEditPopup(event) {
-        event.preventDefault();
-        document.getElementById("overlay").style.display = "flex";
-      }
+  </div>
 
-      function closePopup() {
-        document.getElementById("overlay").style.display = "none";
-      }
+  <!-- Popup Overlay -->
+  <div id="overlay" class="overlay">
+    <div class="popup">
+      <p>Are you sure you want to Add this lesson plan?</p>
+      <button onclick="confirmEdit()">Yes</button>
+      <button onclick="closePopup()">No</button>
+    </div>
+  </div>
 
-      function confirmEdit() {
-        // Here you can add the logic to actually submit the form or perform the edit action
-        // For now, we'll just close the popup
-        document.getElementById("overlay").style.display = "none";
-        // You can add the form submission logic here, for example:
-        // document.querySelector('form').submit();
-      }
+  <script>
+    const lessonForm = document.getElementById("lessonForm")
+
+    function showEditPopup(event) {
+      event.preventDefault();
+      document.getElementById("overlay").style.display = "flex";
+    }
+    
+    function closePopup() {
+      document.getElementById("overlay").style.display = "none";
+    }
+    
+    function confirmEdit() {
+      // Here you can add the logic to actually submit the form or perform the edit action
+      // For now, we'll just close the popup
+      document.getElementById("overlay").style.display = "none";
+      // You can add the form submission logic here, for example:
+      // document.querySelector('form').submit();
+      lessonForm.submit()
+    }
     </script>
-  </body>
+</body>
+
 </html>

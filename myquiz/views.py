@@ -1,5 +1,14 @@
+from django.forms import modelformset_factory
+import django.forms
+from .forms import QuestionFormSet
+from .models import Question
+from django.contrib import messages
+from django.utils import timezone
+from .models import Quiz, Question
+from django.shortcuts import render, get_object_or_404, redirect
 from django.shortcuts import render
 from django.shortcuts import get_object_or_404, render, redirect
+from main import mydecorators
 from .models import Quiz, Question, Result
 
 from django.shortcuts import render, redirect
@@ -7,13 +16,23 @@ from .forms import QuizForm, QuestionForm
 from .models import Quiz, Question, QuestionBank
 
 
+from django.views.generic import DetailView
+
+
+class QuizDetailView(DetailView):
+    model = Quiz
+    template_name = 'quiz/quiz_detail.html'
+    context_object_name = 'quiz'
+
+
+@mydecorators.teacher_is_authenticated
 def create_quiz(request):
     if request.method == "POST":
         quiz_form = QuizForm(request.POST, request=request)
         if quiz_form.is_valid():
             quiz = quiz_form.save(commit=False)
             # Assuming Teacher has a relation to User
-            quiz.created_by = request.user.teacher
+            quiz.created_by = request.user
             quiz.save()
             return redirect('add-question', quiz_id=quiz.id)
     else:
@@ -22,24 +41,40 @@ def create_quiz(request):
     return render(request, 'quiz/quiz_form.html', {'form': quiz_form})
 
 
+@mydecorators.teacher_is_authenticated
 def add_question(request, quiz_id):
-    quiz = Quiz.objects.get(id=quiz_id)
-    if request.method == "POST":
-        question_form = QuestionForm(request.POST, request.FILES)
-        if question_form.is_valid():
-            question = question_form.save(commit=False)
-            question.quiz = quiz
-            question.save()
-            # Add question to the question bank
-            QuestionBank.objects.create(
-                subject=quiz.subject, question=question)
-            return redirect('add-question', quiz_id=quiz.id)
+    quiz = get_object_or_404(Quiz, id=quiz_id)
+
+    # Initialize the formset, allowing up to 5 questions to be added at once
+    QuestionFormSet = modelformset_factory(
+        Question, form=QuestionForm, extra=5, can_delete=True)
+
+    if request.method == 'POST':
+        formset = QuestionFormSet(
+            request.POST, request.FILES, queryset=Question.objects.none())
+        if formset.is_valid():
+            # Save each form in the formset, linking it to the specific quiz
+            instances = formset.save(commit=False)
+            for instance in instances:
+                instance.quiz = quiz
+                instance.save()
+            messages.success(request, 'Questions added successfully!')
+            # Redirect to quiz detail view or any desired page
+            return redirect('quiz_detail', pk=quiz.id)
+        else:
+            print(formset.errors)
+            messages.error(
+                request, 'There was an error adding the questions. Please try again.')
     else:
-        question_form = QuestionForm()
+        formset = QuestionFormSet(queryset=Question.objects.none())
 
-    return render(request, 'quiz/add_question.html', {'question_form': question_form, 'quiz': quiz})
+    return render(request,  'quiz/add_questions.html',  {
+        'quiz': quiz,
+        'formset': formset,
+    })
 
 
+# @mydecorators.teacher_is_authenticated
 def take_quiz(request, quiz_id):
     quiz = get_object_or_404(Quiz, id=quiz_id)
     questions = quiz.questions.all()
@@ -70,7 +105,7 @@ def take_quiz(request, quiz_id):
     return render(request, 'quiz/take_quiz.html', {'quiz': quiz, 'questions': questions})
 
 
-# views.py
+# @mydecorators.teacher_is_authenticated
 def quiz_result(request, score):
     """
     View to display the quiz result after a student completes a quiz.
