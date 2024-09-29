@@ -467,7 +467,7 @@ class Student(models.Model):
 
     @property
     def klass(self):
-        return f"{self.student_class.get_name_display} {self.student_class.division}"
+        return f"{self.student_class.get_name_display()} {self.student_class.division}"
 
     @property
     def student_age(self):

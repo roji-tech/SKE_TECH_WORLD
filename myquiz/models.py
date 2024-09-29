@@ -62,7 +62,7 @@ class QuestionBank(models.Model):
 class StudentAnswer(models.Model):
     student = models.ForeignKey(Student, on_delete=models.CASCADE)
     question = models.ForeignKey(Question, on_delete=models.CASCADE)
-    selected_option = models.CharField(max_length=200)
+    selected_option = models.CharField(max_length=200, default="")
 
     def is_correct(self):
         return self.selected_option == self.question.correct_answer
@@ -71,7 +71,7 @@ class StudentAnswer(models.Model):
 class Result(models.Model):
     student = models.ForeignKey(Student, on_delete=models.CASCADE)
     quiz = models.ForeignKey(Quiz, on_delete=models.CASCADE)
-    score = models.FloatField()
+    score = models.DecimalField(decimal_places=1, default=0.0, max_digits=5)
 
     def __str__(self):
         return f'{self.student} - {self.quiz.title}: {self.score}'

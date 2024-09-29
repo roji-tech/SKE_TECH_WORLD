@@ -246,7 +246,7 @@
           <button type="submit">Search</button>
           <button
             type="button"
-            onclick="window.location.href='{% url 'list-teachers' %}'"
+            onclick="window.location.href='{% url 'list-students' %}'"
           >
             Reset
           </button>
@@ -280,9 +280,9 @@
               <td>{{ student.reg_no }}</td>
               <td>{{ student.session_admitted }}</td>
               <td>
-                {% if student.user.picture %}
+                {% if student.user.image %}
                 <img
-                  src="{{ student.user.picture.url }}"
+                  src="{{ student.user.image.url }}"
                   alt="{{ student.full_name }}"
                   class="student-picture"
                 />

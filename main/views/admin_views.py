@@ -584,8 +584,10 @@ class StudentCreateView(AddRequestToFormMixin, CreateView):
         )
 
     def post(self, request, *args, **kwargs):
-        user_form = StudentUserForm(request.POST, request.FILES, )
-        student_form = StudentForm(request.POST, request=self.request)
+        user_form = StudentUserForm(
+            request.POST, request.FILES, request=self.request)
+        student_form = StudentForm(
+            request.POST, request.FILES, request=self.request)
 
         if user_form.is_valid() and student_form.is_valid():
             user = user_form.save(commit=False)
@@ -642,7 +644,8 @@ class StudentUpdateView(UpdateView):
 
     def post(self, request, pk, *args, **kwargs):
         student = get_object_or_404(Student, pk=pk)
-        user_form = StudentUserForm(request.POST, instance=student.user)
+        user_form = StudentUserForm(
+            request.POST, request.FILES, instance=student.user)
         student_form = StudentForm(
             request.POST, instance=student, request=self.request)
 
@@ -736,7 +739,7 @@ class TeacherCreateView(CreateView):
         )
 
     def post(self, request, *args, **kwargs):
-        user_form = TeacherUserForm(request.POST,  request.FILES)
+        user_form = TeacherUserForm(request.POST, request.FILES)
         teacher_form = TeacherForm(request.POST)
         if user_form.is_valid() and teacher_form.is_valid():
             user = user_form.save(commit=False)

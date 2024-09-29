@@ -129,7 +129,7 @@ class StudentForm(forms.ModelForm):
 class StudentUserForm(forms.ModelForm):
     class Meta:
         model = User
-        fields = ['first_name', 'last_name', 'gender', 'email']
+        fields = ['first_name', 'last_name', 'gender', 'email', "image"]
 
         widgets = {
             'first_name': forms.TextInput(attrs={
@@ -150,9 +150,10 @@ class StudentUserForm(forms.ModelForm):
                 'placeholder': 'Enter Email',
                 'class': 'input',
             }),
-            # 'image': forms.ClearableFileInput(attrs={
-            #     'onchange': 'previewImage(this);'
-            # })
+            'image': forms.ClearableFileInput(attrs={
+                'onchange': 'previewImage(this);',
+                'class': 'input',
+            })
         }
 
     password = forms.CharField(

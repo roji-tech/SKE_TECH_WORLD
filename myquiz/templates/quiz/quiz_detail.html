@@ -117,13 +117,18 @@
   <body>
     <div class="container">
       <header class="quiz-header">
-        <h1>{{ quiz.title }}</h1>
-        <p class="quiz-info">
-          Type: {{ quiz.quiz_type }} | Class: {{ quiz.school_class }} | Subject:
-          {{ quiz.subject }}
+        <h1>{{ quiz.title|title }} {{ quiz.quiz_type|title }}</h1>
+        <p class="quiz-info" style="text-align: start; padding-left: 5%">
+          Type: <b> {{ quiz.quiz_type }} </b> <br />
+          Class: <b>{{ quiz.school_class }} </b> <br />
+          Subject: <b>{{ quiz.subject }} </b>
         </p>
         <p class="quiz-dates">
           Start Date: {{ quiz.start_date }} | End Date: {{ quiz.end_date }}
+          <br />
+
+          <b>Duration: {{ quiz.duration }}</b>
+          <hr>
         </p>
       </header>
 
