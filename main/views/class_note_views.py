@@ -11,8 +11,8 @@ from main.models.models import GmeetClass, School, LessonPlan, ClassNote
 
 from django import forms
 
-
-class ClassNoteForm(forms.ModelForm):  # ClassNote Form
+# ClassNote Form
+class ClassNoteForm(forms.ModelForm):
     class Meta:
         model = ClassNote
         fields = ['lesson_plan', 'title', 'content', 'attachment']
@@ -22,50 +22,52 @@ class ClassNoteForm(forms.ModelForm):  # ClassNote Form
         }
 
 
-class ClassNoteCreateView(CreateView):  # ClassNote Create View
+# ClassNote Create View
+class ClassNoteCreateView(CreateView):
     model = ClassNote
     form_class = ClassNoteForm
     template_name = 'classnote_form.html'
     success_url = reverse_lazy('classnote-list')
 
 
-class ClassNoteUpdateView(UpdateView):  # ClassNote Update View
+# ClassNote Update View
+class ClassNoteUpdateView(UpdateView):
     model = ClassNote
     form_class = ClassNoteForm
     template_name = 'classnote_form.html'
     success_url = reverse_lazy('classnote-list')
 
 
-class ClassNoteDeleteView(DeleteView):  # ClassNote Delete View
+# ClassNote Delete View
+class ClassNoteDeleteView(DeleteView):
     model = ClassNote
     template_name = 'classnote_confirm_delete.html'
     success_url = reverse_lazy('classnote-list')
 
 
-class ClassNoteListView(ListView):  # ClassNote ListView
-    model = ClassNote
-    template_name = 'classnote_list.html'
-    context_object_name = 'class_notes'
-
-    def get_queryset(self):
-        # Filter class notes by school
-        return ClassNote.objects.filter(school_class__school=self.request.user.school)
-
-
-class ClassNoteDetailView(DetailView):  # ClassNote DetailView
-    model = ClassNote
-    template_name = 'classnote_detail.html'
-    context_object_name = 'class_note'
-
-
-class ClassNoteListView(ListView):  # ClassNote ListView with filters
+# Consolidated ClassNote List View with optional filtering
+class ClassNoteListView(ListView):
     model = ClassNote
     template_name = 'notes/notes.html'
     context_object_name = 'class_notes'
 
-    def get_queryset(self):  # Assuming class is passed as a GET param
+    def get_queryset(self):
+        """
+        If 'class' is provided as a GET parameter, filter by class;
+        otherwise, filter by the school of the logged-in user.
+        """
         school_class = self.request.GET.get('class')
-        return ClassNote.filter_by_class(school_class)
+        if school_class:
+            return ClassNote.filter_by_class(school_class)
+        return ClassNote.objects.filter(school_class__school=self.request.user.school)
+
+
+# ClassNote Detail View
+class ClassNoteDetailView(DetailView):
+    model = ClassNote
+    template_name = 'classnote_detail.html'
+    context_object_name = 'class_note'
+
 
 
 # def upload_lesson_plan(request, pk):
