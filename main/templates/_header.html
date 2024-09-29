@@ -1,10 +1,20 @@
+<style>
+  @media screen and (max-width: 992px) {
+    .sidebar-title>span {
+      display: inline;
+    }
+  }
+</style>
+
 <!-- _header.html -->
-<header class="header">
+<header class="header dashboard_header">
   <div class="menu-icon" onclick="openSidebar()">
     <span class="material-icons-outlined">menu</span>
   </div>
   <div class="header-left">
-    <span class="material-icons-outlined">logout</span>
+    <a href="{% url 'logout_redirect' %}" style="color: red;" title="logout">
+      <span class="material-icons-outlined">logout</span>
+    </a>
   </div>
   <div class="header-right">
     <h2 class="h2">

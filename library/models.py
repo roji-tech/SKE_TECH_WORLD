@@ -8,7 +8,6 @@ from main.models.models import School
 # Create your models here.
 
 
-
 User = get_user_model()
 
 
@@ -28,13 +27,13 @@ class Library(models.Model):
 class LibraryBook(models.Model):
     title_with_author = models.CharField(max_length=100)
     book = models.FileField(upload_to='library/catalogue/books')
-    book_image = models.ImageField(upload_to='library/catalogue/images/')
+    book_image = models.ImageField(
+        upload_to='library/catalogue/images/', blank=True, null=True)
     available_copies = models.IntegerField(default=1)
-    
-    uploaded_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True,
-    limit_choices_to={'role__in': ['teacher', 'admin', 'owner']}, related_name='books'
-    ), 
 
+    uploaded_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True,
+                                    limit_choices_to={'role__in': ['teacher', 'admin', 'owner']}, related_name='books'
+                                    ),
 
     class Meta:
         ordering = ['title_with_author']

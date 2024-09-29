@@ -3,7 +3,7 @@ from ..models import (
     User, School, AcademicSession,
     LessonPlan, ClassNote, SchoolClass,
     Student, Subject, Teacher,
-    GmeetClass
+    GmeetClass, Term
 )
 
 
@@ -44,23 +44,33 @@ class SchoolAdmin(admin.ModelAdmin):
     ]
 
 
+class TermInline(admin.StackedInline):
+    model = Term
+    extra = 1  # Number of empty forms displayed for adding new objects
+    min_num = 1  # Minimum number of terms required
+    max_num = 3  # Maximum number of terms allowed (optional)
+    # Fields to be displayed in the inline form
+    fields = ('name', 'start_date', 'end_date')
+
+
 class AcademicSessionAdmin(admin.ModelAdmin):
     list_display = [
         "name", "school",
         "is_current", "id",
     ]
+    inlines = [TermInline]  # Include the inline in the Session admin
 
 
 class TeacherAdmin(admin.ModelAdmin):
     list_display = [
         "full_name", "phone", "department",
-        "id", "school",
+        "id", "school", "email",
     ]
 
 
 class StudentAdmin(admin.ModelAdmin):
     list_display = [
-        "full_name", "email",
+        "full_name", "email", 'reg_no',
         "id", "school", 'klass',
         "student_class",
     ]

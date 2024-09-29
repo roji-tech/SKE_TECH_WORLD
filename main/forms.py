@@ -1,3 +1,4 @@
+from .models import Term
 from django import forms
 from library.models import LibraryBook
 from main.models.models import (
@@ -25,7 +26,7 @@ class TeacherUserForm(forms.ModelForm):
     class Meta:
         model = User
         fields = ['first_name', 'last_name',
-                  'gender', 'email', "phone"]
+                  'gender', 'email', "phone", "image"]
 
         widgets = {
             'first_name': forms.TextInput(attrs={
@@ -34,7 +35,7 @@ class TeacherUserForm(forms.ModelForm):
                 'required': 'required'
             }),
             'last_name': forms.TextInput(attrs={
-                'placeholder': 'Enter Name',
+                'placeholder': 'Enter Surname',
                 'class': 'input',
                 'required': 'required'
             }),
@@ -48,12 +49,13 @@ class TeacherUserForm(forms.ModelForm):
                 'required': 'required'
             }),
             'phone': forms.TextInput(attrs={
-                'placeholder': 'Enter Email',
+                'placeholder': 'Enter Phone Number',
                 'class': 'input',
             }),
-            # 'image': forms.ClearableFileInput(attrs={
-            #     'onchange': 'previewImage(this);'
-            # })
+            'image': forms.ClearableFileInput(attrs={
+                'onchange': 'previewImage(this);',
+                "required": ""
+            })
         }
 
     password = forms.CharField(
@@ -76,16 +78,18 @@ class StudentForm(forms.ModelForm):
 
         print(self.fields)
         if self.request:
-            self.fields['academic_year'].queryset = AcademicSession.get_school_sessions(
+            self.fields['session_admitted'].queryset = AcademicSession.get_school_sessions(
+                self.request)
+
+            self.fields['student_class'].queryset = SchoolClass.get_school_classes(
                 self.request)
 
     class Meta:
         model = Student
         fields = [
             'date_of_birth',
-            'admission_date',
+            'session_admitted',
             'student_class',
-            'academic_year',
             'reg_no'
         ]
         widgets = {
@@ -100,17 +104,17 @@ class StudentForm(forms.ModelForm):
                 'required': 'required',
                 'type': 'date'
             }),
-            'admission_date': forms.DateInput(attrs={
-                'placeholder': 'YYYY-MM-DD',
-                'class': 'input',
-                'required': 'required',
-                'type': 'date'
-            }),
+            # 'admission_date': forms.DateInput(attrs={
+            #     'placeholder': 'YYYY-MM-DD',
+            #     'class': 'input',
+            #     'required': 'required',
+            #     'type': 'date'
+            # }),
             'student_class': forms.Select(attrs={
                 'class': 'input-1',
                 'required': 'required'
             }),
-            'academic_year': forms.Select(attrs={
+            'session_admitted': forms.Select(attrs={
                 'class': 'input-1',
                 'required': 'required'
             }),
@@ -179,6 +183,18 @@ class AcademicSessionForm(forms.ModelForm):
         }
 
 
+class TermForm(forms.ModelForm):
+    class Meta:
+        model = Term
+        fields = ['name', 'start_date', 'end_date',
+                  'next_term_begins', 'is_current']
+        widgets = {
+            'start_date': forms.DateInput(attrs={'type': 'date'}),
+            'end_date': forms.DateInput(attrs={'type': 'date'}),
+            'next_term_begins': forms.DateInput(attrs={'type': 'date'}),
+        }
+
+
 class CustomSelect(forms.widgets.Select):
     def __init__(self, attrs=None, choices=()):
         super().__init__(attrs, choices)
@@ -240,20 +256,47 @@ class ClassForm(forms.ModelForm):
         return self.cleaned_data
 
 
+# class SubjectForm(forms.ModelForm):
+#     class Meta:
+#         model = Subject
+#         fields = ['school_class', 'name']
+#         widgets = {
+#             'school_class': forms.Select(attrs={'class': 'input', 'placeholder': 'Select'}),
+#             'name': forms.TextInput(attrs={'class': 'input', 'placeholder': 'Enter Subject Name'}),
+#         }
+
 class SubjectForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        # Extract the request object from the keyword arguments
+        self.request = kwargs.pop('request', None)
+        super().__init__(*args, **kwargs)
+
+        print(self.fields)
+        if self.request:
+            self.fields['teacher'].queryset = Teacher.get_school_teachers(
+                self.request)
+
     class Meta:
         model = Subject
-        fields = ['school_class', 'name']
+        fields = ["name", "school_class", "teacher"]
         widgets = {
-            'school_class': forms.Select(attrs={'class': 'input', 'placeholder': 'Select'}),
-            'name': forms.TextInput(attrs={'class': 'input', 'placeholder': 'Enter Subject Name'}),
+            'name': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'Enter Subject Name',
+            }),
+            'school_class': forms.Select(attrs={
+                'class': 'form-control',
+            }),
+            'teacher': forms.Select(attrs={
+                'class': 'form-control',
+            }),
         }
 
 
 class GoogleMeetForm(forms.ModelForm):
     class Meta:
         model = GmeetClass
-        fields = ['subject', 'description',
+        fields = ['title', 'subject', 'description',
                   'start_time', 'gmeet_link']
         widgets = {
             'start_time': forms.DateTimeInput(attrs={'type': 'datetime-local'}),
@@ -273,8 +316,6 @@ class LessonPlanForm(forms.ModelForm):
             'uploaded_file': forms.ClearableFileInput(attrs={'class': 'input'}),
             'school_clas': forms.Select(attrs={'class': 'input'}),
         }
-
-
 
 
 class LibraryBookForm(forms.ModelForm):

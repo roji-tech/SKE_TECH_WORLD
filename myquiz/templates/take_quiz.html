@@ -1,0 +1,42 @@
+<h2>{{ quiz.title }}</h2>
+<form method="post">
+  {% csrf_token %} {% for question in questions %}
+  <p>{{ question.question_text }}</p>
+  {% if question.image %}
+  <img src="{{ question.image.url }}" alt="Question Image" />
+  {% endif %}
+  <label>
+    <input
+      type="radio"
+      name="{{ question.id }}"
+      value="{{ question.option_1 }}"
+    />
+    {{ question.option_1 }}
+  </label>
+  <label>
+    <input
+      type="radio"
+      name="{{ question.id }}"
+      value="{{ question.option_2 }}"
+    />
+    {{ question.option_2 }}
+  </label>
+  <label>
+    <input
+      type="radio"
+      name="{{ question.id }}"
+      value="{{ question.option_3 }}"
+    />
+    {{ question.option_3 }}
+  </label>
+  <label>
+    <input
+      type="radio"
+      name="{{ question.id }}"
+      value="{{ question.option_4 }}"
+    />
+    {{ question.option_4 }}
+  </label>
+  {% endfor %}
+  <button type="submit">Submit Quiz</button>
+</form>

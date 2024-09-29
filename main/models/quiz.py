@@ -453,7 +453,7 @@ class Sitting(models.Model):
 class Question(models.Model):
     quiz = models.ManyToManyField(Quiz, verbose_name=_("Quiz"), blank=True)
     figure = models.ImageField(
-        upload_to="uploads/%Y/%m/%d",
+        upload_to="questions/uploads/%Y/%m/%d",
         blank=True,
         null=True,
         verbose_name=_("Figure"),

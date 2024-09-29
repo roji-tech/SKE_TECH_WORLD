@@ -213,7 +213,7 @@
 
     <div class="table-datas">
       <div class="sub-rows">
-        <p>Subject Class List</p>
+        <p>Student Class List</p>
 
         <a id="add_new" href="{% url 'add-student' %}"> Add New Student </a>
       </div>
@@ -278,7 +278,7 @@
               <td>{{ student.user.get_gender_display }}</td>
               <td>{{ student.date_of_birth }}</td>
               <td>{{ student.reg_no }}</td>
-              <td>{{ student.admission_date }}</td>
+              <td>{{ student.session_admitted }}</td>
               <td>
                 {% if student.user.picture %}
                 <img

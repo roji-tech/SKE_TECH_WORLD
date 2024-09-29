@@ -14,7 +14,7 @@ from main.views.admin_views import (
 
     TeacherDeleteView, TeacherListView, TeacherUpdateView, UpdateSession,
 
-    GmeetListView, dashboard_redirect, 
+    GmeetListView, session_detail_view, edit_term_view, add_term_view, add_edit_term
 )
 
 from ..views import AdminsHome, RegisterAndRegisterSchool, AdminsHelp
@@ -22,7 +22,7 @@ from ..views import AdminsHome, RegisterAndRegisterSchool, AdminsHelp
 urlpatterns = [
     path('admin/', AdminsHome.as_view(), name='myadmin'),
     path('admin/register/', RegisterAndRegisterSchool.as_view(),
-         name='register-school'),
+         name='signup'),
     path('admin/help/', AdminsHelp.as_view(), name='admin-help'),
 
 
@@ -33,7 +33,11 @@ urlpatterns = [
          UpdateSession.as_view(), name='update-session'),
     path('admin/sessions/<int:pk>/delete/',
          DeleteSession.as_view(), name='delete-session'),
-
+    path('admin/sessions/<int:pk>/',
+         session_detail_view, name='session_detail'),
+    path('admin/term/<int:session_id>/', add_term_view, name='add_term'),
+    path('admin/term/<int:session_id>/<int:term_id>/', edit_term_view, name='edit_term'),
+#     path('admin/term/add/<int:pk>/', add_term_view, name='add_term'),
 
 
     # CLASSES

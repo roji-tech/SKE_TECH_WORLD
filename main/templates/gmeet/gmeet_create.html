@@ -14,9 +14,11 @@
         margin: 0;
         padding: 0;
         display: flex;
-        justify-content: center;
+        justify-content: start;
+        flex-direction: column;
         align-items: center;
         height: 100vh;
+        gap: 2rem;
       }
 
       .container {
@@ -131,9 +133,17 @@
         padding: 10px 20px;
         text-transform: capitalize;
       }
+
+      .error {
+        color: red;
+        font-size: 14px;
+        display: block;
+      }
     </style>
   </head>
   <body>
+    {% include 'pages_header.html' %}
+
     <div class="container">
       <div class="title-header">
         <p>Google Meet</p>
@@ -147,6 +157,7 @@
           <div class="inline-f">
             <label for="subject" class="label">Meetng Title</label>
             {{ form.title }}
+            <span class="error">{{ form.title.errors }}</span>
           </div>
 
           <div class="inline-f">
@@ -154,21 +165,25 @@
               >Subject ( If it's a class )
             </label>
             {{ form.subject }}
+            <span class="error">{{ form.subject.errors }}</span>
           </div>
 
           <div class="inline-f">
             <label for="description" class="label">Description</label>
             {{ form.description }}
+            <span class="error">{{ form.description.errors }}</span>
           </div>
 
           <div class="inline-f">
             <label for="start_time" class="label">Start Date and Time</label>
             {{ form.start_time }}
+            <span class="error">{{ form.start_time.errors }}</span>
           </div>
 
           <div class="inline-f">
             <label for="duration" class="label">Duration</label>
             {{ form.duration }}
+            <span class="error">{{ form.duration.errors }}</span>
           </div>
 
           <div class="inline-f">
@@ -177,9 +192,14 @@
           </div>
 
           <div class="function-btn">
-            <button type="submit" id="add upload-link">Add Meeting</button>
+            <button type="submit" id="add upload-link">
+              {% if form.instance.pk %} Update {% else %} Add {% endif %}
+              Meeting
+            </button>
             <button type="button" id="cancel">
-              <a href="{% url 'gmeetclass-list' %}" style='color: #Fff'> Cancel </a>
+              <a href="{% url 'gmeetclass-list' %}" style="color: #fff">
+                Cancel
+              </a>
             </button>
           </div>
         </form>

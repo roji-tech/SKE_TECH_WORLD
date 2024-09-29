@@ -236,6 +236,12 @@
       #save:hover {
         background: #1782a1;
       }
+
+      .error {
+        color: red;
+        font-size: 14px;
+        display: block;
+      }
     </style>
   </head>
 
@@ -262,21 +268,27 @@
 
         <form method="post" id="sessionForm">
           {% csrf_token %}
+          <span class="error">{{ form.non_field_errors }}</span>
+
           <div class="formInput">
             <label for="start_date">Session Start Date</label>
             {{ form.start_date }}
+            <span class="error">{{ form.start_date.errors }}</span>
           </div>
           <div class="formInput">
             <label for="end_date">Session End Date</label>
             {{ form.end_date }}
+            <span class="error">{{ form.end_date.errors }}</span>
           </div>
           <div class="formInput">
             <label for="name">Session Name ( 2024-2025 )</label>
             {{ form.name }}
+            <span class="error">{{ form.name.errors }}</span>
           </div>
           <div class="formInput">
             <label for="name">Is Session Current</label>
             {{ form.is_current }}
+            <span class="error">{{ form.duration.errors }}</span>
           </div>
 
           <div class="function-btn">

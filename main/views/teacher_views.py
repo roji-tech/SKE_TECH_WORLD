@@ -1,3 +1,6 @@
+from django.urls import reverse_lazy
+# from .forms import LessonPlanForm, ClassNoteForm
+from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 from django.http import HttpResponse
 from django.contrib import messages
 from django.contrib.auth import authenticate, login
@@ -5,8 +8,125 @@ from django.shortcuts import get_object_or_404, redirect, render
 from django.views import View
 from django.views.generic import ListView
 
-from main.forms import GoogleMeetForm, LessonPlanForm
-from main.models.models import GmeetClass, LessonPlan
+# from main.forms import GoogleMeetForm, LessonPlanForm
+
+
+from django import forms
+from main.models import GmeetClass, LessonPlan, ClassNote
+
+# LessonPlan Form
+
+
+class LessonPlanForm(forms.ModelForm):
+    class Meta:
+        model = LessonPlan
+        fields = ['title', 'school_class', 'subject', 'uploaded_file']
+        widgets = {
+            'title': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'Enter Lesson Plan Title'
+            }),
+            'school_class': forms.Select(attrs={'class': 'form-control'}),
+            'subject': forms.Select(attrs={'class': 'form-control'}),
+            'uploaded_file': forms.ClearableFileInput(attrs={
+                'class': 'form-control',
+                'accept': 'application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document'
+            }),
+        }
+
+# ClassNote Form
+
+
+class ClassNoteForm(forms.ModelForm):
+    class Meta:
+        model = ClassNote
+        fields = ['lesson_plan', 'title',
+                  'school_class', 'content', 'attachment']
+        widgets = {
+            'title': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'Enter Class Note Title'
+            }),
+            'lesson_plan': forms.Select(attrs={'class': 'form-control'}),
+            'school_class': forms.Select(attrs={'class': 'form-control'}),
+            'content': forms.Textarea(attrs={
+                'class': 'form-control',
+                'placeholder': 'Enter Class Note Content'
+            }),
+            'attachment': forms.ClearableFileInput(attrs={
+                'class': 'form-control',
+                'accept': 'application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document'
+            }),
+        }
+
+
+# Lesson Plan Views
+
+
+class LessonPlanListView(ListView):
+    model = LessonPlan
+    template_name = 'lesson_plan/lesson_plan_list.html'
+    context_object_name = 'lesson_plans'
+
+
+class LessonPlanDetailView(DetailView):
+    model = LessonPlan
+    template_name = 'lesson_plan/lesson_plan_detail.html'
+    context_object_name = 'lesson_plan'
+
+
+class LessonPlanCreateView(CreateView):
+    model = LessonPlan
+    form_class = LessonPlanForm
+    template_name = 'lesson_plan/lesson_plan_form.html'
+    success_url = reverse_lazy('lesson_plan_list')
+
+
+class LessonPlanUpdateView(UpdateView):
+    model = LessonPlan
+    form_class = LessonPlanForm
+    template_name = 'lesson_plan/lesson_plan_form.html'
+    success_url = reverse_lazy('lesson_plan_list')
+
+
+class LessonPlanDeleteView(DeleteView):
+    model = LessonPlan
+    template_name = 'lesson_plan/lesson_plan_confirm_delete.html'
+    success_url = reverse_lazy('lesson_plan_list')
+
+# ClassNote Views
+
+
+class ClassNoteListView(ListView):
+    model = ClassNote
+    template_name = 'class_note/class_note_list.html'
+    context_object_name = 'class_notes'
+
+
+class ClassNoteDetailView(DetailView):
+    model = ClassNote
+    template_name = 'class_note/class_note_detail.html'
+    context_object_name = 'class_note'
+
+
+class ClassNoteCreateView(CreateView):
+    model = ClassNote
+    form_class = ClassNoteForm
+    template_name = 'class_note/class_note_form.html'
+    success_url = reverse_lazy('class_note_list')
+
+
+class ClassNoteUpdateView(UpdateView):
+    model = ClassNote
+    form_class = ClassNoteForm
+    template_name = 'class_note/class_note_form.html'
+    success_url = reverse_lazy('class_note_list')
+
+
+class ClassNoteDeleteView(DeleteView):
+    model = ClassNote
+    template_name = 'class_note/class_note_confirm_delete.html'
+    success_url = reverse_lazy('class_note_list')
 
 
 class TeachersHome(View):
@@ -15,65 +135,7 @@ class TeachersHome(View):
         return render(request, "teachers/index.html")
 
 
-"""Google Meet Views"""
-
-
-def add_gmeet(request):
-    if request.method == "POST":
-        form = GoogleMeetForm(request.POST)
-        if form.is_valid():
-            form.save(commit=False)
-            form.created_by = request.user
-            messages.success(request, "Google Meet Session added successfully")
-            return redirect("teachers")
-
-    form = GoogleMeetForm()
-    return render(request, "teachers/gmeet/gmeet.html", {"form": form})
-
-
-def teachers_edit_gmeet(request, pk):
-    gmeets = get_object_or_404(GmeetClass, pk=pk)
-    if request.method == "POST":
-        form = GoogleMeetForm(request.POST, instance=gmeets)
-        if form.is_valid():
-            form.save()
-            messages.success(request, "Google Meet Session updated successfully")
-            return redirect("teachers")
-
-    form = GoogleMeetForm(instance=gmeets)
-    return render(
-        request, "teachers/gmeet/uploadgmeet.html", {"form": form, "gmeets": gmeets}
-    )
-
-
 """LessonPlan Views"""
-
-
-def upload_lesson_plan(request, pk):
-    lesson_plan = get_object_or_404(LessonPlan, pk=pk)
-    if request.method == "POST":
-
-        form = LessonPlanForm(request.POST, request.FILES, instance=lesson_plan)
-        if form.is_valid():
-            lesson_plan_instance = form.save(commit=False)
-            lesson_plan_instance.uploaded_by = request.user
-            lesson_plan_instance.save()
-            return redirect("lessons_lists")
-    else:
-
-        form = LessonPlanForm(instance=lesson_plan)
-        return render(
-            request,
-            "teachers/lessonplan/edit-lesson-note.html",
-            {"form": form, "lesson_plan": lesson_plan},
-        )
-
-
-def lessons_list(request):
-    lesson_plans = LessonPlan.objects.all()
-    return render(
-        request, "teachers/notes/lessonNoteList.html", {"lesson_plans": lesson_plans}
-    )
 
 
 """Notes Views"""

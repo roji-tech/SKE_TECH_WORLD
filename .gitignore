@@ -6,3 +6,4 @@ __init__.cpython-311.pyc
 CONFIG/settings/__pycache__/middlewares.cpython-311.pyc
 .venv
 /media/
+.env

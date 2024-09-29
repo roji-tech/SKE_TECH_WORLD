@@ -1,3 +1,6 @@
+from django.shortcuts import render
+from main.models import User
+from main.models.models import School
 from .teacher_views import *
 from .admin_views import *
 from .student_views import *
@@ -7,7 +10,7 @@ from .settings import *
 from .gmeet_views import *
 from .lesson_plan_views import *
 from .class_note_views import *
-
+from .profile_views import *
 
 from django.shortcuts import redirect
 from django.views import View
@@ -19,12 +22,12 @@ from django.contrib.auth import logout
 class DashboardRedirectView(LoginRequiredMixin, View):
     def get(self, request, *args, **kwargs):
         # Check user's role and redirect accordingly
-        user = request.user
-        if user.role == 'student':
+        user: User = request.user
+        if user.is_student:
             return redirect('students')
-        elif user.role == 'teacher':
+        elif user.is_teacher:
             return redirect('teachers')
-        elif user.role == 'admin':
+        elif user.is_admin:
             return redirect('myadmin')
         else:
             # If no matching role, redirect to a default dashboard
@@ -34,16 +37,18 @@ class DashboardRedirectView(LoginRequiredMixin, View):
 class LogoutRedirectView(LoginRequiredMixin, View):
     def get(self, request, *args, **kwargs):
         try:
+            user = request.user
+            role = user.role
+
             # Log the user out first
             logout(request)
 
             # Check user's role and redirect accordingly
-            user = request.user
-            if user.role == 'student':
+            if role == 'student':
                 return redirect('student-login')
-            elif user.role == 'teacher':
+            elif role == 'teacher':
                 return redirect('teacher-login')
-            elif user.role == 'admin':
+            elif role == 'admin':
                 return redirect('admin-login')
             else:
                 # If no matching role, redirect to a default login

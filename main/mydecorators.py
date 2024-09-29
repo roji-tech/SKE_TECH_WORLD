@@ -67,6 +67,12 @@ def admin_superadmin_teacher_is_authenticated(view_func_or_class):
     )(view_func_or_class)
 
 
+def is_authenticated(view_func_or_class):
+    return role_required(
+        lambda user: user.is_teacher or user.is_admin or user.is_superadmin or user.is_student,
+        login_url="/"
+    )(view_func_or_class)
+
 # @admin_is_authenticated
 # class AdminDashboardView(View):
 #     # Your view logic here

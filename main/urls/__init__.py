@@ -11,6 +11,7 @@ from django.views.generic import TemplateView
 from main.views.settings import SettingView
 
 urlpatterns = [
+    path("accounts/login/", TemplateView.as_view(template_name="signin.html"), name='logout'),
     path("", TemplateView.as_view(template_name="index.html"), name="home"),
     path('logout/', LogoutRedirectView.as_view(), name='logout_redirect'),
     path('dashboard/', DashboardRedirectView.as_view(), name='dashboard_redirect'),
@@ -26,6 +27,9 @@ urlpatterns += auth_urlpatterns
 
 
 urlpatterns += [
+    path('profile/update/', edit_profile, name='edit_profile'),
+    path('profile/', profile_settings, name='profile'),
+
     # GmeetClass URLs
     path('gmeet-classes/', GmeetClassListView.as_view(), name='gmeetclass-list'),
     path('gmeet-classes/<int:pk>/',
@@ -38,7 +42,7 @@ urlpatterns += [
          GmeetClassDeleteView.as_view(), name='gmeetclass-delete'),
 
     # LessonPlan URLs
-    path('lesson-plans/', LessonPlanListView.as_view(), name='lessonplan-list'),
+    path('lesson-plans/', LessonPlanListView.as_view(), name='list-lessonplans'),
     path('lesson-plans/<int:pk>/', LessonPlanDetailView.as_view(),
          name='lessonplan-detail'),
     path('lesson-plans/create/', LessonPlanCreateView.as_view(),
@@ -58,4 +62,11 @@ urlpatterns += [
          ClassNoteUpdateView.as_view(), name='classnote-update'),
     path('class-notes/<int:pk>/delete/',
          ClassNoteDeleteView.as_view(), name='classnote-delete'),
+
+
+    path('exam/',
+         ClassNoteDeleteView.as_view(), name='exam'),
+
+    path('comingsoon/',
+         TemplateView.as_view(template_name="comingsoon.html"), name='comingsoon'),
 ]

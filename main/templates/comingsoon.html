@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Coming Soon</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: "Arial", sans-serif;
+        background-color: #f4f4f9;
+        color: #333;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        text-align: center;
+      }
+
+      .container {
+        max-width: 600px;
+        padding: 20px;
+        background-color: #fff;
+        border-radius: 10px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        animation: fadeIn 1.2s ease-in-out;
+      }
+
+      h1 {
+        font-size: 3rem;
+        color: #333;
+        margin-bottom: 10px;
+      }
+
+      p {
+        font-size: 1.2rem;
+        color: #666;
+        margin-bottom: 20px;
+      }
+
+      .countdown {
+        font-size: 2rem;
+        font-weight: bold;
+        color: #ff6f61;
+        margin-bottom: 30px;
+      }
+
+      .email-subscribe {
+        display: flex;
+        justify-content: center;
+      }
+
+      input[type="email"] {
+        padding: 10px;
+        width: 300px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        margin-right: 10px;
+      }
+
+      button {
+        padding: 10px 20px;
+        border: none;
+        background-color: #ff6f61;
+        color: #fff;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background-color 0.3s;
+      }
+
+      button:hover {
+        background-color: #e65b52;
+      }
+
+      footer {
+        margin-top: 30px;
+        font-size: 0.9rem;
+        color: #aaa;
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(30px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>Coming Soon!</h1>
+      <p>
+        This feature will soon be available as we are getting ready to launch it
+        soon. Stay tuned!
+      </p>
+
+      <div class="countdown" id="countdown">00d: 00h: 00m: 00s</div>
+
+      <div class="email-subscribe">
+        <a href="{% url 'dashboard_redirect' %}">
+          <button id="subscribeBtn">Dashboard</button>
+        </a>
+      </div>
+
+      <footer>
+        <p>&copy; 2024 SKE TECH World. All Rights Reserved.</p>
+      </footer>
+    </div>
+
+    <script>
+      // Countdown Timer
+      const countdownElement = document.getElementById("countdown");
+      const launchDate = new Date("2024-10-05T00:00:00").getTime();
+
+      const updateCountdown = setInterval(function () {
+        const now = new Date().getTime();
+        const timeLeft = launchDate - now;
+
+        const days = Math.floor(timeLeft / (1000 * 60 * 60 * 24));
+        const hours = Math.floor(
+          (timeLeft % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)
+        );
+        const minutes = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60));
+        const seconds = Math.floor((timeLeft % (1000 * 60)) / 1000);
+
+        countdownElement.innerHTML = `${days}d: ${hours}h: ${minutes}m: ${seconds}s`;
+
+        if (timeLeft < 0) {
+          clearInterval(updateCountdown);
+          countdownElement.innerHTML = "Launched!";
+        }
+      }, 1000);
+
+      // Notify Me Button
+      document
+        .getElementById("subscribeBtn")
+        .addEventListener("click", function () {
+          const email = document.getElementById("email").value;
+          if (email) {
+            alert(`Thank you! We'll notify you at ${email} once we're live.`);
+          } else {
+            alert("Please enter a valid email.");
+          }
+        });
+    </script>
+  </body>
+</html>

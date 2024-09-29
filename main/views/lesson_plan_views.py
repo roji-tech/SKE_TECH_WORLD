@@ -26,7 +26,10 @@ class LessonPlanCreateView(CreateView):  # LessonPlan Create View
     model = LessonPlan
     form_class = LessonPlanForm
     template_name = 'lessonplan/lessonplan_create.html'
-    success_url = reverse_lazy('lessonplan-list')
+    success_url = reverse_lazy('list-lessonplans')
+
+    def get_queryset(self):
+        return LessonPlan.filter_by_role(self.request)
 
     def form_valid(self, form):
         # Set the uploader as the current user
@@ -38,13 +41,16 @@ class LessonPlanUpdateView(UpdateView):  # LessonPlan Update View
     model = LessonPlan
     form_class = LessonPlanForm
     template_name = 'lessonplan/lessonplan_create.html'
-    success_url = reverse_lazy('lessonplan-list')
+    success_url = reverse_lazy('list-lessonplans')
+
+    def get_queryset(self):
+        return LessonPlan.filter_by_role(self.request)
 
 
 class LessonPlanDeleteView(DeleteView):  # LessonPlan Delete View
     model = LessonPlan
-    template_name = 'lessonplan_confirm_delete.html'
-    success_url = reverse_lazy('lessonplan-list')
+    template_name = 'lessonplan/lessonplan_confirm_delete.html'
+    success_url = reverse_lazy('list-lessonplans')
 
 
 class LessonPlanListView(ListView):  # LessonPlan ListView with filters
@@ -53,7 +59,7 @@ class LessonPlanListView(ListView):  # LessonPlan ListView with filters
     context_object_name = 'lesson_plans'
 
     def get_queryset(self):
-        return LessonPlan.filter_by_school(self.request)
+        return LessonPlan.filter_by_role(self.request)
 
 
 class LessonPlanDetailView(DetailView):  # LessonPlan DetailView

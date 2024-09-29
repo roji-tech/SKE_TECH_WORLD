@@ -13,7 +13,8 @@
 
       body {
         display: flex;
-        justify-content: center;
+        justify-content: start;
+        flex-direction: column;
         align-items: center;
         background-color: #f0f0f0;
         font-family: "Poppins", sans-serif;
@@ -131,6 +132,8 @@
     </style>
   </head>
   <body>
+    {% include "pages_header.html" %}
+
     <div class="container">
       <div class="add-division">
         <p><span id="plus"></span> Academic Session List</p>
@@ -153,7 +156,11 @@
           <tbody>
             {% for session in academic_sessions %}
             <tr>
-              <td>{{ session.name }}</td>
+              <td>
+                <a href="{% url 'session_detail' session.pk %}">
+                  {{ session.name }}
+                </a>
+              </td>
               <td>{{ session.start_date }}</td>
               <td>{{ session.end_date }}</td>
               <td class="session_status">
@@ -182,6 +189,7 @@
         </table>
       </div>
     </div>
+
     <!-- overlay start -->
     <div id="overlay" class="overlay">
       <div class="overlay-content">

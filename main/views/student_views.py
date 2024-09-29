@@ -5,7 +5,7 @@ from django.shortcuts import render
 from django.views import View
 from django.views.generic import ListView
 from main import mydecorators
-
+from pprint import pprint
 
 # class StudentsLogin(View):
 #     def get(self, request, *args, **kwargs):
@@ -32,10 +32,12 @@ from main import mydecorators
 @mydecorators.student_is_authenticated
 class StudentsHome(View):
     def get(self, request, *args, **kwargs):
+        user = request.user
         student_info = Student.objects.get(user=request.user)
-        print(student_info)
+        user.student = student_info
+        pprint(user)
         # Custom logic here
-        return render(request, "students/index.html", {"user": request.user, "student": student_info})
+        return render(request, "students/index.html", {"user": user})
 
 
 class StudentGoogleMeetListView(ListView):

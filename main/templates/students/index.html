@@ -149,23 +149,23 @@
         {% if user.is_student %}
           <img
             id="profile-pic"
-            src="{{ request.user.get_picture }}"
+            src="{{ user.get_picture }}"
             alt="Profile Picture"
             class="profile-pic"
             />
             <div class="profile-buttons">
-              <a href="{% url 'logout' %}" class="profile-button">Logout</a>
+              <a href="{% url 'logout_redirect' %}" class="profile-button">Logout</a>
           </div>
           <div class="profile-info">
             <div class="info-left">
-              <p><strong>Name:</strong> {{ request.user.get_full_name }}</p>
-              <p><strong>Gender:</strong> {{ request.user.gender|default:"N/A" }}</p>
-              <p><strong>Registration Number:</strong> {{ request.user.student.reg_no }}</p>
+              <p><strong>Name:</strong> {{ user.get_full_name }}</p>
+              <p><strong>Gender:</strong> {{ user.get_gender_display|default:"N/A" }}</p>
+              <p><strong>Registration Number:</strong> {{ user.student.reg_no }}</p>
             </div>
             <div class="info-right">
-              <p><strong>Class:</strong> {{ request.user.student.klass }}</p>
-              <p><strong>Admission Number:</strong> {{ request.user.student_profile.student_id }}</p>
-              <p><strong>Age:</strong> {{ request.user.student.student_age }} years old</p>
+              <p><strong>Class:</strong> {{ user.student.klass }}</p>
+              <p><strong>Admission Number:</strong> {{ user.student_profile.student_id }}</p>
+              <p><strong>Age:</strong> {{ user.student.student_age }} years old</p>
           </div>
           </div>
         {% endif %}
