@@ -39,6 +39,8 @@ class Question(models.Model):
     option_2 = models.CharField(max_length=200, default="")
     option_3 = models.CharField(max_length=200, default="")
     option_4 = models.CharField(max_length=200, default="")
+    option_5 = models.CharField(max_length=200, default="")
+    option_6 = models.CharField(max_length=200, default="")
     correct_answer = models.CharField(max_length=200)
     exclude = models.BooleanField(default=False)
     image = models.ImageField(

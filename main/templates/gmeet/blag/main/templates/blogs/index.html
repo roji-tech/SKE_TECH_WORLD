@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Blogs</title>
+
+    <style>
+      body {
+        margin: 0;
+        padding: 0;
+      }
+
+      h1 {
+        padding: 20px;
+      }
+
+      #container {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>All Blogs</h1>
+
+    <div id="container">
+      {% for post in posts %}
+      <div>
+        <h1>{{post.headline}} -- {{ post.user }}</h1>
+        <p>{{ post.content }}</p>
+        <small>{{ post.created }}</small>
+        <hr />
+      </div>
+      {% endfor %}
+    </div>
+  </body>
+</html>

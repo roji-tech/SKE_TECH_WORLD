@@ -8,6 +8,8 @@ from django.db import models, transaction
 import string
 from django.db.models import Q
 
+
+
 User = get_user_model()
 
 
@@ -485,6 +487,84 @@ class Student(models.Model):
     def full_name(self):
         return f"{self.user.full_name}"
 
+    def generate_student_id(self):
+        """Generates a unique student ID based on the school and admission year."""
+        # Extract short school name or fallback to school ID
+        school_short_name = self.school.short_name[:3].upper(
+        ) if self.school.short_name else str(self.school.id)
+
+        # Admission year (last 2 digits of current year)
+        admission_year = str(self.session_admitted.start_date.year)[-2:]
+
+        # Find the last student in the same school and admission year
+        last_student = Student.objects.filter(
+            school=self.school, session_admitted=self.session_admitted
+        ).order_by('student_id').last()
+
+        if last_student and last_student.student_id:
+            # Extract the last 3 digits and increment
+            last_number = int(last_student.student_id.split('-')[-1])
+            new_number = str(last_number + 1).zfill(3)
+        else:
+            new_number = "001"  # Start from 001 if no previous student
+
+        # Combine to form the student ID
+        return f"{school_short_name}{admission_year}-{new_number}"
+
+    def generate_unique_student_id(self):
+        max_attempts = 5
+        attempts = 0
+
+        while attempts < max_attempts:
+            attempts += 1
+
+            try:
+                self.generate_student_id()
+            except ObjectDoesNotExist:
+                logging.warning(
+                    "No students found for the given school and session.")
+                break
+            except Exception as e:
+                logging.error(f"Error generating student ID: {e}")
+                continue  # Continue to the next iteration for recovery
+
+        # If unable to generate a unique ID after several attempts
+        raise Exception(
+            "Unable to generate a unique student ID after multiple attempts.")
+
+    def generate_unique_email(self):
+        """Generates a unique dynamic email for the student."""
+        school_short_name = self.school.short_name.lower(
+        ) if self.school.short_name else "school"
+        admission_year = str(self.session_admitted.start_date.year)[-2:]
+        base_email = f"{self.user.first_name.lower()}.{
+            self.user.last_name.lower()}@{school_short_name}{admission_year}.com"
+        unique_email = base_email
+
+        # Ensure the email is unique
+        counter = 1
+        while User.objects.filter(email=unique_email).exists():
+            unique_email = f"{self.user.first_name.lower()}.{self.user.last_name.lower()}{
+                counter}@{school_short_name}{admission_year}.com"
+            counter += 1
+
+        return unique_email
+
+    def __str__(self):
+        return f"{self.student_id} - {self.user.full_name}"
+
+    def save(self, *args, **kwargs):
+        # Generate a unique student ID if it's not already set
+        if not self.student_id:
+            self.student_id = self.generate_unique_student_id()
+
+        # Generate a unique dynamic email if not set
+        if not self.user.email:
+            self.user.email = self.generate_unique_email()
+            self.user.save()
+
+        super().save(*args, **kwargs)
+
     # def save(self, *args, **kwargs):
     #     # Save the instance first to generate the ID
     #     print(self.id, "Printing ID from Student save method")
@@ -574,7 +654,7 @@ class LessonPlan(models.Model):
     subject = models.ForeignKey(
         Subject, on_delete=models.CASCADE, related_name='lesson_plans')
     uploaded_by = models.ForeignKey(
-        User, on_delete=models.CASCADE, related_name='uploaded_files')
+        User, on_delete=models.CASCADE, related_name='lesson_plans')
     uploaded_file = models.FileField(upload_to='uploads/%Y/%m/%d/')
 
     def __str__(self):
@@ -644,6 +724,8 @@ class ClassNote(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     attachment = models.FileField(
         upload_to='class_notes_attachments/', null=True, blank=True)
+    uploaded_by = models.ForeignKey(
+        User, on_delete=models.CASCADE, related_name='lesson_notes')
 
     def __str__(self):
         return f"Note for {self.lesson_plan.subject.name} ({self.lesson_plan.subject.school_class.name})"

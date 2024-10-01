@@ -46,7 +46,7 @@ from main.forms import (AcademicSessionForm, ClassForm, StudentForm, StudentUser
 
 # CUSTOM DECORATORS
 from main import mydecorators
-
+from main.views.auth_views import send_verification_email_to_user
 
 # Set up a logger for the application
 logger = logging.getLogger(__name__)
@@ -143,6 +143,11 @@ class RegisterAndRegisterSchool(View):
                 name=school_name, owner=owner, phone=school_phone, email=school_email
             )
             school.save()
+
+            user = owner
+            print(user)
+            if user.is_admin:
+                send_verification_email_to_user(User, user, request)
 
             return JsonResponse(
                 {"status": True, "message": "Account created successfully."}

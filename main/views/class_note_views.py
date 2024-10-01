@@ -15,17 +15,19 @@ from django import forms
 class ClassNoteForm(forms.ModelForm):  # ClassNote Form
     class Meta:
         model = ClassNote
-        fields = ['lesson_plan', 'title', 'content', 'attachment']
+        fields = ['school_class', 'lesson_plan',
+                  'title', 'content', 'attachment']
         widgets = {
+            'title': forms.TextInput(attrs={"placeholder": "Topic Title"}),
             'content': forms.Textarea(attrs={'rows': 5}),
-            'attachment': forms.URLInput(attrs={'placeholder': 'Attach a link to the file'})
+            # 'attachment': forms.URLInput(attrs={'placeholder': 'Attach a link to the file'})
         }
 
 
 class ClassNoteCreateView(CreateView):  # ClassNote Create View
     model = ClassNote
     form_class = ClassNoteForm
-    template_name = 'classnote_form.html'
+    template_name = 'notes/uploadNote.html'
     success_url = reverse_lazy('classnote-list')
 
 

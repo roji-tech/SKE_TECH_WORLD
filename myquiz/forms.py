@@ -91,19 +91,29 @@ class QuizForm(forms.ModelForm):
 class QuestionForm(forms.ModelForm):
     option_3 = forms.CharField(required=False, initial="")
     option_4 = forms.CharField(required=False, initial="")
-
-    widgets = {
-        'correct_answer': forms.TextInput(attrs={
-            'class': 'correct_answer',
-            'required': 'required',
-            "type": "hidden"
-        }),
-    }
+    option_5 = forms.CharField(required=False, initial="")
+    option_6 = forms.CharField(required=False, initial="")
 
     class Meta:
         model = Question
         fields = ['question_text', 'image', 'option_1',
-                  'option_2', 'option_3', 'option_4', 'correct_answer']
+                  'option_2', 'option_3', 'option_4',
+                  'option_5', 'option_6', 'correct_answer']
+        widgets = {
+            'correct_answer': forms.TextInput(attrs={
+                'class': 'correct_answer',
+                'required': 'required',
+                "type": "hidden"
+            }),
+        }
+        labels = {
+            'option_1': 'A',
+            'option_2': 'B',
+            'option_3': 'C',
+            'option_4': 'D',
+            'option_5': 'E',
+            'option_6': 'F',
+        }
 
     def clean(self):
         cleaned_data = super().clean()
@@ -113,13 +123,18 @@ class QuestionForm(forms.ModelForm):
         option_2 = cleaned_data.get('option_2')
         option_3 = cleaned_data.get('option_3')
         option_4 = cleaned_data.get('option_4')
+        option_5 = cleaned_data.get('option_5')
+        option_6 = cleaned_data.get('option_6')
 
         options = [option_1, option_2]
         if option_3:
             options.append(option_3)
         if option_4:
             options.append(option_4)
-
+        if option_5:
+            options.append(option_5)
+        if option_6:
+            options.append(option_6)
         # Ensure at least two options are provided
         if len([opt for opt in options if opt != None and str(opt).strip()]) < 2:
             raise forms.ValidationError("At least two options are required.")
@@ -133,4 +148,5 @@ class QuestionForm(forms.ModelForm):
 
 
 QuestionFormSet = modelformset_factory(Question, fields=(
-    'question_text', 'option_1', 'option_2', 'option_3', 'option_4', 'correct_answer'), extra=5)
+    'question_text', 'option_1', 'option_2', 'option_3',
+    'option_4',  'option_5', 'option_6', 'correct_answer'), extra=5)

@@ -1,4 +1,5 @@
 from pathlib import Path
+import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
@@ -83,3 +84,5 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 AUTH_USER_MODEL = "main.user"
 
 # DATA_UPLOAD_MAX_NUMBER_FIELDS = 11000
+COMPRESS_ENABLED = os.environ.get("COMPRESS_ENABLED", False)
+

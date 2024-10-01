@@ -25,8 +25,12 @@ from ..models import User, STUDENT, TEACHER, SUPERADMIN, ADMIN, OWNER
 
 class CustomAuthenticationForm(AuthenticationForm):
     role = None
-    username = forms.EmailField(
-        label="Email", max_length=254, widget=forms.EmailInput(attrs={'autofocus': True}))
+    # username = forms.EmailField(
+    #     label="Email", max_length=254, widget=forms.EmailInput(attrs={'autofocus': True}))
+
+    # username = forms.CharField(
+    #     label="Email or Student ID", max_length=254, widget=forms.TextInput(attrs={'autofocus': True})
+    # )
 
     def __init__(self, request=None, *args, **kwargs):
         self.role = kwargs.pop('role', None)
@@ -38,20 +42,89 @@ class CustomAuthenticationForm(AuthenticationForm):
 
         super().__init__(*args, **kwargs)
 
+        if self.role == STUDENT:
+            self.fields['username'].widget = forms.TextInput(
+                attrs={'autofocus': True, 'placeholder': 'Student ID'})
+            self.fields['username'].label = "Student ID"
+
+    def clean(self):
+        # Override the clean method to support `student_id` login for students
+        username = self.cleaned_data.get('username')
+        password = self.cleaned_data.get('password')
+
+        if username and password:
+            if self.role == STUDENT:
+                # Authenticate using student_id
+                self.user_cache = self.authenticate_student(username, password)
+            else:
+                # Default email-based authentication for other roles
+                self.user_cache = authenticate(
+                    self.request, username=username, password=password)
+
+            if self.user_cache is None:
+                raise self.get_invalid_login_error()
+            else:
+                self.confirm_login_allowed(self.user_cache)
+
+        return self.cleaned_data
+
+    def authenticate_student(self, student_id, password):
+        """Custom authentication logic for students using student_id."""
+        try:
+            # Get the user based on student_id from the Student model
+            user = User.objects.get(student_profile__student_id=student_id)
+        except User.DoesNotExist:
+            raise ValidationError(
+                "Invalid student ID or password.", code='invalid_login')
+
+        # Verify the password for the user
+        if user.check_password(password):
+            return user
+
+        raise ValidationError(
+            "Invalid student ID or password.", code='invalid_login')
+
     def confirm_login_allowed(self, user):
-        user_role = user.role
-        if user.role == OWNER:
-            user_role = ADMIN
-
-        print("user_role", "self.role")
-        print(user_role, self.role)
+        # Logic to confirm login is allowed based on the user role and status
         if not user.is_active:
-            raise forms.ValidationError(
-                "This account is inactive.", code='inactive')
+            raise ValidationError("This account is inactive.", code='inactive')
 
-        if user_role != self.role or user_role == SUPERADMIN:
-            raise forms.ValidationError(
-                "Invalid login, Access Denied", code='access_denied')
+        if self.role == STUDENT and user.role != STUDENT:
+            raise ValidationError(
+                "Invalid login, access denied.", code='access_denied')
+        elif self.role != STUDENT and user.role != self.role:
+            raise ValidationError(
+                "Invalid login, access denied.", code='access_denied')
+
+    # def confirm_login_allowed(self, user):
+    #     user_role = user.role
+    #     if user.role == OWNER:
+    #         user_role = ADMIN
+
+    #     print("user_role", "self.role")
+    #     print(user_role, self.role)
+    #     if not user.is_active:
+    #         raise forms.ValidationError(
+    #             "This account is inactive.", code='inactive')
+
+    #     if user_role != self.role or user_role == SUPERADMIN:
+    #         raise forms.ValidationError(
+    #             "Invalid login, Access Denied", code='access_denied')
+
+    def clean_username(self):
+        username = self.cleaned_data.get('username')
+
+        # Validate based on the role
+        if self.role == STUDENT:
+            # Add custom validation for student_id if necessary
+            if not str(username).isalnum():
+                raise forms.ValidationError("Student ID must be alphanumeric.")
+        else:
+            # Basic email validation
+            if "@" not in username:
+                raise forms.ValidationError("Enter a valid email address.")
+
+        return username
 
 
 class SuperAdminAuthenticationForm(CustomAuthenticationForm):
@@ -141,6 +214,14 @@ class StudentLoginView(CustomLoginView):
     page = "Student"
     role = STUDENT
     ...
+
+    def form_invalid(self, form):
+        messages.error(self.request, "Invalid student ID or password.")
+        return super().form_invalid(form)
+
+    def get_success_url(self):
+        # Redirect to the student dashboard after successful login
+        return reverse_lazy('students')
 
 
 class SuperAdminLoginView(CustomLoginView):

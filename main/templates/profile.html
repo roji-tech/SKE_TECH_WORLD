@@ -33,7 +33,9 @@
       }
 
       .profile-section img {
+        max-height: 180px;
         max-width: 150px;
+        min-width: 150px;
         border-radius: 50%;
         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
       }
@@ -129,7 +131,7 @@
       <div class="profile-section">
         <img
           src="{{ user.image.url|default:'https://via.placeholder.com/150' }}"
-          alt="Profile Image"
+          alt=""
         />
 
         <div class="profile-info">
@@ -187,7 +189,6 @@
           <li>Class: {{ user.student_profile.klass }}</li>
           <li>Registration Number: {{ user.student_profile.reg_no }}</li>
           <li>Date of Birth: {{ user.student_profile.date_of_birth }}</li>
-          <li>Age: {{ user.student_profile.student_age }} years</li>
         </ul>
       </div>
       {% endif %}

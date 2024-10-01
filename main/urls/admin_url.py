@@ -17,9 +17,13 @@ from main.views.admin_views import (
     GmeetListView, session_detail_view, edit_term_view, add_term_view, add_edit_term
 )
 
+from main.views.auth_views import activate_account
+
 from ..views import AdminsHome, RegisterAndRegisterSchool, AdminsHelp
 
 urlpatterns = [
+    path('activate/<uidb64>/<token>/', activate_account, name='activate'),
+
     path('admin/', AdminsHome.as_view(), name='myadmin'),
     path('admin/register/', RegisterAndRegisterSchool.as_view(),
          name='signup'),
@@ -36,8 +40,9 @@ urlpatterns = [
     path('admin/sessions/<int:pk>/',
          session_detail_view, name='session_detail'),
     path('admin/term/<int:session_id>/', add_term_view, name='add_term'),
-    path('admin/term/<int:session_id>/<int:term_id>/', edit_term_view, name='edit_term'),
-#     path('admin/term/add/<int:pk>/', add_term_view, name='add_term'),
+    path('admin/term/<int:session_id>/<int:term_id>/',
+         edit_term_view, name='edit_term'),
+    #     path('admin/term/add/<int:pk>/', add_term_view, name='add_term'),
 
 
     # CLASSES

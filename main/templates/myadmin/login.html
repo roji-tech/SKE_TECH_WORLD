@@ -40,7 +40,10 @@
             <div class="inputbox">
               <ion-icon name="person-outline"></ion-icon>
               {{ form.username }}
-              <label>Email</label>
+
+              <label for="username">
+                {% if page == 'Student' %}Student ID{% else %}Email{% endif %}
+              </label>
             </div>
 
             <div class="inputbox">
