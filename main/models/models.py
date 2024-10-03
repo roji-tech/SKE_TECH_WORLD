@@ -9,7 +9,6 @@ import string
 from django.db.models import Q
 
 
-
 User = get_user_model()
 
 
@@ -537,8 +536,8 @@ class Student(models.Model):
         school_short_name = self.school.short_name.lower(
         ) if self.school.short_name else "school"
         admission_year = str(self.session_admitted.start_date.year)[-2:]
-        base_email = f"{self.user.first_name.lower()}.{
-            self.user.last_name.lower()}@{school_short_name}{admission_year}.com"
+        base_email = str(self.user.first_name).lower(
+        ) + self.user.last_name.lower() + f"@{school_short_name}{admission_year}.com"
         unique_email = base_email
 
         # Ensure the email is unique
