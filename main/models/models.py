@@ -543,8 +543,8 @@ class Student(models.Model):
         # Ensure the email is unique
         counter = 1
         while User.objects.filter(email=unique_email).exists():
-            unique_email = f"{self.user.first_name.lower()}.{self.user.last_name.lower()}{
-                counter}@{school_short_name}{admission_year}.com"
+            unique_email = f"{self.user.first_name.lower()}." + str(self.user.last_name).lower(
+            ) + f"{counter}@{school_short_name}{admission_year}.com"
             counter += 1
 
         return unique_email
