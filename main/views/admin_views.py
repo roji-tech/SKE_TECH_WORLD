@@ -262,7 +262,7 @@ class DeleteSession(DeleteView):
 
 
 # CLASSES
-# CLASSESI
+# CLASSES
 # CLASSES
 # CLASSES
 # CLASSES
@@ -354,6 +354,43 @@ class ClassDeleteView(DeleteView):
 
     def get_queryset(self):
         return SchoolClass.get_school_classes(request=self.request)
+
+
+def create_classes_view(request, session_id):
+    if request.method == 'POST':
+        # Get the academic session
+        academic_session: AcademicSession = get_object_or_404(
+            AcademicSession, id=session_id)
+
+        # Get the class set option from the request (e.g., PRIMARY, JSS, etc.)
+        class_set_option = request.POST.get('class_set')
+
+        # Map the options to the methods in AcademicSession model
+        class_creation_methods = {
+            'PRIMARY': academic_session.create_primary_classes,
+            'JSS': academic_session.create_jss_classes,
+            'SSS': academic_session.create_sss_classes,
+            'KG': academic_session.create_kg_classes,
+            'BASIC': academic_session.create_basic_classes,
+            'PRIMARY5': academic_session.create_primary5_classes,
+            "ALL": academic_session.create_all_classes,
+        }
+
+        # Check if the provided option is valid
+        if class_set_option not in class_creation_methods:
+            return redirect("session_detail", pk=session_id)
+
+        # Call the appropriate method to create the classes
+        try:
+            class_creation_methods[class_set_option]()
+            return redirect("session_detail", pk=session_id)
+            # return JsonResponse({"message": f"{class_set_option} classes created successfully."})
+        except Exception as e:
+            # return JsonResponse({"error": str(e)}, status=500)
+            return redirect("session_detail", pk=session_id)
+    # If not a POST request, return method not allowed
+    return redirect("session_detail", pk=session_id)
+    # return HttpResponseBadRequest("Only POST requests are allowed.")
 
 
 # TERMS

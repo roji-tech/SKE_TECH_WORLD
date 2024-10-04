@@ -84,32 +84,32 @@ class CustomAuthenticationForm(AuthenticationForm):
         raise ValidationError(
             "Invalid student ID or password.", code='invalid_login')
 
-    def confirm_login_allowed(self, user):
-        # Logic to confirm login is allowed based on the user role and status
-        if not user.is_active:
-            raise ValidationError("This account is inactive.", code='inactive')
-
-        if self.role == STUDENT and user.role != STUDENT:
-            raise ValidationError(
-                "Invalid login, access denied.", code='access_denied')
-        elif self.role != STUDENT and user.role != self.role:
-            raise ValidationError(
-                "Invalid login, access denied.", code='access_denied')
-
     # def confirm_login_allowed(self, user):
-    #     user_role = user.role
-    #     if user.role == OWNER:
-    #         user_role = ADMIN
-
-    #     print("user_role", "self.role")
-    #     print(user_role, self.role)
+    #     # Logic to confirm login is allowed based on the user role and status
     #     if not user.is_active:
-    #         raise forms.ValidationError(
-    #             "This account is inactive.", code='inactive')
+    #         raise ValidationError("This account is inactive.", code='inactive')
 
-    #     if user_role != self.role or user_role == SUPERADMIN:
-    #         raise forms.ValidationError(
-    #             "Invalid login, Access Denied", code='access_denied')
+    #     if self.role == STUDENT and user.role != STUDENT:
+    #         raise ValidationError(
+    #             "Invalid login, access denied.", code='access_denied')
+    #     elif self.role != STUDENT and user.role != self.role:
+    #         raise ValidationError(
+    #             "Invalid login, access denied.", code='access_denied')
+
+    def confirm_login_allowed(self, user):
+        user_role = user.role
+        if user.role == OWNER:
+            user_role = ADMIN
+
+        print("user_role", "self.role")
+        print(user_role, self.role)
+        if not user.is_active:
+            raise forms.ValidationError(
+                "This account is inactive.", code='inactive')
+
+        if user_role != self.role or user_role == SUPERADMIN:
+            raise forms.ValidationError(
+                "Invalid login, Access Denied", code='access_denied')
 
     def clean_username(self):
         username = self.cleaned_data.get('username')
@@ -147,7 +147,6 @@ class CustomLoginView(LoginView):
     page = None
 
     def __init__(self, *args, **kwargs):
-        print(self.__class__)
         if not self.role:
             raise ImproperlyConfigured(
                 "The role kwargs must be supplied to CustomLoginView."
@@ -158,12 +157,10 @@ class CustomLoginView(LoginView):
             raise ImproperlyConfigured(
                 "The page attribute must be set in CustomLoginView or its subclasses. (e.g Teacher, Admin, Student )"
             )
-        print(self.__class__)
         super().__init__(*args, **kwargs)
-        print(self.__class__)
 
     def get_form(self, form_class=None):
-        print(self.__class__, self.role, self.form_class)
+        print(self.__class__, self.role)
 
         if form_class is None:
             form_class = self.get_form_class()

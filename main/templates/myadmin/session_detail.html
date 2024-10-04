@@ -106,11 +106,93 @@
         background-color: #f9f9f9;
       }
     </style>
+
+    <!-- <div class="container"> -->
+    <style>
+      .create_classes_container {
+        /* max-width: 600px; */
+        margin: 0 auto;
+        background-color: #fff;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      }
+      h2 {
+        text-align: center;
+        color: #333;
+      }
+      .form-group {
+        margin-bottom: 20px;
+      }
+      label {
+        display: block;
+        margin-bottom: 5px;
+        color: #555;
+      }
+      select,
+      input[type="submit"] {
+        width: 100%;
+        padding: 10px;
+        margin-top: 5px;
+        font-size: 16px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+      }
+      input[type="submit"] {
+        background-color: #4caf50;
+        color: white;
+        cursor: pointer;
+      }
+      input[type="submit"]:hover {
+        background-color: #45a049;
+      }
+      .message {
+        margin-top: 20px;
+        color: #333;
+      }
+    </style>
+
+    <style>
+      .go_to_sessions_div {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin: 20px;
+        padding: 20px;
+      }
+      .go_to_sessions {
+        display: inline-block;
+        padding: 12px 25px;
+        font-size: 16px;
+        color: white;
+        background-color: #4caf50; /* Green background */
+        border-radius: 8px;
+        text-decoration: none;
+        transition: background-color 0.3s ease;
+      }
+      .go_to_sessions:hover {
+        background-color: #45a049; /* Darker green on hover */
+      }
+      .go_to_sessions:active {
+        background-color: #3e8e41; /* Even darker when clicked */
+      }
+      @media (max-width: 768px) {
+        .go_to_sessions {
+          font-size: 14px;
+          padding: 10px 20px;
+        }
+      }
+    </style>
   </head>
   <body>
     {% include "pages_header.html" %}
 
     <div class="container">
+      <div class="go_to_sessions_div">
+        <a class="go_to_sessions" href="{% url 'list-sessions' %}">
+          All Sessions
+        </a>
+      </div>
       <div class="row">
         <div class="col-md-8 offset-md-2">
           <div class="card shadow-lg p-4 mb-4 bg-white">
@@ -154,14 +236,57 @@
             </ul>
           </div>
 
+          <div class="card shadow-lg p-4 mb-4 bg-light">
+            <div class="create_classes_container">
+              <h3>Create Classes</h3>
+              <form
+                action="{% url 'create_classes' session_id=session.id %}"
+                method="post"
+              >
+                {% csrf_token %}
+                <div class="form-group">
+                  <label for="class_set">Select Class Set to Create:</label>
+                  <select id="class_set" name="class_set" required>
+                    <option value="" disabled selected>Select an option</option>
+                    <option value="PRIMARY">Primary (PRY1 to PRY6)</option>
+                    <option value="JSS">
+                      Junior Secondary School (JSS1 to JSS3)
+                    </option>
+                    <option value="SSS">
+                      Senior Secondary School (SSS1 to SSS3)
+                    </option>
+                    <option value="KG">Kindergarten (KG1 to KG3)</option>
+                    <option value="BASIC">Basic (Basic1 to Basic6)</option>
+                    <option value="PRIMARY5">Primary 1 to 5</option>
+                    <option value="ALL">All Classes</option>
+                  </select>
+                </div>
+
+                <input type="submit" value="Create Classes" />
+              </form>
+
+              {% if message %}
+              <div class="message">
+                <p>{{ message }}</p>
+              </div>
+              {% endif %}
+            </div>
+          </div>
+
           <!-- Classes Section -->
           <div class="card shadow-lg p-4 mb-4 bg-light">
             <h3>Classes</h3>
+            <br />
             <ul class="list-group">
+              <li class="list-group-item">
+                <b> Class ( Division) </b>
+                <span> <b> Class Category </b> </span>
+              </li>
+
               {% for school_class in session.classes.all %}
               <li class="list-group-item">
                 {{ school_class.name }} {{ school_class.division }}
-                <span> ({{ school_class.category }}) </span>
+                <span> ( {{ school_class.category }} ) </span>
               </li>
               {% endfor %}
             </ul>

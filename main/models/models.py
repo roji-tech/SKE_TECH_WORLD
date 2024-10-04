@@ -7,6 +7,7 @@ from .users import ADMIN, OWNER, STUDENT, TEACHER
 from django.db import models, transaction
 import string
 from django.db.models import Q
+from datetime import datetime, timedelta
 
 
 User = get_user_model()
@@ -63,6 +64,7 @@ class AcademicSession(models.Model):
 
     class Meta:
         unique_together = ('school', 'name')
+        ordering = ['-is_current']
 
     school = models.ForeignKey(
         School, on_delete=models.CASCADE, related_name='academic_sessions')
@@ -72,9 +74,6 @@ class AcademicSession(models.Model):
     next_session_begins = models.DateField(blank=True, null=True)
     is_current = models.BooleanField(default=False)
     max_exam_score = models.SmallIntegerField(default=60)
-
-    class Meta:
-        ordering = ['-is_current']
 
     @staticmethod
     def get_school_sessions(request):
@@ -194,7 +193,7 @@ class AcademicSession(models.Model):
     def create_primary5_classes(self):
         # Create Primary 1 to 5 classes
         for i in range(1, 6):
-            school_class = SchoolClass.objects.create(
+            school_class, _ = SchoolClass.objects.get_or_create(
                 name=f'PRY{i}',
                 academic_session=self,
             )
@@ -203,7 +202,7 @@ class AcademicSession(models.Model):
     def create_primary_classes(self):
         # Create Primary 1 to 6 classes
         for i in range(1, 7):
-            school_class = SchoolClass.objects.create(
+            school_class, _ = SchoolClass.objects.get_or_create(
                 name=f'PRY{i}',
                 academic_session=self,
             )
@@ -212,7 +211,7 @@ class AcademicSession(models.Model):
     def create_jss_classes(self):
         # Create JSS1 to JSS3 classes
         for i in range(1, 4):
-            school_class = SchoolClass.objects.create(
+            school_class, _ = SchoolClass.objects.get_or_create(
                 name=f'JS{i}',
                 academic_session=self,
             )
@@ -221,7 +220,7 @@ class AcademicSession(models.Model):
     def create_sss_classes(self):
         # Create SSS1 to SSS3 classes
         for i in range(1, 4):
-            school_class = SchoolClass.objects.create(
+            school_class, _ = SchoolClass.objects.get_or_create(
                 name=f'SS{i}',
                 academic_session=self,
             )
@@ -230,7 +229,7 @@ class AcademicSession(models.Model):
     def create_kg_classes(self):
         # Create KG1 to KG3 classes
         for i in range(1, 4):
-            school_class = SchoolClass.objects.create(
+            school_class, _ = SchoolClass.objects.get_or_create(
                 name=f'KG{i}',
                 academic_session=self,
             )
@@ -239,7 +238,7 @@ class AcademicSession(models.Model):
     def create_basic_classes(self):
         # Create Basic 1 to Basic 6 classes
         for i in range(1, 7):
-            school_class = SchoolClass.objects.create(
+            school_class, _ = SchoolClass.objects.get_or_create(
                 name=f'BASIC{i}',
                 academic_session=self,
             )
@@ -249,7 +248,7 @@ class AcademicSession(models.Model):
         # Create subjects for a given class (English and Mathematics)
         subjects = ['English', 'Mathematics']
         for subject in subjects:
-            Subject.objects.create(
+            Subject.objects.get_or_create(
                 name=subject,
                 school_class=school_class
             )
@@ -258,7 +257,7 @@ class AcademicSession(models.Model):
     @transaction.atomic
     def create_default_setup(cls, session_name, start_date, end_date, school):
         """Method to create a new academic session and all related data."""
-        academic_session = cls.objects.create(
+        academic_session, _ = cls.objects.get_or_create(
             school=school,
             name=session_name,
             start_date=start_date,
@@ -324,7 +323,7 @@ class Teacher(models.Model):
 
 class SchoolClass(models.Model):
     CLASS_CHOICES = [
-        ('BASIC1', 'Basic 1'),
+        ('Basic1', 'Basic 1'),
         ('Basic2', 'Basic 2'),
         ('Basic3', 'Basic 3'),
         ('Basic4', 'Basic 4'),
@@ -366,10 +365,12 @@ class SchoolClass(models.Model):
         Teacher, on_delete=models.SET_NULL, null=True, blank=True, limit_choices_to={'user__role': "teacher"}, related_name="school_class")
     division = models.CharField(
         max_length=10,  blank=True, null=True,
-        choices=DIVISION_CHOICES
+        choices=DIVISION_CHOICES, default=""
     )  # e.g., "A", "B", "C"
     category = models.CharField(
-        max_length=12, choices=CLASS_CATEGORIES, blank=True, null=True)
+        max_length=12, choices=CLASS_CATEGORIES,
+        blank=True, null=True, default=""
+    )
 
     def __str__(self):
         return f"{self.get_name_display()} ({self.academic_session.name})"
@@ -655,6 +656,8 @@ class LessonPlan(models.Model):
     uploaded_by = models.ForeignKey(
         User, on_delete=models.CASCADE, related_name='lesson_plans')
     uploaded_file = models.FileField(upload_to='uploads/%Y/%m/%d/')
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         return f"{self.uploaded_file.name} uploaded by {self.uploaded_by.username}"
