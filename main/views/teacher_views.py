@@ -109,23 +109,23 @@ class LessonPlanDetailView(DetailView):
 #     context_object_name = 'class_note'
 
 
-class ClassNoteCreateView(CreateView):
-    model = ClassNote
-    form_class = ClassNoteForm
-    success_url = reverse_lazy('class_note_list')
+# class ClassNoteCreateView(CreateView):
+#     model = ClassNote
+#     form_class = ClassNoteForm
+#     success_url = reverse_lazy('class_note_list')
 
 
-class ClassNoteUpdateView(UpdateView):
-    model = ClassNote
-    form_class = ClassNoteForm
-    template_name = 'class_note/class_note_form.html'
-    success_url = reverse_lazy('class_note_list')
+# class ClassNoteUpdateView(UpdateView):
+#     model = ClassNote
+#     form_class = ClassNoteForm
+#     template_name = 'class_note/class_note_form.html'
+#     success_url = reverse_lazy('class_note_list')
 
 
-class ClassNoteDeleteView(DeleteView):
-    model = ClassNote
-    template_name = 'class_note/class_note_confirm_delete.html'
-    success_url = reverse_lazy('class_note_list')
+# class ClassNoteDeleteView(DeleteView):
+#     model = ClassNote
+#     template_name = 'class_note/class_note_confirm_delete.html'
+#     success_url = reverse_lazy('class_note_list')
 
 
 class TeachersHome(View):

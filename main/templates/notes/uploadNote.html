@@ -5,6 +5,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Upload Note</title>
+
     <style>
       @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap");
 
@@ -46,7 +47,8 @@
 
       /* Overlay Styles */
       .overlay {
-        display: none;
+        display: grid;
+        place-items: center;
         position: fixed;
         top: 0;
         left: 0;
@@ -54,44 +56,62 @@
         height: 100%;
         background-color: rgba(0, 0, 0, 0.5);
         z-index: 1000;
-        place-items: center;
       }
 
       .overlay-content {
         background-color: #fff;
-        padding: 20px;
-        border-radius: 5px;
-        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        padding: 40px;
+        border-radius: 8px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
         width: 100%;
         max-width: 600px;
         position: relative;
-        padding: 40px;
       }
 
       .overlay-content .close {
         position: absolute;
         top: 10px;
-        right: 10px;
+        right: 15px;
         font-size: 24px;
         cursor: pointer;
         color: #aaa;
       }
 
+      .overlay-content .close:hover {
+        color: #ff0000;
+      }
+
       .inline-f {
-        margin-bottom: 15px;
+        margin-bottom: 20px;
         text-align: left;
       }
 
       .inline-f label {
         display: block;
-        margin-bottom: 5px;
+        margin-bottom: 8px;
+        font-weight: 600;
+        color: #333;
       }
 
-      .inline-f .input {
+      .input {
         width: 100%;
-        padding: 10px;
+        padding: 12px;
         border: 1px solid #ccc;
-        border-radius: 3px;
+        border-radius: 4px;
+        font-size: 16px;
+        transition: border-color 0.3s, box-shadow 0.3s;
+      }
+
+      .input:focus {
+        border-color: #1b94c3;
+        box-shadow: 0 0 5px rgba(27, 148, 195, 0.5);
+        outline: none;
+      }
+
+      .error {
+        color: #ff1717;
+        font-size: 14px;
+        margin-top: 5px;
       }
 
       .function-btn {
@@ -103,10 +123,12 @@
       #cancel {
         background-color: #1b94c3;
         color: #fff;
-        padding: 10px 20px;
+        padding: 12px 20px;
         border: none;
         border-radius: 5px;
         cursor: pointer;
+        font-size: 16px;
+        transition: background-color 0.3s, transform 0.2s;
       }
 
       #cancel {
@@ -115,10 +137,12 @@
 
       #add:hover {
         background-color: #127185;
+        transform: translateY(-1px);
       }
 
       #cancel:hover {
         background-color: #d41111;
+        transform: translateY(-1px);
       }
     </style>
   </head>
@@ -134,24 +158,37 @@
     <div class="overlay" id="uploadOverlay">
       <div class="overlay-content">
         <span class="close" id="closeOverlay">&times;</span>
+        <form enctype="multipart/form-data" method="post">{{form_as_p}}</form>
         <form enctype="multipart/form-data" method="post">
-            {% csrf_token %}
+          {% csrf_token %} {% for field in form %}
           <div class="inline-f">
-            <label for="Subject" class="class">Title / Topic</label>
-            <!-- <input type="text" placeholder="Subject" class="input" required /> -->
-            {{ form.title|add_class:"input" }}
+            <label for="{{ field.id_for_label }}" class="class"
+              >{{ field.label }}</label
+            >
+            {{ field|add_class:"input" }} {% if field.errors %}
+            <em></em>
+            {% for error in field.errors %}
+            <div class="error">{{ error }}</div>
+            {% endfor %} {% endif %}
+          </div>
+          {% endfor %}
+          <!-- <div class="inline-f">
+            <label for="id_school_class" class="class">Class</label>
+            {{ form.school_class|add_class:"input" }}
+            <em></em>
+            {% if form.school_class.errors %}
+            <div class="error">{{ form.school_class.errors.0 }}</div>
+            {% endif %}
           </div>
           <div class="inline-f">
-            <label for="Class" class="class">Class</label>
-            <!-- <input type="text" placeholder="Class" required class="input" /> -->
-            {{ form.school_class }}
+            <label for="id_attachment" class="class">Attachment File</label>
+            {{ form.attachment|add_class:"input" }}
+            <em></em>
+            {% if form.attachment.errors %}
+            <div class="error">{{ form.attachment.errors.0 }}</div>
+            {% endif %}
           </div>
-
-          <div class="inline-f">
-            <label for="uploadedFile" class="class">Attachment File</label>
-            <!-- <input type="file" class="input" /> -->
-            {{ form.attachment }}
-          </div>
+           -->
           <div class="function-btn">
             <button type="submit" id="add">Save</button>
             <button type="button" id="cancel">Cancel</button>

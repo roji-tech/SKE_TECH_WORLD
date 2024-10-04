@@ -747,6 +747,33 @@ class ClassNote(models.Model):
     def filter_by_teacher(cls, teacher):
         return cls.objects.filter(lesson_plan__subject__teacher=teacher)
 
+    @classmethod
+    def filter_by_role(cls, request):
+        # Get the user's school using the method from the School model
+        school: School = School.get_user_school(request.user)
+
+        # Check if the user is an admin
+        if request.user.is_admin:
+            # Admin or owner can view all GmeetClass for the school
+            # return cls.objects.filter(subject__school_class__school=school)
+            return cls.filter_by_school(request).select_related("uploaded_by")
+
+        # Check if the user is a subject teacher
+        elif request.user.is_teacher:
+            # Teachers can only view the GmeetClass for the subjects they teach
+            return cls.objects.filter(
+                Q(uploaded_by=request.user) |
+                Q(lesson_plan__subject__teacher__user=request.user)
+            ).select_related("school_class", "lesson_plan")
+
+        # Check if the user is a student
+        elif request.user.is_student:
+            # Students can only view GmeetClass for their school class
+            return cls.objects.filter(subject__school_class=request.user.student_profile.school_class).select_related("created_by")
+
+        # In case the user has no matching role, return an empty queryset
+        return cls.objects.none()
+
 
 class SchoolSettings(models.Model):
     school = models.OneToOneField(
