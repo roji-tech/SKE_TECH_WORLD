@@ -735,7 +735,8 @@ class ClassNote(models.Model):
 
     @classmethod
     def filter_by_school(cls, school):
-        return cls.objects.filter(lesson_plan__school_class__school=school)
+        print(school)
+        return cls.objects.filter(lesson_plan__school_class__academic_session__school=school)
 
     # Filter based on class
     @classmethod
@@ -756,7 +757,7 @@ class ClassNote(models.Model):
         if request.user.is_admin:
             # Admin or owner can view all GmeetClass for the school
             # return cls.objects.filter(subject__school_class__school=school)
-            return cls.filter_by_school(request).select_related("uploaded_by")
+            return cls.filter_by_school(school).select_related("uploaded_by")
 
         # Check if the user is a subject teacher
         elif request.user.is_teacher:

@@ -129,10 +129,11 @@
       <h2>Profile Settings</h2>
 
       <div class="profile-section">
-        <img
-          src="{{ user.image.url|default:'https://via.placeholder.com/150' }}"
-          alt=""
-        />
+        {% if user.image %}
+        <img src="{{ user.image.url|default:'' }}" alt="" />
+        {% else %}
+        <img src="" alt="" />
+        {% endif %}
 
         <div class="profile-info">
           <h3>
