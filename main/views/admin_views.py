@@ -46,7 +46,7 @@ from main.forms import (AcademicSessionForm, ClassForm, StudentForm, StudentUser
 
 # CUSTOM DECORATORS
 from main import mydecorators
-
+from main.views.auth_views import send_verification_email_to_user
 
 # Set up a logger for the application
 logger = logging.getLogger(__name__)
@@ -143,6 +143,11 @@ class RegisterAndRegisterSchool(View):
                 name=school_name, owner=owner, phone=school_phone, email=school_email
             )
             school.save()
+
+            user = owner
+            print(user)
+            if user.is_admin:
+                send_verification_email_to_user(User, user, request)
 
             return JsonResponse(
                 {"status": True, "message": "Account created successfully."}
@@ -257,7 +262,7 @@ class DeleteSession(DeleteView):
 
 
 # CLASSES
-# CLASSESI
+# CLASSES
 # CLASSES
 # CLASSES
 # CLASSES
@@ -349,6 +354,43 @@ class ClassDeleteView(DeleteView):
 
     def get_queryset(self):
         return SchoolClass.get_school_classes(request=self.request)
+
+
+def create_classes_view(request, session_id):
+    if request.method == 'POST':
+        # Get the academic session
+        academic_session: AcademicSession = get_object_or_404(
+            AcademicSession, id=session_id)
+
+        # Get the class set option from the request (e.g., PRIMARY, JSS, etc.)
+        class_set_option = request.POST.get('class_set')
+
+        # Map the options to the methods in AcademicSession model
+        class_creation_methods = {
+            'PRIMARY': academic_session.create_primary_classes,
+            'JSS': academic_session.create_jss_classes,
+            'SSS': academic_session.create_sss_classes,
+            'KG': academic_session.create_kg_classes,
+            'BASIC': academic_session.create_basic_classes,
+            'PRIMARY5': academic_session.create_primary5_classes,
+            "ALL": academic_session.create_all_classes,
+        }
+
+        # Check if the provided option is valid
+        if class_set_option not in class_creation_methods:
+            return redirect("session_detail", pk=session_id)
+
+        # Call the appropriate method to create the classes
+        try:
+            class_creation_methods[class_set_option]()
+            return redirect("session_detail", pk=session_id)
+            # return JsonResponse({"message": f"{class_set_option} classes created successfully."})
+        except Exception as e:
+            # return JsonResponse({"error": str(e)}, status=500)
+            return redirect("session_detail", pk=session_id)
+    # If not a POST request, return method not allowed
+    return redirect("session_detail", pk=session_id)
+    # return HttpResponseBadRequest("Only POST requests are allowed.")
 
 
 # TERMS
@@ -584,8 +626,10 @@ class StudentCreateView(AddRequestToFormMixin, CreateView):
         )
 
     def post(self, request, *args, **kwargs):
-        user_form = StudentUserForm(request.POST, request.FILES, )
-        student_form = StudentForm(request.POST, request=self.request)
+        user_form = StudentUserForm(
+            request.POST, request.FILES, request=self.request)
+        student_form = StudentForm(
+            request.POST, request.FILES, request=self.request)
 
         if user_form.is_valid() and student_form.is_valid():
             user = user_form.save(commit=False)
@@ -642,7 +686,8 @@ class StudentUpdateView(UpdateView):
 
     def post(self, request, pk, *args, **kwargs):
         student = get_object_or_404(Student, pk=pk)
-        user_form = StudentUserForm(request.POST, instance=student.user)
+        user_form = StudentUserForm(
+            request.POST, request.FILES, instance=student.user)
         student_form = StudentForm(
             request.POST, instance=student, request=self.request)
 
@@ -736,7 +781,7 @@ class TeacherCreateView(CreateView):
         )
 
     def post(self, request, *args, **kwargs):
-        user_form = TeacherUserForm(request.POST,  request.FILES)
+        user_form = TeacherUserForm(request.POST, request.FILES)
         teacher_form = TeacherForm(request.POST)
         if user_form.is_valid() and teacher_form.is_valid():
             user = user_form.save(commit=False)

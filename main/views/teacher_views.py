@@ -75,58 +75,57 @@ class LessonPlanDetailView(DetailView):
     context_object_name = 'lesson_plan'
 
 
-class LessonPlanCreateView(CreateView):
-    model = LessonPlan
-    form_class = LessonPlanForm
-    template_name = 'lesson_plan/lesson_plan_form.html'
-    success_url = reverse_lazy('lesson_plan_list')
+# class LessonPlanCreateView(CreateView):
+#     model = LessonPlan
+#     form_class = LessonPlanForm
+#     template_name = 'lesson_plan/lesson_plan_form.html'
+#     success_url = reverse_lazy('lesson_plan_list')
 
 
-class LessonPlanUpdateView(UpdateView):
-    model = LessonPlan
-    form_class = LessonPlanForm
-    template_name = 'lesson_plan/lesson_plan_form.html'
-    success_url = reverse_lazy('lesson_plan_list')
+# class LessonPlanUpdateView(UpdateView):
+#     model = LessonPlan
+#     form_class = LessonPlanForm
+#     template_name = 'lesson_plan/lesson_plan_form.html'
+#     success_url = reverse_lazy('lesson_plan_list')
 
 
-class LessonPlanDeleteView(DeleteView):
-    model = LessonPlan
-    template_name = 'lesson_plan/lesson_plan_confirm_delete.html'
-    success_url = reverse_lazy('lesson_plan_list')
+# class LessonPlanDeleteView(DeleteView):
+#     model = LessonPlan
+#     template_name = 'lesson_plan/lesson_plan_confirm_delete.html'
+#     success_url = reverse_lazy('lesson_plan_list')
 
 # ClassNote Views
 
 
-class ClassNoteListView(ListView):
-    model = ClassNote
-    template_name = 'class_note/class_note_list.html'
-    context_object_name = 'class_notes'
+# class ClassNoteListView(ListView):
+#     model = ClassNote
+#     template_name = 'class_note/class_note_list.html'
+#     context_object_name = 'class_notes'
 
 
-class ClassNoteDetailView(DetailView):
-    model = ClassNote
-    template_name = 'class_note/class_note_detail.html'
-    context_object_name = 'class_note'
+# class ClassNoteDetailView(DetailView):
+#     model = ClassNote
+#     template_name = 'class_note/class_note_detail.html'
+#     context_object_name = 'class_note'
 
 
-class ClassNoteCreateView(CreateView):
-    model = ClassNote
-    form_class = ClassNoteForm
-    template_name = 'class_note/class_note_form.html'
-    success_url = reverse_lazy('class_note_list')
+# class ClassNoteCreateView(CreateView):
+#     model = ClassNote
+#     form_class = ClassNoteForm
+#     success_url = reverse_lazy('class_note_list')
 
 
-class ClassNoteUpdateView(UpdateView):
-    model = ClassNote
-    form_class = ClassNoteForm
-    template_name = 'class_note/class_note_form.html'
-    success_url = reverse_lazy('class_note_list')
+# class ClassNoteUpdateView(UpdateView):
+#     model = ClassNote
+#     form_class = ClassNoteForm
+#     template_name = 'class_note/class_note_form.html'
+#     success_url = reverse_lazy('class_note_list')
 
 
-class ClassNoteDeleteView(DeleteView):
-    model = ClassNote
-    template_name = 'class_note/class_note_confirm_delete.html'
-    success_url = reverse_lazy('class_note_list')
+# class ClassNoteDeleteView(DeleteView):
+#     model = ClassNote
+#     template_name = 'class_note/class_note_confirm_delete.html'
+#     success_url = reverse_lazy('class_note_list')
 
 
 class TeachersHome(View):

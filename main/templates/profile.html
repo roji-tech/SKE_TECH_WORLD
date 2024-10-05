@@ -33,7 +33,9 @@
       }
 
       .profile-section img {
+        max-height: 180px;
         max-width: 150px;
+        min-width: 150px;
         border-radius: 50%;
         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
       }
@@ -127,10 +129,11 @@
       <h2>Profile Settings</h2>
 
       <div class="profile-section">
-        <img
-          src="{{ user.image|default:'https://via.placeholder.com/150' }}"
-          alt="Profile Image"
-        />
+        {% if user.image %}
+        <img src="{{ user.image.url|default:'' }}" alt="" />
+        {% else %}
+        <img src="" alt="" />
+        {% endif %}
 
         <div class="profile-info">
           <h3>
@@ -153,7 +156,9 @@
             <span>{{ user.get_gender_display }}</span>
           </div>
 
+          {% if user.is_admin %}
           <a href="{% url 'edit_profile' %}" class="edit-btn">Edit Profile</a>
+          {% endif %}
         </div>
       </div>
 
@@ -185,7 +190,6 @@
           <li>Class: {{ user.student_profile.klass }}</li>
           <li>Registration Number: {{ user.student_profile.reg_no }}</li>
           <li>Date of Birth: {{ user.student_profile.date_of_birth }}</li>
-          <li>Age: {{ user.student_profile.student_age }} years</li>
         </ul>
       </div>
       {% endif %}

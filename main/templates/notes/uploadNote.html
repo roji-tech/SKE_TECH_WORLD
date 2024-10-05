@@ -1,69 +1,219 @@
+{% load form_tags %}
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Upload Note</title>
-    <link rel="stylesheet" href="uploadnote.css">
-</head>
-<body>
+
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap");
+
+      body {
+        font-family: "Poppins", sans-serif;
+        margin: 0;
+        background-color: #f0f0f0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+      }
+
+      .container {
+        text-align: center;
+      }
+
+      .add-division {
+        margin-bottom: 20px;
+      }
+
+      .add-division p {
+        font-size: 24px;
+        color: #1b94c3;
+      }
+
+      #openOverlay {
+        background-color: #1b94c3;
+        color: #fff;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+      }
+
+      #openOverlay:hover {
+        background-color: #127185;
+      }
+
+      /* Overlay Styles */
+      .overlay {
+        display: grid;
+        place-items: center;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5);
+        z-index: 1000;
+      }
+
+      .overlay-content {
+        background-color: #fff;
+        padding: 40px;
+        border-radius: 8px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        width: 100%;
+        max-width: 600px;
+        position: relative;
+      }
+
+      .overlay-content .close {
+        position: absolute;
+        top: 10px;
+        right: 15px;
+        font-size: 24px;
+        cursor: pointer;
+        color: #aaa;
+      }
+
+      .overlay-content .close:hover {
+        color: #ff0000;
+      }
+
+      .inline-f {
+        margin-bottom: 20px;
+        text-align: left;
+      }
+
+      .inline-f label {
+        display: block;
+        margin-bottom: 8px;
+        font-weight: 600;
+        color: #333;
+      }
+
+      .input {
+        width: 100%;
+        padding: 12px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        font-size: 16px;
+        transition: border-color 0.3s, box-shadow 0.3s;
+      }
+
+      .input:focus {
+        border-color: #1b94c3;
+        box-shadow: 0 0 5px rgba(27, 148, 195, 0.5);
+        outline: none;
+      }
+
+      .error {
+        color: #ff1717;
+        font-size: 14px;
+        margin-top: 5px;
+      }
+
+      .function-btn {
+        display: flex;
+        justify-content: space-between;
+      }
+
+      #add,
+      #cancel {
+        background-color: #1b94c3;
+        color: #fff;
+        padding: 12px 20px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 16px;
+        transition: background-color 0.3s, transform 0.2s;
+      }
+
+      #cancel {
+        background-color: #ff1717;
+      }
+
+      #add:hover {
+        background-color: #127185;
+        transform: translateY(-1px);
+      }
+
+      #cancel:hover {
+        background-color: #d41111;
+        transform: translateY(-1px);
+      }
+    </style>
+  </head>
+  <body>
     <div class="container">
-        <div class="add-division">
-            <p>Upload Note</p>
-        </div>
-        <button id="openOverlay">Upload Note</button>
+      <div class="add-division">
+        <p>Upload Note</p>
+      </div>
+      <button id="openOverlay">Upload Note</button>
     </div>
 
     <!-- Overlay -->
     <div class="overlay" id="uploadOverlay">
-        <div class="overlay-content">
-            <span class="close" id="closeOverlay">&times;</span>
-            <form>
-                <div class="inline-f">
-                    <label for="Subject" class="class">Subject</label>
-                    <input type="text" placeholder="Subject" class="input" required>
-                </div>
-                <div class="inline-f">
-                    <label for="Class" class="class">Class</label>
-                    <input type="text" placeholder="Class" required class="input">
-                </div>
-                <div class="inline-f">
-                    <label for="Topic" class="class">Topic</label>
-                    <input type="text" placeholder="Topic" required class="input">
-                </div>
-                <div class="inline-f">
-                    <label for="uploadedBy" class="class">Uploaded By</label>
-                    <input type="text" placeholder="Uploaded By" required class="input">
-                </div>
-                <div class="inline-f">
-                    <label for="uploadedFile" class="class">Uploaded File</label>
-                    <input type="file" class="input">
-                </div>
-                <div class="function-btn">
-                    <button type="submit" id="add">Save</button>
-                    <button type="button" id="cancel">Cancel</button>
-                </div>
-            </form>
-        </div>
+      <div class="overlay-content">
+        <span class="close" id="closeOverlay">&times;</span>
+        <form enctype="multipart/form-data" method="post">{{form_as_p}}</form>
+        <form enctype="multipart/form-data" method="post">
+          {% csrf_token %} {% for field in form %}
+          <div class="inline-f">
+            <label for="{{ field.id_for_label }}" class="class"
+              >{{ field.label }}</label
+            >
+            {{ field|add_class:"input" }} {% if field.errors %}
+            <em></em>
+            {% for error in field.errors %}
+            <div class="error">{{ error }}</div>
+            {% endfor %} {% endif %}
+          </div>
+          {% endfor %}
+          <!-- <div class="inline-f">
+            <label for="id_school_class" class="class">Class</label>
+            {{ form.school_class|add_class:"input" }}
+            <em></em>
+            {% if form.school_class.errors %}
+            <div class="error">{{ form.school_class.errors.0 }}</div>
+            {% endif %}
+          </div>
+          <div class="inline-f">
+            <label for="id_attachment" class="class">Attachment File</label>
+            {{ form.attachment|add_class:"input" }}
+            <em></em>
+            {% if form.attachment.errors %}
+            <div class="error">{{ form.attachment.errors.0 }}</div>
+            {% endif %}
+          </div>
+           -->
+          <div class="function-btn">
+            <button type="submit" id="add">Save</button>
+            <button type="button" id="cancel">Cancel</button>
+          </div>
+        </form>
+      </div>
     </div>
 
     <script>
-        const openOverlay = document.getElementById('openOverlay');
-        const uploadOverlay = document.getElementById('uploadOverlay');
-        const closeOverlay = document.getElementById('closeOverlay');
-        const cancelOverlay = document.getElementById('cancel');
+      const openOverlay = document.getElementById("openOverlay");
+      const uploadOverlay = document.getElementById("uploadOverlay");
+      const closeOverlay = document.getElementById("closeOverlay");
+      const cancelOverlay = document.getElementById("cancel");
 
-        openOverlay.addEventListener('click', function() {
-            uploadOverlay.style.display = 'block';
-        });
+      openOverlay.addEventListener("click", function () {
+        uploadOverlay.style.display = "grid";
+      });
 
-        closeOverlay.addEventListener('click', function() {
-            uploadOverlay.style.display = 'none';
-        });
+      closeOverlay.addEventListener("click", function () {
+        uploadOverlay.style.display = "none";
+      });
 
-        cancelOverlay.addEventListener('click', function() {
-            uploadOverlay.style.display = 'none';
-        });
+      cancelOverlay.addEventListener("click", function () {
+        uploadOverlay.style.display = "none";
+      });
     </script>
-</body>
+  </body>
 </html>

@@ -1,19 +1,17 @@
 from django.forms import modelformset_factory
-import django.forms
 from .forms import QuestionFormSet
 from .models import Question
 from django.contrib import messages
 from django.utils import timezone
-from .models import Quiz, Question
-from django.shortcuts import render, get_object_or_404, redirect
-from django.shortcuts import render
 from django.shortcuts import get_object_or_404, render, redirect
 from main import mydecorators
-from .models import Quiz, Question, Result
+from main.models import Student
 
-from django.shortcuts import render, redirect
 from .forms import QuizForm, QuestionForm
-from .models import Quiz, Question, QuestionBank
+from .models import Quiz, Question, QuestionBank, StudentAnswer, Result
+from django.db import models
+
+from django.http import JsonResponse, HttpResponse
 
 
 from django.views.generic import DetailView
@@ -112,3 +110,71 @@ def quiz_result(request, score):
     View to display the quiz result after a student completes a quiz.
     """
     return render(request, 'quiz/quiz_result.html', {'score': score})
+
+
+@mydecorators.student_is_authenticated
+def take_quiz(request, quiz_id):
+    quiz = get_object_or_404(Quiz, id=quiz_id)
+    # Assuming a reverse relationship exists for the Student model
+    student = Student.objects.get(user=request.user)
+
+    # Check quiz start and end time
+    now = timezone.now()
+    if quiz.start_date and now < quiz.start_date:
+        return render(request, 'quiz/not_started.html', {'quiz': quiz})
+    if quiz.end_date and now > quiz.end_date:
+        return render(request, 'quiz/expired.html', {'quiz': quiz})
+
+    # Get questions
+    questions = quiz.questions.all()
+
+    if request.method == 'POST':
+        selected_option = request.POST.get('selected_option')
+        question_id = request.POST.get('question_id')
+        question = get_object_or_404(Question, id=question_id)
+
+        # Save student's answer
+        student_answer, created = StudentAnswer.objects.get_or_create(
+            student=student,
+            question=question
+        )
+        student_answer.selected_option = selected_option
+        student_answer.save()
+
+        # Calculate and update result for the student
+        total_questions = quiz.questions.count()
+        correct_answers = StudentAnswer.objects.filter(
+            student=student, question__quiz=quiz, selected_option=models.F(
+                'question__correct_answer')
+        ).count()
+        score = (correct_answers / total_questions) * 100
+
+        result, created = Result.objects.get_or_create(
+            student=student,
+            quiz=quiz
+        )
+        result.score = score
+        result.save()
+
+        # Redirect to next question or result page
+        next_question = questions.exclude(id=question.id).first()
+        if next_question:
+            return redirect('take_quiz', quiz_id=quiz_id)
+        else:
+            return redirect('quiz_result', quiz_id=quiz_id)
+
+    return render(request, 'quiz/take_quiz.html', {
+        'quiz': quiz,
+        'questions': questions
+    })
+
+
+@mydecorators.teacher_is_authenticated
+def quiz_result(request, quiz_id):
+    quiz = get_object_or_404(Quiz, id=quiz_id)
+    results = Result.objects.filter(quiz=quiz)
+
+    return render(request, 'quiz/quiz_result.html', {
+        'quiz': quiz,
+        'results': results
+    })

@@ -86,7 +86,7 @@
         flex: 2;
       }
 
-      button[type="submit"],
+      button#add,
       button[type="reset"] {
         background-color: #03a73a;
         color: white;
@@ -161,6 +161,111 @@
         }
       }
     </style>
+
+    <style>
+      /* Overlay Styles */
+      .overlay {
+        display: none;
+        position: fixed;
+        z-index: 1000;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5);
+        justify-content: center;
+        align-items: center;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+      }
+
+      .overlay.show {
+        display: flex;
+        opacity: 1;
+      }
+
+      .overlay-content {
+        background-color: #fefefe;
+        padding: 20px;
+        border-radius: 5px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+        text-align: center;
+        position: relative;
+        transition: transform 0.3s ease;
+        padding: 40px 20px;
+      }
+
+      .overlay-content p {
+        font-size: 1.2em;
+        margin-bottom: 20px;
+      }
+
+      .overlay-content button {
+        padding: 8px 20px;
+        margin: 0 5px;
+        cursor: pointer;
+        background-color: #1b94c3;
+        color: #fff;
+        border: none;
+        border-radius: 4px;
+      }
+
+      .overlay-content button:hover {
+        background-color: #03a73a;
+      }
+
+      .overlay .close {
+        position: absolute;
+        top: 10px;
+        right: 20px;
+        cursor: pointer;
+        font-size: 1.5em;
+      }
+
+      .details-table {
+        width: 100%;
+        margin: 20px 0;
+        border-collapse: collapse;
+      }
+
+      .details-table th,
+      .details-table td {
+        border: 1px solid #ddd;
+        padding: 8px;
+        text-align: left;
+      }
+
+      .details-table th {
+        background-color: #f2f2f2;
+      }
+
+      .details-table img {
+        max-width: 100px;
+        height: auto;
+      }
+
+      /* Success Overlay Styles */
+      .success-overlay {
+        color: rgba(3, 102, 3, 0.8);
+      }
+
+      .success-overlay .overlay-content {
+        background-color: #d4edda;
+        color: rgba(3, 102, 3, 0.8);
+      }
+
+      .success-overlay .overlay-content p {
+        font-size: 1.5em;
+      }
+
+      .success-overlay .overlay-content button {
+        background-color: #28a745;
+      }
+
+      .success-overlay .overlay-content button:hover {
+        background-color: #218838;
+      }
+    </style>
   </head>
 
   <body>
@@ -192,53 +297,218 @@
             {% endif %}
           </div>
         </div>
-        {% endfor %} {% comment %}
-        <div class="inline-f">
-          <label for="Picture">Picture</label>
-          <div class="input-container">
-            <input
-              type="image"
-              id="Picture"
-              onload="previewImage(this)"
-              onchange="previewImage(this);"
-            />
-          </div>
-        </div>
-        {% endcomment %}
+        {% endfor %}
 
         <div class="button-group">
-          <button type="submit" id="add">
+          <button type="button" id="add">
             {% if user_form.instance.pk %} Update {% else %} Add {% endif %}
           </button>
-          <button type="reset">Cancel</button>
+          <button type="reset" id="cancel">Cancel</button>
         </div>
       </form>
     </div>
 
+    <!-- Update Confirmation Overlay -->
+    <div id="updateOverlay" class="overlay">
+      <div class="overlay-content">
+        <span class="close">&times;</span>
+        {% if user_form.instance.pk %}
+        <p>Are you sure you want to update this Teacher?</p>
+        {% else %}
+        <p>Are you sure you want to add this Teacher?</p>
+        {% endif %}
+        <table class="details-table">
+          <tr>
+            <th>First Name</th>
+            <td id="confirmFirstName"></td>
+          </tr>
+          <tr>
+            <th>Surname</th>
+            <td id="confirmLastName"></td>
+          </tr>
+          <tr>
+            <th>Gender</th>
+            <td id="confirmGender"></td>
+          </tr>
+          <tr>
+            <th>Email</th>
+            <td id="confirmEmail"></td>
+          </tr>
+          <tr>
+            <th>Phone No.</th>
+            <td id="confirmPhone"></td>
+          </tr>
+          <tr>
+            <th>Picture</th>
+            <td id="confirmPicture"></td>
+          </tr>
+        </table>
+        <button id="confirmUpdate">Yes</button>
+        <button id="closeUpdateOverlay">No</button>
+      </div>
+    </div>
+
+    <!-- Cancel Confirmation Overlay -->
+    <div id="cancelOverlay" class="overlay">
+      <div class="overlay-content">
+        <span class="close">&times;</span>
+        <p>Are you sure you want to cancel?</p>
+        <button id="confirmCancel">Yes</button>
+        <button id="closeCancelOverlay">No</button>
+      </div>
+    </div>
+
+    <!-- Success Overlay -->
+    <div id="successOverlay" class="overlay success-overlay">
+      <div class="overlay-content">
+        <span class="close">&times;</span>
+        <p>Adding Teacher!</p>
+        <button id="closeSuccessOverlay">Close</button>
+      </div>
+    </div>
+
     <script>
-      var preview = document.getElementById("imagePreview");
+      const teacherForm = document.getElementById("teacherForm");
 
       function previewImage(input) {
-        preview.innerHTML = "";
+        var preview = document.getElementById("imagePreview");
+        while (preview.firstChild) {
+          preview.removeChild(preview.firstChild);
+        }
         if (input.files && input.files[0]) {
           var reader = new FileReader();
           reader.onload = function (e) {
             var img = document.createElement("img");
             img.src = e.target.result;
+            img.style.maxWidth = "100%"; // Ensure image fits container
             preview.appendChild(img);
           };
           reader.readAsDataURL(input.files[0]);
         }
       }
 
-      document.addEventListener("DOMContentLoaded", function () {
-        var imageUrl = document.querySelector(".input-container a")?.href; // Adjust the ID to match your form
-        preview.innerHTML = "";
+      function populateConfirmationDetails() {
+        document.getElementById("confirmFirstName").innerText =
+          document.getElementById("id_first_name").value;
+        document.getElementById("confirmLastName").innerText =
+          document.getElementById("id_last_name").value;
+        document.getElementById("confirmGender").innerText =
+          document.getElementById("id_gender").selectedOptions[0].text;
+        document.getElementById("confirmEmail").innerText =
+          document.getElementById("id_email").value;
+        document.getElementById("confirmPhone").innerText =
+          document.getElementById("id_phone").value;
 
-        if (imageUrl) {
+        var pictureFile = document.getElementById("id_image").files[0];
+        var confirmPictureCell = document.getElementById("confirmPicture");
+        confirmPictureCell.innerHTML = ""; // Clear any existing content
+        if (pictureFile) {
+          var reader = new FileReader();
+          reader.onload = function (e) {
+            var img = document.createElement("img");
+            img.src = e.target.result;
+            img.style.maxWidth = "100px"; // Ensure image fits container
+            confirmPictureCell.appendChild(img);
+          };
+          reader.readAsDataURL(pictureFile);
+        }
+      }
+
+      // Close the overlay when the user clicks on the close button (x)
+      var closeOverlay = document.querySelectorAll(".close");
+      closeOverlay.forEach(function (button) {
+        button.addEventListener("click", function () {
+          var overlay = button.closest(".overlay");
+          overlay.classList.remove("show");
+        });
+      });
+
+      // Close the overlay when the user clicks outside of it
+      window.addEventListener("click", function (event) {
+        var overlays = document.querySelectorAll(".overlay");
+        overlays.forEach(function (overlay) {
+          if (event.target === overlay) {
+            overlay.classList.remove("show");
+          }
+        });
+      });
+
+      // Overlay for Add button
+      document
+        .getElementById("add")
+        .addEventListener("click", function (event) {
+          event.preventDefault();
+          populateConfirmationDetails();
+          document.getElementById("updateOverlay").classList.add("show");
+        });
+
+      // Overlay for Cancel button
+      document
+        .getElementById("cancel")
+        .addEventListener("click", function (event) {
+          event.preventDefault();
+          document.getElementById("cancelOverlay").classList.add("show");
+        });
+
+      // Logic for update overlay
+      document
+        .getElementById("confirmUpdate")
+        .addEventListener("click", function () {
+          document.getElementById("updateOverlay").classList.remove("show");
+          document.getElementById("successOverlay").classList.add("show");
+          teacherForm.submit();
+        });
+
+      document
+        .getElementById("closeUpdateOverlay")
+        .addEventListener("click", function () {
+          document.getElementById("updateOverlay").classList.remove("show");
+        });
+
+      // Logic for cancel overlay
+      document
+        .getElementById("confirmCancel")
+        .addEventListener("click", function () {
+          document.getElementById("cancelOverlay").classList.remove("show");
+          window.location.href = "{% url 'list-teachers' %}";
+        });
+
+      document
+        .getElementById("closeCancelOverlay")
+        .addEventListener("click", function () {
+          document.getElementById("cancelOverlay").classList.remove("show");
+        });
+
+      // Close the success overlay
+      document
+        .getElementById("closeSuccessOverlay")
+        .addEventListener("click", function () {
+          document.getElementById("successOverlay").classList.remove("show");
+        });
+
+      document.addEventListener("DOMContentLoaded", function () {
+        try {
+          const imageInputContainer =
+            document.querySelector("#image-clear_id").parentElement;
+          const imgUrl = imageInputContainer
+            ?.querySelector("a")
+            ?.getAttribute("href");
+
+          var preview = document.getElementById("imagePreview");
+          while (preview.firstChild) {
+            preview.removeChild(preview.firstChild);
+          }
+
           var img = document.createElement("img");
-          img.src = imageUrl;
+          img.src = imgUrl;
+          img.style.maxWidth = "100%"; // Ensure image fits container
           preview.appendChild(img);
+
+          const imageInput = imageInputContainer.querySelector("#id_image");
+          imageInputContainer.innerHTML = "";
+          imageInputContainer.appendChild(imageInput)
+        } catch (error) {
+          console.warn(error);
         }
       });
     </script>

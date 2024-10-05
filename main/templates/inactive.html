@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Activation Link Invalid</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+        .email-container {
+            width: 100%;
+            max-width: 600px;
+            margin: 50px auto;
+            background-color: #ffffff;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        .email-header {
+            background-color: #f44336;
+            color: white;
+            text-align: center;
+            padding: 20px;
+        }
+        .email-body {
+            padding: 30px;
+            color: #333333;
+            font-size: 16px;
+            line-height: 1.6;
+        }
+        .email-body h2 {
+            margin-top: 0;
+            color: #f44336;
+        }
+        .email-footer {
+            text-align: center;
+            background-color: #f4f4f4;
+            padding: 20px;
+            font-size: 14px;
+            color: #777777;
+        }
+        .email-footer a {
+            color: #f44336;
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="email-container">
+        <div class="email-header">
+            <h1>Activation Link Invalid</h1>
+        </div>
+        <div class="email-body">
+            <h2>Oops!</h2>
+            <p>Dear <strong>{{ user.first_name }}</strong>,</p>
+            <p>It seems like the activation link you clicked is invalid or has expired.</p>
+            <p>Please make sure you're using the latest activation link we sent to your email.</p>
+            <p>If you need a new activation link, please contact our support team at <a href="mailto:support@yourdomain.com">support@yourdomain.com</a>.</p>
+            <p>We apologize for the inconvenience.</p>
+            <p>Best regards,</p>
+            <p>The {{ site_name }} Team</p>
+        </div>
+        <div class="email-footer">
+            <p>&copy; {{ current_year }} {{ site_name }}. All rights reserved.</p>
+            <p><a href="{{ site_url }}">Visit our website</a></p>
+        </div>
+    </div>
+</body>
+</html>

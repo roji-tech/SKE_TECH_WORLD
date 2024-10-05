@@ -1,5 +1,5 @@
 from django.contrib.auth import get_user_model
-from datetime import date, timedelta
+from datetime import date
 
 from django.utils.crypto import get_random_string
 import main.models.models
@@ -7,6 +7,8 @@ from .users import ADMIN, OWNER, STUDENT, TEACHER
 from django.db import models, transaction
 import string
 from django.db.models import Q
+from datetime import datetime, timedelta
+
 
 User = get_user_model()
 
@@ -62,6 +64,7 @@ class AcademicSession(models.Model):
 
     class Meta:
         unique_together = ('school', 'name')
+        ordering = ['-is_current']
 
     school = models.ForeignKey(
         School, on_delete=models.CASCADE, related_name='academic_sessions')
@@ -71,9 +74,6 @@ class AcademicSession(models.Model):
     next_session_begins = models.DateField(blank=True, null=True)
     is_current = models.BooleanField(default=False)
     max_exam_score = models.SmallIntegerField(default=60)
-
-    class Meta:
-        ordering = ['-is_current']
 
     @staticmethod
     def get_school_sessions(request):
@@ -193,7 +193,7 @@ class AcademicSession(models.Model):
     def create_primary5_classes(self):
         # Create Primary 1 to 5 classes
         for i in range(1, 6):
-            school_class = SchoolClass.objects.create(
+            school_class, _ = SchoolClass.objects.get_or_create(
                 name=f'PRY{i}',
                 academic_session=self,
             )
@@ -202,7 +202,7 @@ class AcademicSession(models.Model):
     def create_primary_classes(self):
         # Create Primary 1 to 6 classes
         for i in range(1, 7):
-            school_class = SchoolClass.objects.create(
+            school_class, _ = SchoolClass.objects.get_or_create(
                 name=f'PRY{i}',
                 academic_session=self,
             )
@@ -211,7 +211,7 @@ class AcademicSession(models.Model):
     def create_jss_classes(self):
         # Create JSS1 to JSS3 classes
         for i in range(1, 4):
-            school_class = SchoolClass.objects.create(
+            school_class, _ = SchoolClass.objects.get_or_create(
                 name=f'JS{i}',
                 academic_session=self,
             )
@@ -220,7 +220,7 @@ class AcademicSession(models.Model):
     def create_sss_classes(self):
         # Create SSS1 to SSS3 classes
         for i in range(1, 4):
-            school_class = SchoolClass.objects.create(
+            school_class, _ = SchoolClass.objects.get_or_create(
                 name=f'SS{i}',
                 academic_session=self,
             )
@@ -229,7 +229,7 @@ class AcademicSession(models.Model):
     def create_kg_classes(self):
         # Create KG1 to KG3 classes
         for i in range(1, 4):
-            school_class = SchoolClass.objects.create(
+            school_class, _ = SchoolClass.objects.get_or_create(
                 name=f'KG{i}',
                 academic_session=self,
             )
@@ -238,7 +238,7 @@ class AcademicSession(models.Model):
     def create_basic_classes(self):
         # Create Basic 1 to Basic 6 classes
         for i in range(1, 7):
-            school_class = SchoolClass.objects.create(
+            school_class, _ = SchoolClass.objects.get_or_create(
                 name=f'BASIC{i}',
                 academic_session=self,
             )
@@ -248,7 +248,7 @@ class AcademicSession(models.Model):
         # Create subjects for a given class (English and Mathematics)
         subjects = ['English', 'Mathematics']
         for subject in subjects:
-            Subject.objects.create(
+            Subject.objects.get_or_create(
                 name=subject,
                 school_class=school_class
             )
@@ -257,7 +257,7 @@ class AcademicSession(models.Model):
     @transaction.atomic
     def create_default_setup(cls, session_name, start_date, end_date, school):
         """Method to create a new academic session and all related data."""
-        academic_session = cls.objects.create(
+        academic_session, _ = cls.objects.get_or_create(
             school=school,
             name=session_name,
             start_date=start_date,
@@ -323,7 +323,7 @@ class Teacher(models.Model):
 
 class SchoolClass(models.Model):
     CLASS_CHOICES = [
-        ('BASIC1', 'Basic 1'),
+        ('Basic1', 'Basic 1'),
         ('Basic2', 'Basic 2'),
         ('Basic3', 'Basic 3'),
         ('Basic4', 'Basic 4'),
@@ -365,10 +365,12 @@ class SchoolClass(models.Model):
         Teacher, on_delete=models.SET_NULL, null=True, blank=True, limit_choices_to={'user__role': "teacher"}, related_name="school_class")
     division = models.CharField(
         max_length=10,  blank=True, null=True,
-        choices=DIVISION_CHOICES
+        choices=DIVISION_CHOICES, default=""
     )  # e.g., "A", "B", "C"
     category = models.CharField(
-        max_length=12, choices=CLASS_CATEGORIES, blank=True, null=True)
+        max_length=12, choices=CLASS_CATEGORIES,
+        blank=True, null=True, default=""
+    )
 
     def __str__(self):
         return f"{self.get_name_display()} ({self.academic_session.name})"
@@ -467,7 +469,7 @@ class Student(models.Model):
 
     @property
     def klass(self):
-        return f"{self.student_class.get_name_display} {self.student_class.division}"
+        return f"{self.student_class.get_name_display()} {self.student_class.division}"
 
     @property
     def student_age(self):
@@ -484,6 +486,84 @@ class Student(models.Model):
     @property
     def full_name(self):
         return f"{self.user.full_name}"
+
+    def generate_student_id(self):
+        """Generates a unique student ID based on the school and admission year."""
+        # Extract short school name or fallback to school ID
+        school_short_name = self.school.short_name[:3].upper(
+        ) if self.school.short_name else str(self.school.id)
+
+        # Admission year (last 2 digits of current year)
+        admission_year = str(self.session_admitted.start_date.year)[-2:]
+
+        # Find the last student in the same school and admission year
+        last_student = Student.objects.filter(
+            school=self.school, session_admitted=self.session_admitted
+        ).order_by('student_id').last()
+
+        if last_student and last_student.student_id:
+            # Extract the last 3 digits and increment
+            last_number = int(last_student.student_id.split('-')[-1])
+            new_number = str(last_number + 1).zfill(3)
+        else:
+            new_number = "001"  # Start from 001 if no previous student
+
+        # Combine to form the student ID
+        return f"{school_short_name}{admission_year}-{new_number}"
+
+    def generate_unique_student_id(self):
+        max_attempts = 5
+        attempts = 0
+
+        while attempts < max_attempts:
+            attempts += 1
+
+            try:
+                self.generate_student_id()
+            except ObjectDoesNotExist:
+                logging.warning(
+                    "No students found for the given school and session.")
+                break
+            except Exception as e:
+                logging.error(f"Error generating student ID: {e}")
+                continue  # Continue to the next iteration for recovery
+
+        # If unable to generate a unique ID after several attempts
+        raise Exception(
+            "Unable to generate a unique student ID after multiple attempts.")
+
+    def generate_unique_email(self):
+        """Generates a unique dynamic email for the student."""
+        school_short_name = self.school.short_name.lower(
+        ) if self.school.short_name else "school"
+        admission_year = str(self.session_admitted.start_date.year)[-2:]
+        base_email = str(self.user.first_name).lower(
+        ) + self.user.last_name.lower() + f"@{school_short_name}{admission_year}.com"
+        unique_email = base_email
+
+        # Ensure the email is unique
+        counter = 1
+        while User.objects.filter(email=unique_email).exists():
+            unique_email = f"{self.user.first_name.lower()}." + str(self.user.last_name).lower(
+            ) + f"{counter}@{school_short_name}{admission_year}.com"
+            counter += 1
+
+        return unique_email
+
+    def __str__(self):
+        return f"{self.student_id} - {self.user.full_name}"
+
+    def save(self, *args, **kwargs):
+        # Generate a unique student ID if it's not already set
+        if not self.student_id:
+            self.student_id = self.generate_unique_student_id()
+
+        # Generate a unique dynamic email if not set
+        if not self.user.email:
+            self.user.email = self.generate_unique_email()
+            self.user.save()
+
+        super().save(*args, **kwargs)
 
     # def save(self, *args, **kwargs):
     #     # Save the instance first to generate the ID
@@ -574,8 +654,10 @@ class LessonPlan(models.Model):
     subject = models.ForeignKey(
         Subject, on_delete=models.CASCADE, related_name='lesson_plans')
     uploaded_by = models.ForeignKey(
-        User, on_delete=models.CASCADE, related_name='uploaded_files')
+        User, on_delete=models.CASCADE, related_name='lesson_plans')
     uploaded_file = models.FileField(upload_to='uploads/%Y/%m/%d/')
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         return f"{self.uploaded_file.name} uploaded by {self.uploaded_by.username}"
@@ -644,6 +726,8 @@ class ClassNote(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     attachment = models.FileField(
         upload_to='class_notes_attachments/', null=True, blank=True)
+    uploaded_by = models.ForeignKey(
+        User, on_delete=models.CASCADE, related_name='lesson_notes')
 
     def __str__(self):
         return f"Note for {self.lesson_plan.subject.name} ({self.lesson_plan.subject.school_class.name})"
@@ -651,7 +735,8 @@ class ClassNote(models.Model):
 
     @classmethod
     def filter_by_school(cls, school):
-        return cls.objects.filter(lesson_plan__school_class__school=school)
+        print(school)
+        return cls.objects.filter(lesson_plan__school_class__academic_session__school=school)
 
     # Filter based on class
     @classmethod
@@ -662,6 +747,33 @@ class ClassNote(models.Model):
     @classmethod
     def filter_by_teacher(cls, teacher):
         return cls.objects.filter(lesson_plan__subject__teacher=teacher)
+
+    @classmethod
+    def filter_by_role(cls, request):
+        # Get the user's school using the method from the School model
+        school: School = School.get_user_school(request.user)
+
+        # Check if the user is an admin
+        if request.user.is_admin:
+            # Admin or owner can view all GmeetClass for the school
+            # return cls.objects.filter(subject__school_class__school=school)
+            return cls.filter_by_school(school).select_related("uploaded_by")
+
+        # Check if the user is a subject teacher
+        elif request.user.is_teacher:
+            # Teachers can only view the GmeetClass for the subjects they teach
+            return cls.objects.filter(
+                Q(uploaded_by=request.user) |
+                Q(lesson_plan__subject__teacher__user=request.user)
+            ).select_related("school_class", "lesson_plan")
+
+        # Check if the user is a student
+        elif request.user.is_student:
+            # Students can only view GmeetClass for their school class
+            return cls.objects.filter(subject__school_class=request.user.student_profile.school_class).select_related("created_by")
+
+        # In case the user has no matching role, return an empty queryset
+        return cls.objects.none()
 
 
 class SchoolSettings(models.Model):

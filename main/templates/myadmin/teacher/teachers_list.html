@@ -177,7 +177,7 @@
         cursor: pointer;
         font-size: 1.5em;
       }
-      .student-picture {
+      .teacher-picture {
         width: 40px;
         height: 40px;
         object-fit: cover;
@@ -259,10 +259,10 @@
       <div class="table">
         <table>
           <thead>
+            <th>Picture</th>
             <th>Teacher's Name</th>
             <th>Phone</th>
             <th>Email</th>
-            <th>Picture</th>
             <!-- New column for picture -->
             <th>Department</th>
             <th>Edit</th>
@@ -272,15 +272,11 @@
           <tbody>
             {% for teacher in teachers %}
             <tr>
-              <td>{{ teacher.full_name }}</td>
-              <td>{{ teacher.user.phone }}</td>
-
-              <td>{{ teacher.user.email }}</td>
               <td>
-                {% if teacher.user.picture %}
+                {% if teacher.user.image %}
                 <img
-                  src="{{ teacher.user.picture.url }}"
-                  alt="{{ teacher.full_name }}"
+                  src="{{ teacher.user.image.url }}"
+                  alt="{{ teacher.first_name }}"
                   class="teacher-picture"
                 />
                 {% else %}
@@ -292,6 +288,10 @@
                 />
                 {% endif %}
               </td>
+              <td>{{ teacher.full_name }}</td>
+              <td>{{ teacher.user.phone }}</td>
+
+              <td>{{ teacher.user.email }}</td>
               <td>{{ teacher.department }}</td>
 
               <td>

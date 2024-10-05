@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Account Activated</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        background-color: #f4f4f4;
+        margin: 0;
+        padding: 0;
+      }
+      .email-container {
+        width: 100%;
+        max-width: 600px;
+        margin: 50px auto;
+        background-color: #ffffff;
+        border-radius: 8px;
+        overflow: hidden;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      }
+      .email-header {
+        background-color: #4caf50;
+        color: white;
+        text-align: center;
+        padding: 20px;
+      }
+      .email-body {
+        padding: 30px;
+        color: #333333;
+        font-size: 16px;
+        line-height: 1.6;
+      }
+      .email-body h2 {
+        margin-top: 0;
+        color: #4caf50;
+      }
+      .email-footer {
+        text-align: center;
+        background-color: #f4f4f4;
+        padding: 20px;
+        font-size: 14px;
+        color: #777777;
+      }
+      .email-footer a {
+        color: #4caf50;
+        text-decoration: none;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="email-container">
+      <div class="email-header">
+        <h1>Account Activated</h1>
+      </div>
+      <div class="email-body">
+        <h2>Thank You!</h2>
+        <p>Dear <strong>{{ user.first_name }}</strong>,</p>
+        <p>
+          Your email has been successfully confirmed, and your account is now
+          active.
+        </p>
+        <p>You can now log in to your account and enjoy our services.</p>
+        <p>
+          If you have any questions, feel free to contact us at
+          <a href="mailto:support@yourdomain.com">support@yourdomain.com</a>.
+        </p>
+        <p>Thank you for choosing us!</p>
+        <p>Best regards,</p>
+        <p>The {{ site_name }} Team</p>
+      </div>
+      <div class="email-footer">
+        <p>&copy; {{ current_year }} {{ site_name }}. All rights reserved.</p>
+        <p><a href="{{ site_url }}">Visit our website</a></p>
+      </div>
+    </div>
+  </body>
+</html>

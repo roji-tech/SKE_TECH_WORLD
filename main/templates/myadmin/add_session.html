@@ -7,43 +7,11 @@
     <title>Add Academic Session</title>
 
     <style>
-      /* Add some basic styles for the overlay */
-      .overlay {
-        display: none;
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: rgba(0, 0, 0, 0.5);
-        justify-content: center;
-        align-items: center;
-        z-index: 1000;
-        /* Ensure the overlay is on top */
-      }
-
-      .overlay-content {
-        background: white;
-        padding: 20px;
-        border-radius: 10px;
-        text-align: center;
-        width: 300px;
-      }
-
-      .overlay-buttons {
-        margin-top: 20px;
-      }
-
-      .overlay-buttons button {
-        margin: 0 10px;
-      }
-    </style>
-
-    <style>
       @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap");
 
       * {
         font-family: "Poppins", sans-serif;
+        box-sizing: border-box;
       }
 
       body {
@@ -60,19 +28,17 @@
         display: flex;
         flex-direction: column;
         width: 80%;
-        background: #f8f7f788;
-        margin: 15% auto;
-        box-shadow: 0.1px 0.1px 0.3px;
-        z-index: 100;
+        background: rgba(248, 247, 247, 0.53);
+        margin: 10% auto;
+        box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
         padding: 20px;
         border-radius: 8px;
       }
 
       .add-division {
-        padding-left: 20px;
-
         display: flex;
         justify-content: space-between;
+        padding-left: 20px;
       }
 
       .add-division p {
@@ -80,14 +46,28 @@
         font-weight: 600;
       }
 
+      .add-division a {
+        color: #4caf50;
+        text-decoration: none;
+        background-color: rgba(76, 175, 80, 0.2);
+        padding: 10px 20px;
+        border-radius: 5px;
+        transition: background-color 0.3s ease;
+      }
+
+      .add-division a:hover {
+        background-color: #4caf50;
+        color: white;
+      }
+
       .contents {
         display: flex;
         flex-direction: column;
         border-top: 1px solid #b5adad;
-        border-bottom: 1px solid #b5adad;
         padding: 20px;
         background: white;
         border-radius: 8px;
+        margin-top: 20px;
       }
 
       h3 {
@@ -114,17 +94,11 @@
         display: grid;
         grid-template-columns: 1fr 2fr;
         align-items: center;
-        border-bottom: 5px solid rgb(226, 226, 226);
         padding: 5px;
         padding-bottom: 10px;
         border: 1px solid #1782a150;
-      }
-
-      @media screen and (max-width: 800px) {
-        .formInput {
-          display: grid;
-          grid-template-columns: 1fr;
-        }
+        margin-bottom: 10px;
+        border-radius: 5px;
       }
 
       .formInput label {
@@ -133,19 +107,12 @@
         font-size: 15px;
       }
 
-      .formInput > input {
-        border: none;
-        width: 45%;
+      .formInput input {
+        border: 1px solid #ccc;
+        width: 90%;
         padding: 8px;
         border-radius: 4px;
         font-size: medium;
-        width: 90%;
-        justify-self: flex-end;
-        border: 1px solid #ccc;
-      }
-
-      input:focus {
-        border: 1px solid #ccc;
       }
 
       .formInput input::placeholder {
@@ -153,13 +120,8 @@
         text-align: center;
       }
 
-      I .formInput #dash {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        margin: 0 5px;
-        font-size: larger;
-        color: #b5adad;
+      input:focus {
+        border: 1px solid #1b94c3;
       }
 
       .function-btn {
@@ -192,6 +154,7 @@
         background: rgba(0, 0, 0, 0.7);
         justify-content: center;
         align-items: center;
+        z-index: 1000;
       }
 
       .overlay-content {
@@ -242,21 +205,28 @@
         font-size: 14px;
         display: block;
       }
+
+      @media screen and (max-width: 800px) {
+        .formInput {
+          grid-template-columns: 1fr;
+        }
+      }
     </style>
   </head>
 
   <body>
     {% include 'pages_header.html' %}
-    <!-- add class start -->
+
+    <!-- Add Session Form Start -->
     <div class="container">
       <div class="add-division">
         <p>
           <span id="plus"></span>
-          {% if form.instance.pk %} Update Academic Session
-          {{form.instance.name}} {% else %} Add Academic Session {% endif %}
+          {% if form.instance.pk %} Update Academic Session {{
+          form.instance.name }} {% else %} Add Academic Session {% endif %}
         </p>
         <p>
-          <a href="{% url 'myadmin' %}">Home</a>
+          <a href="{% url 'list-sessions' %}">Sessions</a>
         </p>
       </div>
 
@@ -275,20 +245,23 @@
             {{ form.start_date }}
             <span class="error">{{ form.start_date.errors }}</span>
           </div>
+
           <div class="formInput">
             <label for="end_date">Session End Date</label>
             {{ form.end_date }}
             <span class="error">{{ form.end_date.errors }}</span>
           </div>
+
           <div class="formInput">
-            <label for="name">Session Name ( 2024-2025 )</label>
+            <label for="name">Session Name (e.g., 2024-2025)</label>
             {{ form.name }}
             <span class="error">{{ form.name.errors }}</span>
           </div>
+
           <div class="formInput">
-            <label for="name">Is Session Current</label>
+            <label for="is_current">Is Session Current</label>
             {{ form.is_current }}
-            <span class="error">{{ form.duration.errors }}</span>
+            <span class="error">{{ form.is_current.errors }}</span>
           </div>
 
           <div class="function-btn">
@@ -299,9 +272,9 @@
         </form>
       </div>
     </div>
-    <!-- add class end -->
+    <!-- Add Session Form End -->
 
-    <!-- overlay start -->
+    <!-- Overlay Start -->
     <div id="overlay" class="overlay">
       <div class="overlay-content">
         <p>Are you sure you want to add this session?</p>
@@ -312,7 +285,7 @@
         </div>
       </div>
     </div>
-    <!-- overlay end -->
+    <!-- Overlay End -->
 
     <script>
       const addButton = document.getElementById("add");
@@ -335,10 +308,10 @@
             document.getElementById("name").value = sessionName;
           }
           sessionDetails.innerHTML = `
-                    <p>Start Year: ${startDate}</p>
-                    <p>End Year: ${endDate}</p>
-                    <p>Session Name: ${sessionName}</p>
-                    `;
+            <p>Start Year: ${startDate}</p>
+            <p>End Year: ${endDate}</p>
+            <p>Session Name: ${sessionName}</p>
+          `;
           overlay.style.display = "flex";
         } else {
           alert("Please fill in all fields.");
@@ -350,7 +323,6 @@
       });
 
       confirmButton.addEventListener("click", () => {
-        // Add your logic to handle the session addition here
         sessionForm.submit();
         overlay.style.display = "none";
       });

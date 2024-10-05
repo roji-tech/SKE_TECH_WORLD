@@ -221,35 +221,39 @@
           <table>
             <thead>
               <th>No</th>
-              <th>Meeting Title</th>
-              <th>Description</th>
-              <th>Time and Date</th>
+              <th>Title</th>
+              <th>Class</th>
+              <th>Subject</th>
               <th>Uploaded By</th>
-              <th>Actions</th>
+              <th>File</th>
             </thead>
 
-            {{ lesson_plans }} {% for plan in lesson_plans %}
-            <tr>
-              <td>{{ forloop.counter }}</td>
-              <td>{{plan.title}}</td>
-              <td>{{ plan.subject }}</td>
-              <td>{{ plan.school_class }}</td>
-              <td>{{ plan.uploaded_by.full_name }}</td>
+            <tbody>
+              {% for plan in lesson_plans %}
+              <tr>
+                <td>{{ forloop.counter }}</td>
+                <td>{{plan.title}}</td>
+                <td>{{ plan.subject }}</td>
+                <td>{{ plan.school_class }}</td>
+                <td>{{ plan.uploaded_by.full_name }}</td>
 
-              <td>
-                <span class="edit-action">
-                  <a href="{% url 'lessonplan-update' plan.pk %}"> View </a>
-                </span>
-                <span class="edit-action">
-                  <a href="{% url 'lessonplan-update' plan.pk %}"> Edit </a>
-                </span>
+                <td>
+                  <span class="edit-action">
+                    <a href="{% url 'lessonplan-update' plan.pk %}"> View </a>
+                  </span>
+                  <span class="edit-action">
+                    <a href="{% url 'lessonplan-update' plan.pk %}"> Edit </a>
+                  </span>
 
-                <span class="delete-action">
-                  <a href="{% url 'lessonplan-delete' plan.pk %}"> Delete </a>
-                </span>
-              </td>
-            </tr>
-            {% endfor %}
+                  <span class="delete-action">
+                    <a href="{% url 'lessonplan-delete' plan.pk %}"> Delete </a>
+                  </span>
+                </td>
+              </tr>
+              {% empty %}
+              <tr>No Lesson plan was found.</t>
+              {% endfor %}
+            </tbody>
 
             <!-- Additional rows can be added here -->
           </table>

@@ -1,4 +1,5 @@
 from main.views import *
+from main.views.class_note_views import *
 
 from .superadmin_url import urlpatterns as superadmins_urlpatterns
 from .student_urls import urlpatterns as students_urlpatterns
@@ -56,16 +57,13 @@ urlpatterns += [
     path('class-notes/', ClassNoteListView.as_view(), name='classnote-list'),
     path('class-notes/<int:pk>/', ClassNoteDetailView.as_view(),
          name='classnote-detail'),
-    path('class-notes/create/', ClassNoteCreateView.as_view(),
+    path('class-notes/create/', class_note_create,
          name='classnote-create'),
     path('class-notes/<int:pk>/update/',
          ClassNoteUpdateView.as_view(), name='classnote-update'),
     path('class-notes/<int:pk>/delete/',
          ClassNoteDeleteView.as_view(), name='classnote-delete'),
 
-
-    path('exam/',
-         ClassNoteDeleteView.as_view(), name='exam'),
 
     path('comingsoon/',
          TemplateView.as_view(template_name="comingsoon.html"), name='comingsoon'),
