@@ -84,20 +84,31 @@
         <div class="charts-card">
           <h2 class="chart-title">Notification Center</h2>
           <div id="notification-center">
-            <ul id="notification-list">
-              <!-- Notifications will be dynamically added here -->
-            </ul>
+              <ul id="notification-list">
+                  {% for notification in notifications %}
+                  <li>
+                      <i class="material-icons">{{ notification.icon }}</i>
+                      <strong>{{ notification.title }}</strong>
+                      <p>{{ notification.message }}</p>
+                      <span>{{ notification.created_at|timesince }} ago</span>
+                  </li>
+                  {% empty %}
+                  <li>No new notifications.</li>
+                  {% endfor %}
+              </ul>
           </div>
-        </div>
       </div>
+      
+      <!-- Modal for Notification Details -->
       <div id="notification-modal" class="modal">
-        <div class="modal-content">
-          <span class="close">&times;</span>
-          <h2 id="modal-title"></h2>
-          <p id="modal-message"></p>
-          <p id="modal-time"></p>
-        </div>
+          <div class="modal-content">
+              <span class="close">&times;</span>
+              <h2 id="modal-title"></h2>
+              <p id="modal-message"></p>
+              <p id="modal-time"></p>
+          </div>
       </div>
+      
       <script>
 
         document.addEventListener('DOMContentLoaded', function () {
