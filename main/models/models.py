@@ -1,5 +1,5 @@
 from django.contrib.auth import get_user_model
-from datetime import timedelta
+from datetime import date, timedelta
 
 from django.utils.crypto import get_random_string
 import main.models.models
