@@ -17,4 +17,5 @@ INSTALLED_APPS = [
     'library',
     'myquiz',
     'report',
+    'notification',
 ]

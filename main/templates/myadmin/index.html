@@ -171,99 +171,130 @@
           return [];
         }
         // Sample notifications data
-        const notifications = [
-          { title: "New student enrolled", message: "John Doe has joined Class 10A", time: "2 minutes ago", icon: "person_add" },
-          { title: "Exam results published", message: "Grade 12 final exam results are now available", time: "1 hour ago", icon: "assessment" },
-          { title: "Staff meeting reminder", message: "Don't forget the staff meeting at 3 PM today", time: "3 hours ago", icon: "event" },
-          { title: "System maintenance", message: "The system will be down for maintenance tonight from 11 PM to 2 AM", time: "5 hours ago", icon: "build" }
-        ];
+                  // Get the modal
+        var modal = document.getElementById("notification-modal");
+        var modalTitle = document.getElementById("modal-title");
+        var modalMessage = document.getElementById("modal-message");
+        var modalTime = document.getElementById("modal-time");
 
-        function addNotification(notification) {
-          const list = document.getElementById('notification-list');
-          const item = document.createElement('li');
-          item.className = 'notification-item';
-          item.innerHTML = `
-        <span class="notification-icon material-icons-outlined">${notification.icon}</span>
-        <div class="notification-content">
-            <div class="notification-title">${notification.title}</div>
-            <div class="notification-message">${notification.message}</div>
-            <div class="notification-time">${notification.time}</div>
-        </div>
-    `;
-          list.prepend(item); // Add new notifications at the top
-        }
+        // Get the close button
+        var span = document.getElementsByClassName("close")[0];
 
-        function initNotificationCenter() {
-          notifications.forEach(addNotification);
-        }
-
-        // Simulate receiving a new notification every 30 seconds
-        function simulateNewNotification() {
-          const newNotification = {
-            title: "Warning",
-            message: "Your School Has Not Being Given Tokens for Results",
-            time: "Just now",
-            icon: "notifications_active"
-          };
-          addNotification(newNotification);
-        }
-
-        function addNotification(notification) {
-          const list = document.getElementById('notification-list');
-          const item = document.createElement('li');
-          item.className = 'notification-item';
-          item.innerHTML = `
-      <span class="notification-icon material-icons-outlined">${notification.icon}</span>
-      <div class="notification-content">
-          <div class="notification-title">${notification.title}</div>
-          <div class="notification-message">${notification.message}</div>
-          <div class="notification-time">${notification.time}</div>
-      </div>
-  `;
-
-          item.addEventListener('click', function () {
-            showNotificationDetails(notification);
-          });
-
-          list.prepend(item); // Add new notifications at the top
-        }
-
-        function showNotificationDetails(notification) {
-          // You can customize this function to show details in a modal, redirect to a new page, or perform any other action
-          alert(`Notification Details:\n\nTitle: ${notification.title}\nMessage: ${notification.message}\nTime: ${notification.time}`);
-        }
-
-        document.addEventListener('DOMContentLoaded', function () {
-
-          initNotificationCenter();
-          setInterval(simulateNewNotification, 30000); // Add a new notification every 30 seconds
+        // When the user clicks on a notification
+        document.getElementById("notification-list").addEventListener('click', function(e) {
+            if (e.target.tagName === 'LI') {
+                modal.style.display = "block";
+                modalTitle.innerText = e.target.querySelector('strong').innerText;
+                modalMessage.innerText = e.target.querySelector('p').innerText;
+                modalTime.innerText = e.target.querySelector('span').innerText;
+            }
         });
 
-        function showNotificationDetails(notification) {
-          const modal = document.getElementById('notification-modal');
-          const modalTitle = document.getElementById('modal-title');
-          const modalMessage = document.getElementById('modal-message');
-          const modalTime = document.getElementById('modal-time');
+        // When the user clicks on <span> (x), close the modal
+        span.onclick = function() {
+            modal.style.display = "none";
+        }
 
-          modalTitle.textContent = notification.title;
-          modalMessage.textContent = notification.message;
-          modalTime.textContent = notification.time;
+        // When the user clicks anywhere outside of the modal, close it
+        window.onclick = function(event) {
+            if (event.target == modal) {
+                modal.style.display = "none";
+            }
+        }
 
-          modal.style.display = 'block';
+        // const notifications = [
+        //   { title: "New student enrolled", message: "John Doe has joined Class 10A", time: "2 minutes ago", icon: "person_add" },
+        //   { title: "Exam results published", message: "Grade 12 final exam results are now available", time: "1 hour ago", icon: "assessment" },
+        //   { title: "Staff meeting reminder", message: "Don't forget the staff meeting at 3 PM today", time: "3 hours ago", icon: "event" },
+        //   { title: "System maintenance", message: "The system will be down for maintenance tonight from 11 PM to 2 AM", time: "5 hours ago", icon: "build" }
+        // ];
 
-          // Close the modal when clicking on <span> (x)
-          const span = document.getElementsByClassName('close')[0];
-          span.onclick = function () {
-            modal.style.display = 'none';
-          }
+    //     function addNotification(notification) {
+    //       const list = document.getElementById('notification-list');
+    //       const item = document.createElement('li');
+    //       item.className = 'notification-item';
+    //       item.innerHTML = `
+    //     <span class="notification-icon material-icons-outlined">${notification.icon}</span>
+    //     <div class="notification-content">
+    //         <div class="notification-title">${notification.title}</div>
+    //         <div class="notification-message">${notification.message}</div>
+    //         <div class="notification-time">${notification.time}</div>
+    //     </div>
+    // `;
+        //   list.prepend(item); // Add new notifications at the top
+        // }
+
+        // function initNotificationCenter() {
+        //   notifications.forEach(addNotification);
+        // }
+
+        // Simulate receiving a new notification every 30 seconds
+  //       function simulateNewNotification() {
+  //         const newNotification = {
+  //           title: "Warning",
+  //           message: "Your School Has Not Being Given Tokens for Results",
+  //           time: "Just now",
+  //           icon: "notifications_active"
+  //         };
+  //         addNotification(newNotification);
+  //       }
+
+  //       function addNotification(notification) {
+  //         const list = document.getElementById('notification-list');
+  //         const item = document.createElement('li');
+  //         item.className = 'notification-item';
+  //         item.innerHTML = `
+  //     <span class="notification-icon material-icons-outlined">${notification.icon}</span>
+  //     <div class="notification-content">
+  //         <div class="notification-title">${notification.title}</div>
+  //         <div class="notification-message">${notification.message}</div>
+  //         <div class="notification-time">${notification.time}</div>
+  //     </div>
+  // `;
+
+        //   item.addEventListener('click', function () {
+        //     showNotificationDetails(notification);
+        //   });
+
+        //   list.prepend(item); // Add new notifications at the top
+        // }
+
+        // function showNotificationDetails(notification) {
+        //   // You can customize this function to show details in a modal, redirect to a new page, or perform any other action
+        //   alert(`Notification Details:\n\nTitle: ${notification.title}\nMessage: ${notification.message}\nTime: ${notification.time}`);
+        // }
+
+        // document.addEventListener('DOMContentLoaded', function () {
+
+        //   initNotificationCenter();
+        //   setInterval(simulateNewNotification, 30000); // Add a new notification every 30 seconds
+        // });
+
+        // function showNotificationDetails(notification) {
+        //   const modal = document.getElementById('notification-modal');
+        //   const modalTitle = document.getElementById('modal-title');
+        //   const modalMessage = document.getElementById('modal-message');
+        //   const modalTime = document.getElementById('modal-time');
+
+        //   modalTitle.textContent = notification.title;
+        //   modalMessage.textContent = notification.message;
+        //   modalTime.textContent = notification.time;
+
+        //   modal.style.display = 'block';
+
+        //   // Close the modal when clicking on <span> (x)
+        //   const span = document.getElementsByClassName('close')[0];
+        //   span.onclick = function () {
+        //     modal.style.display = 'none';
+        //   }
 
           // Close the modal when clicking outside of it
-          window.onclick = function (event) {
-            if (event.target == modal) {
-              modal.style.display = 'none';
-            }
-          }
-        }
+          // window.onclick = function (event) {
+          //   if (event.target == modal) {
+          //     modal.style.display = 'none';
+          //   }
+          // }
+        
 
       </script>
 

@@ -1,4 +1,7 @@
 from notification.models import Notification
+from django.db.models.signals import post_save
+from django.dispatch import receiver
+
 # class Actions:
 #     TEACHER_ADDED = "A new teacher has been added."
 #     TEACHER_UPDATED = "Teacher details have been updated."
@@ -21,7 +24,9 @@ class NotificationManager:
   def create_notification(user, action, object_instance):
     # user = request.user
     title, message, icon = NotificationManager.get_notification_content(action, object_instance) 
-    Notification.create(user=user, title=title, message=message, icon=icon)
+    Notification.objects.create(user=user, title=title, message=message, icon=icon)
+
+    post_save.connect(get_notification_content, sender=user)
 
     @staticmethod
     def get_notification_content(action, object_instance):
