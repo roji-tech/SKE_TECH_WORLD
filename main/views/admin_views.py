@@ -823,6 +823,11 @@ class TeacherCreateView(CreateView):
                 action='added',
                 object_instance = self.object
             )
+            print(NotificationManager.create_notification(
+                user=self.request.user,
+                action='added',
+                # object_instance = self.object
+            ))
             messages.success(request, "Teacher created successfully!")
             return redirect("list-teachers")
         else:
