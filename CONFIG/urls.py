@@ -11,6 +11,7 @@ urlpatterns = [
     path('library/', include("library.urls")),
     path('myquiz/', include("myquiz.urls")),
     path('report/', include('report.urls')),
+    path('notifications/', include('notification.urls')),
 ]
 
 if settings.DEBUG:
