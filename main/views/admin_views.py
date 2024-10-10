@@ -712,11 +712,6 @@ class StudentUpdateView(UpdateView):
             user_form.save()
             student_form.save()
             messages.success(request, "Student updated successfully!")
-            NotificationManager.create_notification(
-            user=self.request.user,
-            action='updated',
-            object_instance = self.object
-        )
             return redirect(self.success_url)
         else:
             messages.error(request, "Error updating student.")
@@ -818,16 +813,7 @@ class TeacherCreateView(CreateView):
             teacher.user = user
             teacher.school = School.get_user_school(request.user)
             teacher.save()
-            NotificationManager.create_notification(
-                user=self.request.user,
-                action='added',
-                object_instance = self.object
-            )
-            print(NotificationManager.create_notification(
-                user=self.request.user,
-                action='added',
-                # object_instance = self.object
-            ))
+        
             messages.success(request, "Teacher created successfully!")
             return redirect("list-teachers")
         else:
@@ -893,11 +879,6 @@ class TeacherDeleteView(DeleteView):
         teacher = get_object_or_404(Teacher, pk=pk)
         teacher.user.delete()
         teacher.delete()
-        NotificationManager.create_notification(
-            user=self.request.user,
-            action='deleted',
-            object_instance = self.object
-            )
         messages.success(request, "Teacher deleted successfully!")
         return redirect(self.success_url)
 
