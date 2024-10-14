@@ -159,6 +159,9 @@
           }
           return [];
         }
+
+
+
         // Sample notifications data
         const notifications = [
           { title: "New student enrolled", message: "John Doe has joined Class 10A", time: "2 minutes ago", icon: "person_add" },
@@ -172,18 +175,28 @@
           const item = document.createElement('li');
           item.className = 'notification-item';
           item.innerHTML = `
-        <span class="notification-icon material-icons-outlined">${notification.icon}</span>
-        <div class="notification-content">
-            <div class="notification-title">${notification.title}</div>
-            <div class="notification-message">${notification.message}</div>
-            <div class="notification-time">${notification.time}</div>
-        </div>
+            <span class="notification-icon material-icons-outlined">${notification.icon}</span>
+            <div class="notification-content">
+                <div class="notification-title">${notification.title}</div>
+                <div class="notification-message">${notification.message}</div>
+                <div class="notification-time">${notification.time}</div>
+            </div>
     `;
           list.prepend(item); // Add new notifications at the top
         }
 
-        function initNotificationCenter() {
-          notifications.forEach(addNotification);
+      async  function initNotificationCenter() {
+        await fetch("/notifications/", {
+          method: "get",
+          headers: {
+            "Content-Type": "application/json",
+          }
+          }).then(req => req.json()).then(req => {
+            req.data.forEach(addNotification);
+          }).catch(err => {
+            notifications.forEach(addNotification);
+            console.log(err)
+          })
         }
 
         // Simulate receiving a new notification every 30 seconds
