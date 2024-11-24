@@ -1,12 +1,15 @@
 from django.urls import path
 from .. import views
 
-urlpatterns = [
+auth_urlpatterns = [
     path('teachers/', views.TeachersHome.as_view(), name='teachers'),
 
-    path('add-gmeet/', views.addgmeet, name='add_gmeet'),
-    path('edit-gmeet/', views.editgmeet, name='edit_gmeet'),
+    # path('teachers/add-gmeet/', views.add_gmeet, name='add_gmeet'),
+    # path('teachers/edit-gmeet/', views.teachers_edit_gmeet, name='edit_gmeet'),
 
-    path('upload-lesson/', views.upload_lesson_plan, name='upload_lesson_plan'),
-    path('lessons-lists/', views.lessons_list, name='lessons_lists'),
+    # path('teachers/upload-lesson/', views.upload_lesson_plan,
+    #      name='upload_lesson_plan'),
+    # path('teachers/lessons-lists/', views.lessons_list, name='lessons_lists'),
+
+    # path('teachers/add-assessment/', views.continous_assessment_view, name='continous-assessment'),
 ]

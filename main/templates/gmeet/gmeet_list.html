@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Upload Google Meet</title>
+    {% include "poppins_font.html" %}
+
+    <style>
+      /* Reset and general styles */
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: "Poppins", sans-serif;
+      }
+
+      body {
+        display: flex;
+        align-items: center;
+        flex-direction: column;
+        background-color: #f8f7f7;
+        height: 100vh;
+        margin: 0;
+      }
+
+      .table-datas {
+        border: 1px solid #ccc;
+        width: 90%;
+        background: #fff;
+        margin-bottom: 5%;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      }
+
+      .search-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 10px 20px;
+      }
+
+      .search-row input[type="search"] {
+        width: 50%;
+        height: 35px;
+        padding: 5px 10px;
+        border: 1px solid #ccc;
+        border-radius: 3px;
+        font-size: 14px;
+      }
+
+      select {
+        padding: 5px 10px;
+        border: 1px solid #ccc;
+        border-radius: 3px;
+      }
+
+      .table {
+        max-width: 100%;
+        width: 100%;
+        overflow-x: auto;
+      }
+
+      table {
+        border: 1px solid #ccc;
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 10px;
+        background: #fff;
+        max-width: 100%;
+        padding: 50px;
+        min-width: max-content;
+      }
+
+      thead,
+      tbody {
+        width: fit-content;
+      }
+
+      th,
+      td {
+        border: 1px solid #ccc;
+        padding: 10px 15px;
+        text-align: left;
+        height: max-content;
+      }
+
+      .edit-action,
+      .delete-action {
+        padding: 5px 10px;
+        margin: 0 5px;
+        color: #fff;
+        cursor: pointer;
+        border-radius: 3px;
+        text-align: center;
+      }
+
+      .edit-action {
+        background-color: #1b94c3;
+      }
+
+      .delete-action {
+        background-color: rgb(255, 23, 23);
+      }
+
+      /* Overlay styles */
+      #overlay {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5);
+        z-index: 1000;
+        justify-content: center;
+        align-items: center;
+      }
+
+      .overlay-content {
+        background-color: #fff;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        text-align: center;
+      }
+
+      .overlay-content h2 {
+        margin-bottom: 10px;
+      }
+
+      .btn-group {
+        margin-top: 20px;
+      }
+
+      button {
+        padding: 10px 20px;
+        margin: 0 10px;
+        cursor: pointer;
+        border: none;
+        border-radius: 5px;
+      }
+
+      #confirm-upload {
+        background-color: #1b94c3;
+        color: #fff;
+      }
+
+      #cancel-upload {
+        background-color: rgb(255, 23, 23);
+        color: #fff;
+      }
+
+      a {
+        color: #fff;
+      }
+
+      .add-division {
+        padding-left: 20px;
+
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border-bottom: 1px solid #ccc;
+        padding: 10px 20px;
+        text-transform: capitalize;
+      }
+
+      .add-division p {
+        color: #1b94c3;
+        font-weight: 600;
+
+        font-size: 1.2rem;
+        color: #1b94c3;
+        font-weight: bold;
+      }
+
+      .add-division a {
+        color: #000;
+      }
+    </style>
+    {% include "fontawesome.html" %}
+  </head>
+  <body>
+    {% include 'pages_header.html' %}
+
+    <div class="table-datas">
+      <div class="add-division sub-rows">
+        <p>Google Meets</p>
+
+        <a href="{% url 'gmeetclass-create' %}">
+          <i class="fa fa-plus" id="plus-icon" style="font-size: 23px"></i>
+        </a>
+      </div>
+
+      <div class="padd">
+        <div class="search-row">
+          <span>
+            <select name="class" id="">
+              <option value="10">10</option>
+              <option value="9">9</option>
+              <option value="8">8</option>
+              <option value="7">7</option>
+              <option value="6">6</option>
+              <option value="5">5</option>
+              <option value="4">4</option>
+              <option value="3">3</option>
+              <option value="2">2</option>
+              <option value="1">1</option>
+            </select>
+          </span>
+
+          <input type="search" placeholder="Search" />
+        </div>
+
+        <div class="table">
+          <table>
+            <thead>
+              <th>No</th>
+              <th>Meeting Title</th>
+              <th>Time and Date</th>
+              <th>Duration</th>
+              <th>Description</th>
+              <th>Created By</th>
+              <th>Link</th>
+              <th>Actions</th>
+            </thead>
+
+            {% for gmeet in gmeet_classes %}
+            <tr>
+              <td>{{ forloop.counter }}</td>
+              <td>{{ gmeet.title }}</td>
+              <td>{{ gmeet.start_time }}</td>
+              <td>{{ gmeet.duration }}</td>
+              <td>{{ gmeet.description }}</td>
+              <td>{{ gmeet.created_by.full_name }}</td>
+              <td>
+                <a
+                  target="_blank"
+                  href="{{ gmeet.gmeet_link }}"
+                  style="color: #000"
+                >
+                  Join
+                </a>
+              </td>
+              <td>
+                <span class="edit-action">
+                  <a href="{% url 'gmeetclass-update' gmeet.pk %}"> Edit </a>
+                </span>
+
+                <span class="delete-action">
+                  <a href="{% url 'gmeetclass-delete' gmeet.pk %}"> Delete </a>
+                </span>
+              </td>
+            </tr>
+            {% endfor %}
+
+            <!-- Additional rows can be added here -->
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- Overlay for upload confirmation -->
+    <div id="overlay">
+      <div class="overlay-content">
+        <h2>Confirm Upload</h2>
+        <p>Are you sure you want to upload this Google Meet link?</p>
+        <div class="btn-group">
+          <button id="confirm-upload">Upload</button>
+          <button id="cancel-upload">Cancel</button>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      const uploadLink = document.getElementById("upload-link");
+      const overlay = document.getElementById("overlay");
+      const confirmUpload = document.getElementById("confirm-upload");
+      const cancelUpload = document.getElementById("cancel-upload");
+
+      uploadLink.addEventListener("click", function (event) {
+        event.preventDefault();
+        overlay.style.display = "block";
+      });
+
+      cancelUpload.addEventListener("click", function () {
+        overlay.style.display = "none";
+      });
+
+      // Add functionality to confirm upload
+      confirmUpload.addEventListener("click", function () {
+        // Implement your upload logic here
+        console.log("Upload confirmed");
+        // Close the overlay
+        overlay.style.display = "none";
+      });
+    </script>
+  </body>
+</html>

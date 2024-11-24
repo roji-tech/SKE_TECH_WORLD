@@ -1,0 +1,16 @@
+Here are some comments on the PR:
+
+
+MAJOR issues to address before merging PR
+
+- Layout on the Figma design has 3cards by each other: https://prnt.sc/1tds_xGN6SJr
+- Layout on your design has 2 cards by each other with huge space in between: https://prnt.sc/M0zOr8d_zWw6
+- Breakpoint for Tablet (which is meant to show mobile design) is showing desktop design thus making it not responsible : https://prnt.sc/xyH09vnsKwJy
+- Cash Flow Does not have a view more on its card in dashboard: https://prnt.sc/r75UqqPviESX
+- Cash Flow Desktop Page unavailable
+- All Expenses showing Mobile view for desktop design with invalid Balance: https://prnt.sc/5OZVHtPU1TUr
+
+
+Minor PR to address sooner after merging PR
+
+- All Income, All Budget and All Expenses are still showing mobile view

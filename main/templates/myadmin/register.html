@@ -40,11 +40,11 @@
 
             <h2>Register</h2>
 
-            <div class="inputbox">
+            {% comment %} <div class="inputbox">
               <ion-icon name="person-outline"></ion-icon>
               <input type="text" name="username" required />
               <label>Username</label>
-            </div>
+            </div> {% endcomment %}
 
             <div class="inputbox">
               <ion-icon name="person-outline"></ion-icon>
@@ -145,7 +145,7 @@
 
       function validateFormData(formData) {
         const requiredFields = [
-          "username",
+          {% comment %} "username", {% endcomment %}
           "first_name",
           "last_name",
           "email",
@@ -201,7 +201,7 @@
         });
       }
 
-      function submitForm() {
+      async function submitForm() {
         const form = document.getElementById("registerForm");
         const formData = new FormData(form);
         const csrfToken = document.querySelector(
@@ -213,7 +213,7 @@
           return; // Stop submission if validation fails
         }
 
-        fetch(form.dataset.action, {
+        await fetch(form.dataset.action, {
           method: "POST",
           body: formData,
           headers: {
@@ -233,7 +233,9 @@
                 window.location.href = "/admin/login/";
               }, 4000);
             } else {
-              showErrorToast("Registration failed. Please try again.");
+              showErrorToast(
+                data.message || "Registration failed. Please try again."
+              );
             }
           })
           .catch((error) => {

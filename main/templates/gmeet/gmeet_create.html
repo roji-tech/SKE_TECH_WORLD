@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Google Meet</title>
+    {% include "poppins_font.html" %}
+
+    <style>
+      /* Basic styling */
+      body {
+        font-family: "Poppins", sans-serif;
+        background-color: #f0f0f0;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        justify-content: start;
+        flex-direction: column;
+        align-items: center;
+        height: 100vh;
+        gap: 2rem;
+      }
+
+      .container {
+        background-color: #fff;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        width: 400px;
+      }
+
+      .add-division {
+        text-align: center;
+        margin-bottom: 20px;
+      }
+
+      .contents {
+        padding: 20px;
+      }
+
+      .inline-f {
+        margin-bottom: 15px;
+      }
+
+      .input {
+        width: 100%;
+        max-width: 100%;
+        max-height: 150px;
+        padding: 8px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+      }
+
+      .label {
+        font-weight: bold;
+        display: block;
+        margin-bottom: 5px;
+      }
+
+      .function-btn {
+        margin-top: 20px;
+        text-align: center;
+      }
+
+      button {
+        padding: 10px 20px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        margin-right: 10px;
+      }
+
+      button#add {
+        background-color: #0d6efd;
+        color: #fff;
+      }
+
+      button#cancel {
+        background-color: #6c757d;
+        color: #fff;
+      }
+
+      /* Overlay Styles */
+      .overlay {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5);
+        z-index: 1000;
+        justify-content: center;
+        align-items: center;
+      }
+
+      .overlay-content {
+        background-color: #fff;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+        max-width: 80%;
+        text-align: center;
+      }
+
+      .overlay h2 {
+        margin-bottom: 10px;
+      }
+
+      .overlay p {
+        margin-bottom: 5px;
+      }
+
+      .overlay a {
+        color: #0d6efd;
+      }
+
+      .overlay button {
+        padding: 10px 20px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        background-color: #6c757d;
+        color: #fff;
+        margin-top: 10px;
+      }
+
+      .title-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border-bottom: 1px solid #ccc;
+        padding: 10px 20px;
+        text-transform: capitalize;
+      }
+
+      .error {
+        color: red;
+        font-size: 14px;
+        display: block;
+      }
+    </style>
+  </head>
+  <body>
+    {% include 'pages_header.html' %}
+
+    <div class="container">
+      <div class="title-header">
+        <p>Google Meet</p>
+
+        <a href="{% url 'gmeetclass-list' %}"> G-Meets </a>
+      </div>
+
+      <div class="contents">
+        <form method="post" id="meeting-form">
+          {% csrf_token %}
+          <div class="inline-f">
+            <label for="subject" class="label">Meetng Title</label>
+            {{ form.title }}
+            <span class="error">{{ form.title.errors }}</span>
+          </div>
+
+          <div class="inline-f">
+            <label for="subject" class="label"
+              >Subject ( If it's a class )
+            </label>
+            {{ form.subject }}
+            <span class="error">{{ form.subject.errors }}</span>
+          </div>
+
+          <div class="inline-f">
+            <label for="description" class="label">Description</label>
+            {{ form.description }}
+            <span class="error">{{ form.description.errors }}</span>
+          </div>
+
+          <div class="inline-f">
+            <label for="start_time" class="label">Start Date and Time</label>
+            {{ form.start_time }}
+            <span class="error">{{ form.start_time.errors }}</span>
+          </div>
+
+          <div class="inline-f">
+            <label for="duration" class="label">Duration</label>
+            {{ form.duration }}
+            <span class="error">{{ form.duration.errors }}</span>
+          </div>
+
+          <div class="inline-f">
+            <label for="gmeet_link" class="label">Gmeet Link</label>
+            {{ form.gmeet_link }}
+          </div>
+
+          <div class="function-btn">
+            <button type="submit" id="add upload-link">
+              {% if form.instance.pk %} Update {% else %} Add {% endif %}
+              Meeting
+            </button>
+            <button type="button" id="cancel">
+              <a href="{% url 'gmeetclass-list' %}" style="color: #fff">
+                Cancel
+              </a>
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Confirmation Overlay -->
+    <div class="overlay" id="confirmation-overlay">
+      <div class="overlay-content">
+        <h2>Meeting Added Successfully!</h2>
+        <p>Meeting Title: <span id="overlay-title"></span></p>
+        <p>Description: <span id="overlay-description"></span></p>
+        <p>Date and Time: <span id="overlay-datetime"></span></p>
+        <p>Created By: <span id="overlay-created-by"></span></p>
+        <p>Link: <a href="#" id="overlay-link"></a></p>
+        <button id="close-overlay">Close</button>
+      </div>
+    </div>
+
+    <!-- Overlay for upload confirmation -->
+
+    <div class="overlay">
+      <div class="overlay-content">
+        <h2>Confirm Upload</h2>
+        <p>Are you sure you want to upload this Google Meet link?</p>
+        <div class="btn-group">
+          <button id="confirm-upload">Upload</button>
+          <button id="cancel-upload">Cancel</button>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      const uploadLink = document.getElementById("upload-link");
+      const overlay = document.getElementById("overlay");
+      const confirmUpload = document.getElementById("confirm-upload");
+      const cancelUpload = document.getElementById("cancel-upload");
+
+      uploadLink.addEventListener("click", function (event) {
+        event.preventDefault();
+        overlay.style.display = "block";
+      });
+
+      cancelUpload.addEventListener("click", function () {
+        overlay.style.display = "none";
+      });
+
+      // Add functionality to confirm upload
+      confirmUpload.addEventListener("click", function () {
+        // Implement your upload logic here
+        console.log("Upload confirmed");
+        // Close the overlay
+        overlay.style.display = "none";
+      });
+    </script>
+  </body>
+</html>

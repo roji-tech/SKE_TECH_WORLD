@@ -1,0 +1,128 @@
+{% load static %}
+
+<aside id="sidebar">
+  <div class="sidebar-title">
+    <a href="{% url 'profile' %}" style="color: inherit">
+      <div class="sidebar-profile">
+        <img
+          src="{% static 'teachers/images/profile.jpg' %}"
+          style="
+            display: grid;
+            place-items: center;
+            border: 1px dashed rgba(255, 255, 255, 0.4);
+            color: azure;
+            font-size: xx-large;
+          "
+          alt="🇳🇬"
+          width="50px"
+          height="50px"
+          class="profile-picture"
+        />
+        <div class="profile-name-box">
+          <span class="profile-name">{{ request.user.first_name }}</span>
+        </div>
+      </div>
+    </a>
+  </div>
+
+  <ul class="sidebar-list">
+    <div class="closeSidebar" onclick="closeSidebar()">
+      <style>
+        .closeSidebar {
+          display: none;
+        }
+
+        @media screen and (max-width: 992px) {
+          .closeSidebar {
+            position: fixed;
+            top: 90px;
+            right: 10px;
+            background: rgb(23, 60, 92);
+
+            display: grid;
+            place-items: center;
+
+            padding: 5px !important;
+            font-weight: 900;
+            cursor: pointer;
+            min-height: 30px;
+          }
+        }
+      </style>
+      <span class="material-icons-outlined">close</span>
+    </div>
+
+    <li class="sidebar-list-item">
+      <a href="#">
+        <span class="material-icons-outlined">videocam</span>
+        G-meet Classes
+      </a>
+      <ul class="dropdown-menu">
+        <li>
+          <a href="{% url 'gmeetclass-create' %}">Upload Google Meet Classes</a>
+        </li>
+        <li><a href="{% url 'gmeetclass-list' %}">Google Meet Classes</a></li>
+      </ul>
+    </li>
+    <li class="sidebar-list-item">
+      <a href="#">
+        <span class="material-icons-outlined">library_books</span>
+        Lesson Plan
+      </a>
+      <ul class="dropdown-menu">
+        <li><a href="{% url 'lessonplan-create' %}">Upload Lesson Plan</a></li>
+        <li><a href="{% url 'list-lessonplans' %}">Lesson Plan List</a></li>
+      </ul>
+    </li>
+    <li class="sidebar-list-item">
+      <a href="#">
+        <span class="material-icons-outlined">note</span>
+        Notes
+      </a>
+      <ul class="dropdown-menu">
+        <li><a href="{% url 'classnote-create' %}">Add Notes</a></li>
+        <li><a href="{% url 'classnote-list' %}">Notes List</a></li>
+      </ul>
+    </li>
+    <li class="sidebar-list-item">
+      <a href="#">
+        <span class="material-icons-outlined">library_add</span>
+        Library
+      </a>
+      <ul class="dropdown-menu">
+        <li>
+          <a href="{% url 'library:library_books_list' %}"
+            >View Library Books</a
+          >
+        </li>
+      </ul>
+    </li>
+    <li class="sidebar-list-item">
+      <a href="#">
+        <span class="material-icons-outlined">assignment</span>
+        Examination
+      </a>
+      <ul class="dropdown-menu">
+        <li><a href="{% url 'comingsoon' %}">View Examination Papers</a></li>
+      </ul>
+    </li>
+    <li class="sidebar-list-item">
+      <a href="#">
+        <span class="material-icons-outlined">assignment</span>
+        Homework
+      </a>
+      <ul class="dropdown-menu">
+        <li><a href="{% url 'comingsoon' %}">Add Assignments</a></li>
+      </ul>
+    </li>
+    <li class="sidebar-list-item">
+      <a href="#">
+        <span class="material-icons-outlined">grade</span>
+        Results
+      </a>
+      <ul class="dropdown-menu">
+        <li><a href="{% url 'comingsoon' %}">Add Results</a></li>
+      </ul>
+    </li>
+  </ul>
+</aside>

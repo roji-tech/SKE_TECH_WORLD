@@ -1,4 +1,5 @@
 from pathlib import Path
+import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
@@ -13,7 +14,7 @@ SECRET_KEY = 'django-insecure-&b=mem0=8mv&qa#79t3h6mnn2*@p!iaaf1bu!@6!$prx+2828f
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["*"]
 
 
 ROOT_URLCONF = 'CONFIG.urls'
@@ -81,3 +82,7 @@ STATIC_URL = '/static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 AUTH_USER_MODEL = "main.user"
+
+# DATA_UPLOAD_MAX_NUMBER_FIELDS = 11000
+COMPRESS_ENABLED = os.environ.get("COMPRESS_ENABLED", False)
+

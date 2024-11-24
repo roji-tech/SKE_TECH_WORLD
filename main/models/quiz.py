@@ -54,6 +54,7 @@ class Quiz(models.Model):
     course = models.ForeignKey(Course, on_delete=models.CASCADE, null=True)
     title = models.CharField(verbose_name=_(
         "Title"), max_length=60, blank=False)
+
     slug = models.SlugField(blank=True, unique=True)
     description = models.TextField(
         verbose_name=_("Description"),
@@ -452,7 +453,7 @@ class Sitting(models.Model):
 class Question(models.Model):
     quiz = models.ManyToManyField(Quiz, verbose_name=_("Quiz"), blank=True)
     figure = models.ImageField(
-        upload_to="uploads/%Y/%m/%d",
+        upload_to="questions/uploads/%Y/%m/%d",
         blank=True,
         null=True,
         verbose_name=_("Figure"),

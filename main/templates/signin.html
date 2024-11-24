@@ -1,0 +1,112 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sign Up / Login</title>
+    <link
+      href="https://fonts.googleapis.com/icon?family=Material+Icons"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="{% static 'css/style.css' %}" />
+    <!-- Link to your custom CSS -->
+    <style>
+      body {
+        margin: 0;
+        padding: 0;
+        font-family: "Arial", sans-serif;
+        background-color: #f4f4f4;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+      }
+
+      .container {
+        text-align: center;
+        background-color: #fff;
+        padding: 50px;
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      }
+
+      .container h1 {
+        margin-bottom: 20px;
+        font-size: 24px;
+        color: #333;
+      }
+
+      .button-group {
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+      }
+
+      .button-group a {
+        text-decoration: none;
+      }
+
+      .btn {
+        padding: 12px 20px;
+        font-size: 16px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        width: 100%;
+        max-width: 300px;
+        color: white;
+        background-color: #007bff;
+        transition: background-color 0.3s ease;
+      }
+
+      .btn:hover {
+        background-color: #0056b3;
+      }
+
+      .btn.admin {
+        background-color: #6c757d;
+      }
+      .btn.admin:hover {
+        background-color: #5a6268;
+      }
+
+      .btn.teacher {
+        background-color: #28a745;
+      }
+      .btn.teacher:hover {
+        background-color: #218838;
+      }
+
+      .btn.student {
+        background-color: #ffc107;
+        color: #212529;
+      }
+      .btn.student:hover {
+        background-color: #e0a800;
+      }
+
+      .btn.signup {
+        background-color: #17a2b8;
+      }
+      .btn.signup:hover {
+        background-color: #138496;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>Welcome to Our School System</h1>
+      <div class="button-group">
+        <a href="{% url 'signup' %}" class="btn signup">Sign Up</a>
+        <a href="{% url 'admin-login' %}" class="btn admin">Login as Admin</a>
+        <a href="{% url 'teacher-login' %}" class="btn teacher"
+          >Login as Teacher</a
+        >
+        <a href="{% url 'student-login' %}" class="btn student"
+          >Login as Student</a
+        >
+      </div>
+    </div>
+  </body>
+</html>

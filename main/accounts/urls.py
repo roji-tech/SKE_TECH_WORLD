@@ -33,7 +33,7 @@ from .views import (
 # from .forms import EmailValidationOnForgotPassword
 
 
-urlpatterns = [
+urlpatterns__ = [
     path("", include("django.contrib.auth.urls")),
     path("admin_panel/", admin_panel, name="admin_panel"),
     path("profile/", profile, name="profile"),

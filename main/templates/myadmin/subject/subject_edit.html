@@ -1,0 +1,179 @@
+{% comment %} <!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Update Subject</title>
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap"
+    />
+    <style>
+      body {
+        font-family: "Poppins", sans-serif;
+        background-color: #f8f8f8;
+        padding: 20px;
+
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        height: 100vh;
+      }
+
+      .form-container {
+        background: #fff;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        width: 100%;
+
+        display: flex;
+        flex-direction: column;
+
+        max-width: 800px;
+      }
+
+      h1 {
+        font-size: 24px;
+        margin-bottom: 20px;
+        text-align: center;
+      }
+
+      form {
+        display: flex;
+        flex-direction: column;
+      }
+
+      label {
+        margin-bottom: 5px;
+        font-weight: 500;
+      }
+
+      input,
+      select {
+        padding: 10px;
+        margin-bottom: 15px;
+        border: 1px solid #b5adad;
+        border-radius: 5px;
+        outline: none;
+      }
+
+      button {
+        padding: 10px;
+        background-color: #1b94c3;
+        color: #fff;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+      }
+
+      button:hover {
+        background-color: #03a73a;
+      }
+    </style>
+  </head>
+  <body>
+    {% include 'pages_header.html' %}
+
+    <div class="form-container">
+      <h1>Update Subject</h1>
+      <form method="post">
+        {% csrf_token %} {{ form.as_p }}
+        <button type="submit">Update Subject</button>
+      </form>
+    </div>
+  </body>
+</html>
+{% endcomment %}
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Update Subject</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-KyZXEAg3QhqLMpG8r+8fhAXLRrt0L4y2wa6YLGpSp3vtI5xptu16bBm5x5ogCAXJ"
+      crossorigin="anonymous"
+    />
+    <style>
+      body {
+        font-family: "Poppins", sans-serif;
+        background-color: #f8f8f8;
+        display: flex;
+        flex-direction: column;
+        justify-content: start;
+        align-items: center;
+        height: 100vh;
+        margin: 0;
+        gap: 3rem;
+      }
+
+      .form-container {
+        background-color: #fff;
+        padding: 30px;
+        border-radius: 10px;
+        box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+        max-width: 600px;
+        width: 100%;
+      }
+
+      h1 {
+        font-size: 24px;
+        font-weight: 600;
+        text-align: center;
+        margin-bottom: 30px;
+      }
+
+      .form-control {
+        margin-bottom: 20px;
+      }
+
+      .btn-primary {
+        background-color: #1b94c3;
+        border-color: #1b94c3;
+        padding: 10px 15px;
+        width: 100%;
+        font-size: 16px;
+      }
+
+      .btn-primary:hover {
+        background-color: #03a73a;
+        border-color: #03a73a;
+      }
+    </style>
+  </head>
+  <body>
+    {% include "pages_header.html" %}
+    <div class="form-container">
+      <h1>Update Subject</h1>
+
+      <form method="post" novalidate>
+        {% csrf_token %} {% for field in form %}
+        <div class="mb-3">
+          <label for="{{ field.id_for_label }}" class="form-label"
+            >{{ field.label }}</label
+          >
+          {{ field }} {% if field.errors %}
+          <div class="text-danger">
+            {% for error in field.errors %}
+            <small>{{ error }}</small><br />
+            {% endfor %}
+          </div>
+          {% endif %}
+        </div>
+        {% endfor %}
+
+        <button type="submit" class="btn btn-primary">Update Subject</button>
+      </form>
+    </div>
+
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-mQ93IBAm5t4tOk3SFm0KrpRlmb/ibNFJ0lcnv3V7M1z6EMGyboAcWhtmZmo3H97U"
+      crossorigin="anonymous"
+    ></script>
+  </body>
+</html>

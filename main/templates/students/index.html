@@ -1,234 +1,366 @@
 {% load static %}
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <!--=============== REMIXICONS ===============-->
-    <link href="https://cdn.jsdelivr.net/npm/remixicon@2.5.0/fonts/remixicon.css" rel="stylesheet">
-
-    <!--=============== FONT AWESOME ===============-->
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    {% block title %}Students Dashboard{% endblock title %}
 
     <!--=============== CSS ===============-->
-    <link rel="stylesheet" href="{% static 'css/students/styles.css' %}">
+    <link rel="stylesheet" href="{% static 'css/students/styles.css' %}" />
+
+    <!--=============== REMIXICONS ===============-->
+    <link
+      href="https://cdn.jsdelivr.net/npm/remixicon@2.5.0/fonts/remixicon.css"
+      rel="stylesheet"
+    />
+
+    <!--=============== FONT AWESOME ===============-->
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"
+    />
 
     <title>E.M.I.S</title>
     <style>
-        .random-number {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            font-size: 1.2em;
-            font-weight: bold;
-        }
+      .random-number {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        font-size: 1.2em;
+        font-weight: bold;
+      }
 
-        /* Dark Mode and Light Mode Styles */
-        .random-number.dark-mode {
-            color: white;
-        }
-        .random-number.light-mode {
-            color: black;
-        }
+      /* Dark Mode and Light Mode Styles */
+      .random-number.dark-mode {
+        color: white;
+      }
+      .random-number.light-mode {
+        color: black;
+      }
 
-        /* Mobile styles */
-        @media (max-width: 768px) {
-            .nav__menu {
-                display: none;
-            }
-            .nav__toggle {
-                display: block;
-            }
-            .nav__toggle-menu {
-                display: block;
-            }
-            .nav__toggle-close {
-                display: none;
-            }
-            .nav__menu.active {
-                display: block;
-            }
+      /* Mobile styles */
+      @media (max-width: 768px) {
+        .nav__menu {
+          display: none;
         }
+        .nav__toggle {
+          display: block;
+        }
+        .nav__toggle-menu {
+          display: block;
+        }
+        .nav__toggle-close {
+          display: none;
+        }
+        .nav__menu.active {
+          display: block;
+        }
+      }
 
-        .info-right {
-            margin-right: 70px;
-        }
+      .info-right {
+        margin-right: 70px;
+      }
     </style>
-</head>
-<body>
+  </head>
+  <body>
     <!--=============== HEADER ===============-->
     <header class="header">
-        <nav class="nav container">
-            <div class="nav__data">
-                <a href="#" class="nav__logo">
-                    <img src="students/images/logo.png" alt="Logo" class="nav__logo-img">
-                </a>
-            </div>
-            <div class="nav__toggle" id="nav-toggle">
-                <i class="ri-menu-line nav__toggle-menu"></i>
-                <i class="ri-close-line nav__toggle-close"></i>
-            </div>
-            <!--=============== NAV MENU ===============-->
-            <div class="nav__menu" id="nav-menu">
-                <ul class="nav__list">
-                  
-                    <li><a href="/others/index.html" class="nav__link">Dashboard</a></li>
-                    <li><a href="Library.html" class="nav__link">Library</a></li>
-                    <li><a href="/others/Notes.html" class="nav__link">Class-Notes</a></li>
-                    <li><a href="/others/gmeet.html" class="nav__link">G-meet Classes</a></li>
-                    <li><a href="/login form/e-exam.html" class="nav__link">E-Exam</a></li>
-                    <li class="nav__item dropdown">
-                        <a href="#" class="nav__link dropdown__link">School Activities <i class="fas fa-chevron-down"></i></a>
-                        <ul class="dropdown__menu">
-                            <li><a href="/login form/result.html" class="dropdown__item">Results</a></li>
-                            <li><a href="/login form/e-exam.html" class="dropdown__item">Exam</a></li>
-                            <li><a href="#" class="dropdown__item">Homework</a></li>
-                        </ul>
-                    </li>
-                </ul>
-            </div>
-            <!-- Dark Mode Toggle Button -->
-            <button class="btn-btn" id="dark-mode-toggle" onclick="toggleDarkMode()">Dark Mode</button>
-        </nav>
+      <nav class="nav container">
+        <div class="nav__data">
+          <a href="#" class="nav__logo">
+            <img
+              src="{% static 'images/students/logo.png' %}"
+              alt="Logo"
+              class="nav__logo-img"
+            />
+          </a>
+        </div>
+        <div class="nav__toggle" id="nav-toggle">
+          <i class="ri-menu-line nav__toggle-menu"></i>
+          <i class="ri-close-line nav__toggle-close"></i>
+        </div>
+        <!--=============== NAV MENU ===============-->
+        <div class="nav__menu" id="nav-menu">
+          <ul class="nav__list">
+            <li>
+              <a href="/others/index.html" class="nav__link">Dashboard</a>
+            </li>
+            <li>
+              <a href="{% url 'library:library_books_list' %}" class="nav__link"
+                >Library</a
+              >
+            </li>
+            <li>
+              <a href="{% url 'students_class_notes' %}" class="nav__link"
+                >Class-Notes</a
+              >
+            </li>
+            <li>
+              <a href="{% url 'google_meets_classes' %}" class="nav__link"
+                >G-meet Classes</a
+              >
+            </li>
+            <li>
+              <a href="{% url 'exam_login' %}" class="nav__link">E-Exam</a>
+            </li>
+            <li class="nav__item dropdown">
+              <a href="#" class="nav__link dropdown__link"
+                >School Activities <i class="fas fa-chevron-down"></i
+              ></a>
+              <ul class="dropdown__menu">
+                <li>
+                  <a href="{% url 'exam_login' %}" class="dropdown__item"
+                    >Results</a
+                  >
+                </li>
+                <li>
+                  <a href="{% url 'exam_login' %}" class="dropdown__item"
+                    >Exam</a
+                  >
+                </li>
+                <li>
+                  <a href="{% url 'exam_login' %}" class="dropdown__item"
+                    >Homework</a
+                  >
+                </li>
+              </ul>
+            </li>
+          </ul>
+        </div>
+        <!-- Dark Mode Toggle Button -->
+        <button
+          class="btn-btn"
+          id="dark-mode-toggle"
+          onclick="toggleDarkMode()"
+        >
+          Dark Mode
+        </button>
+      </nav>
     </header>
 
     <!-- Profile Section -->
     <section class="profile-section">
-        <div class="profile-details">
-            <img id="profile-pic" src="students/images/logo.png" alt="Profile Picture" class="profile-pic">
+      <div class="profile-details">
+        {% if user.is_student %}
+          <img
+            id="profile-pic"
+            src="{{ user.get_picture }}"
+            alt="Profile Picture"
+            class="profile-pic"
+            />
             <div class="profile-buttons">
-                <button class="profile-button">Logout</button>
+              <a href="{% url 'logout_redirect' %}" class="profile-button">Logout</a>
+          </div>
+          <div class="profile-info">
+            <div class="info-left">
+              <p><strong>Name:</strong> {{ user.get_full_name }}</p>
+              <p><strong>Gender:</strong> {{ user.get_gender_display|default:"N/A" }}</p>
+              <p><strong>Registration Number:</strong> {{ user.student.reg_no }}</p>
             </div>
-            <div class="profile-info">
-                <div class="info-left">
-                    <p><strong>Name:</strong> John Doe</p>
-                    <p><strong>Gender:</strong> Male</p>
-                    <p><strong>Registration Number:</strong> 086</p>
-                </div>
-                <div class="info-right">
-                    <p><strong>Class:</strong> JSS 2</p>
-                    <p><strong>Class Division:</strong> JSS 2(C)</p>
-                    <p><strong>Admission Number:</strong> 23090AF</p>
-                </div>
-            </div>
-        </div>
+            <div class="info-right">
+              <p><strong>Class:</strong> {{ user.student.klass }}</p>
+              <p><strong>Admission Number:</strong> {{ user.student_profile.student_id }}</p>
+              <p><strong>Age:</strong> {{ user.student.student_age }} years old</p>
+          </div>
+          </div>
+        {% endif %}
+      </div>
     </section>
 
     <!-- Service Grid Section -->
     <section class="service-grid">
-        <!-- Service Cards -->
-        <div data-aos="fade-up" data-aos-duration="500" data-aos-delay="100" data-aos-once="true" class="service-card notification-container">
-            <a href="library.html" class="card-link">
-                <div class="inner">
-                    <div class="icon"><i data-feather="menu"></i></div>
-                    <div class="content-1">
-                        <h4 class="title">Library</h4>
-                        <p class="description">Access a wide range of books across various subjects to enhance your knowledge.</p>
-                        <div class="random-number light-mode" id="total-students-number">70</div>
-                        <div class="notification-dot"></div>
-                        <a class="read-more-button" href="/others/Library.html"><i class="fas fa-arrow-right"></i></a>
-                    </div>
-                </div>
-            </a>
-        </div>
+      <!-- Service Cards -->
+      <div
+        data-aos="fade-up"
+        data-aos-duration="500"
+        data-aos-delay="100"
+        data-aos-once="true"
+        class="service-card notification-container"
+      >
+        <a href="{% url 'library:library_books_list' %}" class="card-link">
+          <div class="inner">
+            <div class="icon"><i data-feather="menu"></i></div>
+            <div class="content-1">
+              <h4 class="title">Library</h4>
+              <p class="description">
+                Access a wide range of books across various subjects to enhance
+                your knowledge.
+              </p>
+              <div class="random-number light-mode" id="total-students-number">
+                70
+              </div>
+              <div class="notification-dot"></div>
+              <a
+                class="read-more-button"
+                href="{% url 'library:library_books_list' %}"
+                ><i class="fas fa-arrow-right"></i
+              ></a>
+            </div>
+          </div>
+        </a>
+      </div>
 
-        <div data-aos="fade-up" data-aos-duration="500" data-aos-delay="100" data-aos-once="true" class="service-card notification-container">
-            <a href="library.html" class="card-link">
-                <div class="inner">
-                    <div class="icon"><i data-feather="menu"></i></div>
-                    <div class="content-1">
-                        <h4 class="title">E-Exam</h4>
-                        <p class="description">Participate in online exams and track your progress.</p>
-                        <div class="notification-dot"></div>
-                        <a class="read-more-button" href="/login form/e-exam.html"><i class="fas fa-arrow-right"></i></a>
-                    </div>
-                </div>
-            </a>
-        </div>
+      <div
+        data-aos="fade-up"
+        data-aos-duration="500"
+        data-aos-delay="100"
+        data-aos-once="true"
+        class="service-card notification-container"
+      >
+        <a href="{% url 'exam_login' %}" class="card-link">
+          <div class="inner">
+            <div class="icon"><i data-feather="menu"></i></div>
+            <div class="content-1">
+              <h4 class="title">E-Exam</h4>
+              <p class="description">
+                Participate in online exams and track your progress.
+              </p>
+              <div class="notification-dot"></div>
+              <a class="read-more-button" href="{% url 'exam_login' %}"
+                ><i class="fas fa-arrow-right"></i
+              ></a>
+            </div>
+          </div>
+        </a>
+      </div>
 
-        <div data-aos="fade-up" data-aos-duration="500" data-aos-delay="100" data-aos-once="true" class="service-card notification-container">
-            <a href="class info.html" class="card-link">
-                <div class="inner">
-                    <div class="icon"><i data-feather="menu"></i></div>
-                    <div class="content-1">
-                        <h4 class="title">Total Students</h4>
-                        <p class="description">View the total number of students enrolled.</p>
-                        <div class="notification-dot"></div>
-                        <div class="random-number light-mode" id="total-students-number">500</div>
-                        <a class="read-more-button" href="class info.html"><i class="fas fa-arrow-right"></i></a>
-                    </div>
-                </div>
-            </a>
-        </div>
+      <div
+        data-aos="fade-up"
+        data-aos-duration="500"
+        data-aos-delay="100"
+        data-aos-once="true"
+        class="service-card notification-container"
+      >
+        <a href="{% url 'class_list_view' %}" class="card-link">
+          <div class="inner">
+            <div class="icon"><i data-feather="menu"></i></div>
+            <div class="content-1">
+              <h4 class="title">Total Students</h4>
+              <p class="description">
+                View the total number of students enrolled.
+              </p>
+              <div class="notification-dot"></div>
+              <div class="random-number light-mode" id="total-students-number">
+                {}
+              </div>
+              <a class="read-more-button" href="class info.html"
+                ><i class="fas fa-arrow-right"></i
+              ></a>
+            </div>
+          </div>
+        </a>
+      </div>
 
-        <div data-aos="fade-up" data-aos-duration="500" data-aos-delay="100" data-aos-once="true" class="service-card notification-container">
-            <a href="personal info.html" class="card-link">
-                <div class="inner">
-                    <div class="icon"><i data-feather="menu"></i></div>
-                    <div class="content-1">
-                        <h4 class="title">Subject Combination</h4>
-                        <p class="description">Explore various subject combinations available.</p>
-                        <div class="notification-dot"></div>
-                        <div class="random-number light-mode" id="subject-combination-number">9</div>
-                        <a class="read-more-button" href="/others/personal info.html"><i class="fas fa-arrow-right"></i></a>
-                    </div>
-                </div>
-            </a>
-        </div>
+      <div
+        data-aos="fade-up"
+        data-aos-duration="500"
+        data-aos-delay="100"
+        data-aos-once="true"
+        class="service-card notification-container"
+      >
+        <a href="personal info.html" class="card-link">
+          <div class="inner">
+            <div class="icon"><i data-feather="menu"></i></div>
+            <div class="content-1">
+              <h4 class="title">Subject Combination</h4>
+              <p class="description">
+                Explore various subject combinations available.
+              </p>
+              <div class="notification-dot"></div>
+              <div
+                class="random-number light-mode"
+                id="subject-combination-number"
+              >
+                9
+              </div>
+              <a class="read-more-button" href="/others/personal info.html"
+                ><i class="fas fa-arrow-right"></i
+              ></a>
+            </div>
+          </div>
+        </a>
+      </div>
 
-        <div data-aos="fade-up" data-aos-duration="500" data-aos-delay="100" data-aos-once="true" class="service-card notification-container">
-            <a href="Notes.html" class="card-link">
-                <div class="inner">
-                    <div class="icon"><i data-feather="menu"></i></div>
-                    <div class="content-1">
-                        <h4 class="title">Class-Notes</h4>
-                        <p class="description">Access and download class notes for various subjects.</p>
-                        <div class="notification-dot"></div>
-                        <a class="read-more-button" href="Notes.html"><i class="fas fa-arrow-right"></i></a>
-                    </div>
-                </div>
-            </a>
-        </div>
+      <div
+        data-aos="fade-up"
+        data-aos-duration="500"
+        data-aos-delay="100"
+        data-aos-once="true"
+        class="service-card notification-container"
+      >
+        <a href="{% url 'students_class_notes' %}" class="card-link">
+          <div class="inner">
+            <div class="icon"><i data-feather="menu"></i></div>
+            <div class="content-1">
+              <h4 class="title">Class-Notes</h4>
+              <p class="description">
+                Access and download class notes for various subjects.
+              </p>
+              <div class="notification-dot"></div>
+              <a
+                class="read-more-button"
+                href="{% url 'students_class_notes' %}"
+                ><i class="fas fa-arrow-right"></i
+              ></a>
+            </div>
+          </div>
+        </a>
+      </div>
 
-        <div data-aos="fade-up" data-aos-duration="500" data-aos-delay="100" data-aos-once="true" class="service-card notification-container">
-            <a href="Notes.html" class="card-link">
-                <div class="inner">
-                    <div class="icon"><i data-feather="menu"></i></div>
-                    <div class="content-1">
-                        <h4 class="title">No of books Uploaded</h4>
-                        <p class="description">See the number of books uploaded to the library.</p>
-                        <div class="notification-dot"></div>
-                        <div class="random-number light-mode" id="books-uploaded-number">17</div>
-                        <a class="read-more-button" href="Notes.html"><i class="fas fa-arrow-right"></i></a>
-                    </div>
-                </div>
-            </a>
-        </div>
+      <div
+        data-aos="fade-up"
+        data-aos-duration="500"
+        data-aos-delay="100"
+        data-aos-once="true"
+        class="service-card notification-container"
+      >
+        <a href="{% url 'library:total_books' %}" class="card-link">
+          <div class="inner">
+            <div class="icon"><i data-feather="menu"></i></div>
+            <div class="content-1">
+              <h4 class="title">No of books Uploaded</h4>
+              <p class="description">
+                See the number of books uploaded to the library.
+              </p>
+              <div class="notification-dot"></div>
+              <div class="random-number light-mode" id="books-uploaded-number">
+                {{total_books.count}}
+              </div>
+              <a class="read-more-button" href="{% url 'library:total_books' %}"
+                ><i class="fas fa-arrow-right"></i
+              ></a>
+            </div>
+          </div>
+        </a>
+      </div>
     </section>
 
     <footer>
-        <h1 class="footer-sec">
-            <p class="footer-text">**Powered By © B0SZs Technologies**</p>
-        </h1>
+      <h1 class="footer-sec">
+        <p class="footer-text">**Powered By © B0SZs Technologies**</p>
+      </h1>
     </footer>
 
     <!--=============== MAIN JS ===============-->
-    <script src="{% static 'students/js/main.js' %}"></script>
+    <script src="{% static 'js/students/main.js' %}"></script>
     <script>
-        // Toggle Menu
-        const navToggle = document.getElementById('nav-toggle');
-        const navMenu = document.getElementById('nav-menu');
+      // Toggle Menu
+      const navToggle = document.getElementById("nav-toggle");
+      const navMenu = document.getElementById("nav-menu");
 
-        navToggle.addEventListener('click', () => {
-            navMenu.classList.toggle('active');
-            navToggle.querySelector('.ri-menu-line').classList.toggle('hide');
-            navToggle.querySelector('.ri-close-line').classList.toggle('show');
-        });
+      navToggle.addEventListener("click", () => {
+        navMenu.classList.toggle("active");
+        navToggle.querySelector(".ri-menu-line").classList.toggle("hide");
+        navToggle.querySelector(".ri-close-line").classList.toggle("show");
+      });
 
-        // Call the function to display random numbers when the page loads
-        window.onload = displayRandomNumbers;
+      // Call the function to display random numbers when the page loads
+      window.onload = displayRandomNumbers;
     </script>
-</body>
+  </body>
 </html>

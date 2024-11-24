@@ -1,106 +1,101 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Upload Google Meet</title>
-    <link rel="stylesheet" href="uploadgmeet.css">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500&display=swap" rel="stylesheet">
-</head>
-<body>
+    <link rel="stylesheet" href="uploadgmeet.css" />
+    {% include "poppins_font.html" %}
+  </head>
+  <body>
     <div class="table-datas">
+      <div class="sub-rows">
+        <p>Google Meet</p>
+      </div>
 
-        <div class="sub-rows">
-    
-            <p>Google Meet</p>
+      <div class="padd">
+        <div class="search-row">
+          <span>
+            <select name="class" id="">
+              <option value="10">10</option>
+              <option value="9">9</option>
+              <option value="8">8</option>
+              <option value="7">7</option>
+              <option value="6">6</option>
+              <option value="5">5</option>
+              <option value="4">4</option>
+              <option value="3">3</option>
+              <option value="2">2</option>
+              <option value="1">1</option>
+            </select>
+          </span>
 
-          
+          <input type="search" placeholder="Search" />
         </div>
-            
-        <div class="padd">
-            <div class="search-row">
-        
-                <span> 
-                    <select name="class" id="">
-                        <option value="10">10</option>
-                        <option value="9">9</option>
-                        <option value="8">8</option>
-                        <option value="7">7</option>
-                        <option value="6">6</option>
-                        <option value="5">5</option>
-                        <option value="4">4</option>
-                        <option value="3">3</option>
-                        <option value="2">2</option>
-                        <option value="1">1</option>
-                    </select>
-                </span>
-        
-                <input type="search" placeholder="Search">
-                
-            </div>
-        
-        
-            <table>
-                <tr>
-                    <th>No</th>
-                    <th>Meeting Title</th>
-                    <th>Description</th>
-                    <th>Time and Date</th>
-                    <th>Created By</th>
-                    <th>Link</th>
-                    <th>Actions</th>
-                </tr>
-                
-                <tr>
-                    <td>1</td>
-                    <td>Biology</td>
-                    <td>Just Text</td>
-                    <td>1-1-43</td>
-                    <td>DEMO TEACHERS</td>
-                    <td>link</td>
-                    <td><span class="edit-action">Edit</span><span class="delete-action">Delete</span></td>
-                </tr>
-        
-                <!-- Additional rows can be added here -->
-        
-            </table>
-        </div>    
+
+        <table>
+          <tr>
+            <th>No</th>
+            <th>Meeting Title</th>
+            <th>Description</th>
+            <th>Time and Date</th>
+            <th>Created By</th>
+            <th>Link</th>
+            <th>Actions</th>
+          </tr>
+
+          <tr>
+            <td>1</td>
+            <td>Biology</td>
+            <td>Just Text</td>
+            <td>1-1-43</td>
+            <td>DEMO TEACHERS</td>
+            <td>link</td>
+            <td>
+              <span class="edit-action">Edit</span
+              ><span class="delete-action">Delete</span>
+            </td>
+          </tr>
+
+          <!-- Additional rows can be added here -->
+        </table>
+      </div>
     </div>
 
     <!-- Overlay for upload confirmation -->
     <div id="overlay">
-        <div class="overlay-content">
-            <h2>Confirm Upload</h2>
-            <p>Are you sure you want to upload this Google Meet link?</p>
-            <div class="btn-group">
-                <button id="confirm-upload">Upload</button>
-                <button id="cancel-upload">Cancel</button>
-            </div>
+      <div class="overlay-content">
+        <h2>Confirm Upload</h2>
+        <p>Are you sure you want to upload this Google Meet link?</p>
+        <div class="btn-group">
+          <button id="confirm-upload">Upload</button>
+          <button id="cancel-upload">Cancel</button>
         </div>
+      </div>
     </div>
 
     <script>
-        const uploadLink = document.getElementById('upload-link');
-        const overlay = document.getElementById('overlay');
-        const confirmUpload = document.getElementById('confirm-upload');
-        const cancelUpload = document.getElementById('cancel-upload');
+      const uploadLink = document.getElementById("upload-link");
+      const overlay = document.getElementById("overlay");
+      const confirmUpload = document.getElementById("confirm-upload");
+      const cancelUpload = document.getElementById("cancel-upload");
 
-        uploadLink.addEventListener('click', function(event) {
-            event.preventDefault();
-            overlay.style.display = 'block';
-        });
+      uploadLink.addEventListener("click", function (event) {
+        event.preventDefault();
+        overlay.style.display = "block";
+      });
 
-        cancelUpload.addEventListener('click', function() {
-            overlay.style.display = 'none';
-        });
+      cancelUpload.addEventListener("click", function () {
+        overlay.style.display = "none";
+      });
 
-        // Add functionality to confirm upload
-        confirmUpload.addEventListener('click', function() {
-            // Implement your upload logic here
-            console.log('Upload confirmed');
-            // Close the overlay
-            overlay.style.display = 'none';
-        });
+      // Add functionality to confirm upload
+      confirmUpload.addEventListener("click", function () {
+        // Implement your upload logic here
+        console.log("Upload confirmed");
+        // Close the overlay
+        overlay.style.display = "none";
+      });
     </script>
-</body>
+  </body>
 </html>
