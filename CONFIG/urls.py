@@ -10,7 +10,8 @@ urlpatterns = [
     path('library/', include("library.urls")),
     path('myquiz/', include("myquiz.urls")),
     path('report/', include('report.urls')),
-]
+    path('api/', include('api.urls'))
+] 
 
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL,

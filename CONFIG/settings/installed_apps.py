@@ -12,9 +12,11 @@ INSTALLED_APPS = [
     'django_seed',
     'django_filters',
     'storages',
-
+    'rest_framework',
+    
     'main',
     'library',
     'myquiz',
     'report',
+    'api', 
 ]
