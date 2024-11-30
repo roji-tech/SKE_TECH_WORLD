@@ -18,5 +18,10 @@ INSTALLED_APPS = [
     'library',
     'myquiz',
     'report',
+<<<<<<< HEAD
     'api', 
+=======
+    'notification',
+    'event',
+>>>>>>> origin/dev
 ]

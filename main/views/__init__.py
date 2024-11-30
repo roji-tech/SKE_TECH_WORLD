@@ -9,7 +9,6 @@ from .settings import *
 
 from .gmeet_views import *
 from .lesson_plan_views import *
-from .class_note_views import *
 from .profile_views import *
 
 from django.shortcuts import redirect
