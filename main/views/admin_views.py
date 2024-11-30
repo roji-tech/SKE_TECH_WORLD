@@ -8,9 +8,11 @@ from typing import Any
 from collections import defaultdict
 
 from django.db.models import Q
+from django.db.models.signals import post_save
 from django.db.utils import IntegrityError
+from django.dispatch import receiver
 
-from django.http import JsonResponse, HttpResponse
+from django.http import JsonResponse
 
 from django.core.validators import validate_email
 from django.core.exceptions import ValidationError
@@ -33,6 +35,7 @@ from django.views.generic import (
     UpdateView,
     DeleteView,
 )
+from ..notification_handler import NotificationManager
 
 # MODELS
 from main.models import (
@@ -207,7 +210,12 @@ class AddSession(CreateView):
                 form.add_error(
                     'name',  "An academic session with this name already exists for your school. Please choose a different name.")
                 return self.form_invalid(form)
-
+            NotificationManager.create_notification(
+                user = self.request.user,
+                action = 'added',
+                object_instance= self.object
+            )
+            
             return super().form_valid(form)
 
         except IntegrityError as e:
@@ -626,31 +634,40 @@ class StudentCreateView(AddRequestToFormMixin, CreateView):
         )
 
     def post(self, request, *args, **kwargs):
-        user_form = StudentUserForm(
-            request.POST, request.FILES, request=self.request)
-        student_form = StudentForm(
-            request.POST, request.FILES, request=self.request)
+        try:
+            user_form = StudentUserForm(
+                request.POST, request.FILES, request=self.request)
+            student_form = StudentForm(
+                request.POST, request.FILES, request=self.request)
 
-        if user_form.is_valid() and student_form.is_valid():
-            user = user_form.save(commit=False)
-            user.role = STUDENT
-            user.save()
-            student = student_form.save(commit=False)
-            student.user = user
-            student.school = School.get_user_school(request.user)
-            student.save()
-            messages.success(request, "Student created successfully!")
-            return redirect(self.success_url)
-        else:
-            print(user_form.errors)
-            print(student_form.errors)
-        return render(
-            request,
-            self.template_name,
-            {"user_form": user_form, "student_form": student_form},
-        )
+            if user_form.is_valid() and student_form.is_valid():
+                user = user_form.save(commit=False)
+                user.role = STUDENT
+                user.save()
+                student = student_form.save(commit=False)
+                student.user = user
+                student.school = School.get_user_school(request.user)
+                student.save()
+                messages.success(request, "Student created successfully!")
+                NotificationManager.create_notification(
+                    user=self.request.user,
+                    action='added',
+                    object_instance=self.object
+                )
+                post_save()
+                return redirect(self.success_url)
+            else:
+                print(user_form.errors)
+                print(student_form.errors)
+            return render(
+                request,
+                self.template_name,
+                {"user_form": user_form, "student_form": student_form},
+            )
+        except Exception as e:
+            print(e)
 
-    # def get_form(self, form_class=None):
+        # def get_form(self, form_class=None):
     #     if form_class is None:
     #         form_class = self.get_form_class()
     #     return form_class(request=self.request, **self.get_form_kwargs())
@@ -715,6 +732,11 @@ class StudentDeleteView(DeleteView):
         student = get_object_or_404(Student, pk=pk)
         student.user.delete()
         student.delete()
+        NotificationManager.create_notification(
+            user=self.request.user,
+            action='added',
+            object_instance = self.object
+        )
         messages.success(request, "Student deleted successfully!")
         return redirect(self.success_url)
 
@@ -791,6 +813,7 @@ class TeacherCreateView(CreateView):
             teacher.user = user
             teacher.school = School.get_user_school(request.user)
             teacher.save()
+        
             messages.success(request, "Teacher created successfully!")
             return redirect("list-teachers")
         else:
@@ -830,6 +853,11 @@ class TeacherUpdateView(UpdateView):
         if user_form.is_valid() and teacher_form.is_valid():
             user_form.save()
             teacher_form.save()
+            NotificationManager.create_notification(
+                user=self.request.user,
+                action='updated',
+                object_instance = self.object
+            )
             messages.success(request, "Teacher updated successfully!")
             return redirect("list-teachers")
         else:
