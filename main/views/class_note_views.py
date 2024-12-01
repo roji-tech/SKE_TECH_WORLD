@@ -1,13 +1,7 @@
-# from .views import (
-#     GmeetClassListView, GmeetClassDetailView, GmeetClassCreateView, GmeetClassUpdateView, GmeetClassDeleteView,
-#     LessonPlanListView, LessonPlanDetailView, LessonPlanCreateView, LessonPlanUpdateView, LessonPlanDeleteView,
-#     ClassNoteListView, ClassNoteDetailView, ClassNoteCreateView, ClassNoteUpdateView, ClassNoteDeleteView
-# )
 from django.views.generic import ListView, DetailView
-# from .forms import GmeetClassForm, LessonPlanForm, ClassNoteForm
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.urls import reverse_lazy
-from main.models.models import GmeetClass, School, LessonPlan, ClassNote
+from main.models.models import  School, ClassNote
 
 from django import forms
 from django.shortcuts import render, redirect
@@ -98,13 +92,14 @@ class ClassNoteCreateView(CreateView):  # ClassNote Create View
 class ClassNoteUpdateView(UpdateView):  # ClassNote Update View
     model = ClassNote
     form_class = ClassNoteForm
-    template_name = 'classnote_form.html'
+    template_name = 'note/classnote_form.html'
     success_url = reverse_lazy('classnote-list')
 
 
-class ClassNoteDeleteView(DeleteView):  # ClassNote Delete View
+# ClassNote Delete View
+class ClassNoteDeleteView(DeleteView):
     model = ClassNote
-    template_name = 'classnote_confirm_delete.html'
+    template_name = 'notes/classnote_confirm_delete.html'
     success_url = reverse_lazy('classnote-list')
 
 

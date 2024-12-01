@@ -1,4 +1,5 @@
 from main.views import *
+from main.views.class_note_views import *
 
 from .superadmin_url import urlpatterns as superadmins_urlpatterns
 from .student_urls import urlpatterns as students_urlpatterns
@@ -63,9 +64,6 @@ urlpatterns += [
     path('class-notes/<int:pk>/delete/',
          ClassNoteDeleteView.as_view(), name='classnote-delete'),
 
-
-    path('exam/',
-         ClassNoteDeleteView.as_view(), name='exam'),
 
     path('comingsoon/',
          TemplateView.as_view(template_name="comingsoon.html"), name='comingsoon'),

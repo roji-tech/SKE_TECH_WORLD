@@ -1,4 +1,8 @@
+from pprint import pprint
 from django.urls import path, include
+
+from rest_framework.routers import DefaultRouter
+
 
 # from django.contrib.auth.views import (
 #     PasswordResetView,
@@ -30,8 +34,6 @@ from .views import (
     render_student_pdf_list,  # new
 )
 
-# from .forms import EmailValidationOnForgotPassword
-
 
 urlpatterns__ = [
     path("", include("django.contrib.auth.urls")),
@@ -62,7 +64,7 @@ urlpatterns__ = [
     ),  # new
     path(
         "create_students_pdf_list/", render_student_pdf_list, name="student_list_pdf"
-    ),  # new
+    ),  
     # path('add-student/', StudentAddView.as_view(), name='add_student'),
     # path('programs/course/delete/<int:pk>/', course_delete, name='delete_course'),
     # Setting urls

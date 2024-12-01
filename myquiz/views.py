@@ -139,7 +139,8 @@ def take_quiz(request, quiz_id):
             quiz=quiz,
             score=score,
             term=quiz.term,
-            session="2023-2024"  # Replace with actual session logic
+            session = quiz.term.session if quiz.term else "2023-2024"  # Replace with actual logic
+
         )
 
         return redirect('quiz_result', score=score)
