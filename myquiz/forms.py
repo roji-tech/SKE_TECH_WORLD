@@ -6,11 +6,18 @@ from .models import Quiz, Question, AcademicSession, Term
 from main.models import School
 
 
+from .models import Quiz
+# Assuming there's a Teacher model for user-subject access
+from main.models import School, Teacher, AcademicSession, Term, SchoolClass, Subject
+
+
 class QuizForm(forms.ModelForm):
     class Meta:
         model = Quiz
-        fields = ['title', 'quiz_type', 'school_class',
-                  'subject', 'start_date', 'end_date', 'term']
+        # fields = ['title', 'quiz_type', 'school_class',
+        #           'subject', 'start_date', 'end_date', 'term']
+        fields = ['school_class', 'term',
+                  'subject', 'start_date', 'end_date', ]
 
     def __init__(self, *args, **kwargs):
         request = kwargs.pop('request', None)
@@ -32,6 +39,56 @@ class QuizForm(forms.ModelForm):
                 # Set the current term as the default value for the 'term' field
                 if current_term:
                     self.fields['term'].initial = current_term
+
+
+class QuizForm(forms.ModelForm):
+    class Meta:
+        model = Quiz
+        fields = ['school_class', 'term', 'subject', 'start_date', 'end_date']
+
+    def __init__(self, *args, **kwargs):
+        request = kwargs.pop('request', None)
+        super().__init__(*args, **kwargs)
+
+        # Get the current user's school and session
+        school = School.get_user_school(request.user)
+
+        if school:
+            # Get the current academic session for the school
+            current_session = AcademicSession.objects.filter(
+                school=school, is_current=True).first()
+
+            if current_session:
+                # Get the current term in the current session
+                current_term = Term.objects.filter(
+                    academic_session=current_session).order_by('-start_date').first()
+
+                # Filter SchoolClass by the current academic session
+                self.fields['school_class'].queryset = SchoolClass.objects.filter(
+                    academic_session=current_session)
+
+                # Filter subjects based on the teacher's access and selected class
+                teacher_subjects = Subject.objects.filter(
+                    teacher__user=request.user)
+                self.fields['subject'].queryset = teacher_subjects
+
+                # Set the current term as the default value for the 'term' field
+                if current_term:
+                    self.fields['term'].initial = current_term
+                    self.fields['term'].queryset = Term.objects.filter(
+                        academic_session=current_session)
+
+    def clean(self):
+        # Ensure that the selected class and subject are part of the current academic session
+        cleaned_data = super().clean()
+        school_class = cleaned_data.get('school_class')
+        subject = cleaned_data.get('subject')
+
+        if school_class and subject:
+            if subject not in school_class.subject_set.all():
+                raise forms.ValidationError(
+                    "Selected subject is not part of the selected class.")
+        return cleaned_data
 
 
 # class QuestionForm(forms.ModelForm):

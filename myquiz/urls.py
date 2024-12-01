@@ -3,6 +3,8 @@ from . import views
 
 urlpatterns = [
     path('', views.create_quiz, name='create_quiz'),
+    path('ass/', views.create_ass, name='create_ass'),
+    path('exam/', views.create_exam, name='create_exam'),
     path('<int:quiz_id>/take/', views.take_quiz, name='take_quiz'),
     path('result/<int:score>/', views.quiz_result, name='quiz_result'),
     path('<int:quiz_id>/questions/', views.add_question, name='add-question'),
