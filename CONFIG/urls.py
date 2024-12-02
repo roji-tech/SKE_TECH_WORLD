@@ -11,13 +11,12 @@ urlpatterns = [
     path('library/', include("library.urls")),
     path('myquiz/', include("myquiz.urls")),
     path('report/', include('report.urls')),
-<<<<<<< HEAD
+    path('notifications/', include('notification.urls')),
     path('api/', include('api.urls'))
 ] 
-=======
-    path('notifications/', include('notification.urls')),
-]
->>>>>>> origin/dev
+
+
+
 
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL,

@@ -1,3 +1,4 @@
+import logging
 from django.contrib.auth import get_user_model
 from datetime import date
 
@@ -520,7 +521,7 @@ class Student(models.Model):
 
             try:
                 self.generate_student_id()
-            except ObjectDoesNotExist:
+            except ObjectDoesObjectDoesNotExistNotExist:
                 logging.warning(
                     "No students found for the given school and session.")
                 break
