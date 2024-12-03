@@ -25,7 +25,7 @@ class SchoolSerializer(serializers.ModelSerializer):
   
   class Meta:
     model = School
-    fields  = ['id', ] 
+    fields  = ['id'] 
 
 
 class AcademicSessionSerializer(serializers.ModelSerializer):
