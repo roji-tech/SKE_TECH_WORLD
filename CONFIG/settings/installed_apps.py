@@ -8,19 +8,22 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
+
+    # installed apps
     'django_extensions',
     'django_seed',
     'django_filters',
     'storages',
-    'rest_framework',
-    
+    "corsheaders",
+    "rest_framework",
+    "djoser",
+    "rest_framework_simplejwt.token_blacklist",
+
     'main',
     'library',
     'myquiz',
     'report',
-    'api', 
-
+    'api',
     'notification',
     'event',
-
 ]

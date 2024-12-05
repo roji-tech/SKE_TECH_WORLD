@@ -1,8 +1,10 @@
 from django.urls import path, include
 
 from rest_framework_nested import routers
+from rest_framework.routers import DefaultRouter
+from rest_framework_simplejwt.views import TokenRefreshView, TokenVerifyView
 
-
+from api.views import CustomTokenObtainPairView, LogoutView
 from . import views
 
 
@@ -19,8 +21,15 @@ academic_sessions_router.register('terms', views.TermViewSet, basename='academic
 school_router = routers.NestedDefaultRouter(router, 'schools', lookup='school')
 school_router.register('classes', views.SchoolClassViewSet, basename='school-classes')
 
-
 urlpatterns = [
-  path('v1/', include(router.urls))
+    path('', include(router.urls)),
+
+    path("auth/", include("djoser.urls")),
+    path("auth/", include("djoser.urls.jwt")),
+    path("auth/logout/", LogoutView.as_view()),
+
+    path("auth/token/", CustomTokenObtainPairView.as_view(),
+         name="token_obtain_pair"),
+    path("auth/token/refresh/", TokenRefreshView.as_view(), name="token_refresh"),
+    path("auth/token/verify/", TokenVerifyView.as_view(), name="token_verify"),
 ]
-urlpatterns = urlpatterns + academic_sessions_router.urls + school_router.urls

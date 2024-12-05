@@ -11,12 +11,8 @@ urlpatterns = [
     path('library/', include("library.urls")),
     path('myquiz/', include("myquiz.urls")),
     path('report/', include('report.urls')),
-    path('notifications/', include('notification.urls')),
-    path('api/', include('api.urls'))
+    path('api/v1/', include('api.urls'))
 ] 
-
-
-
 
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL,
