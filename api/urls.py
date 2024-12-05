@@ -11,6 +11,7 @@ from . import views
 router = routers.DefaultRouter()
 router.register('schools', views.SchoolViewSet, basename='schools'),
 router.register('academic-sessions', views.AcademicSessionViewSet, basename='academic_session')
+router.register('teachers', views.TeacherViewSet)
 
 # domains_router = routers.NestedSimpleRouter(router, r'domains', lookup='domain')
 # Nested routers for Academic sessiion

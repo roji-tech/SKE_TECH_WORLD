@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from main.models import School, AcademicSession, Term, SchoolClass
+from main.models import School, AcademicSession, Term, SchoolClass, Teacher
 
 from main.models import School
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
@@ -42,7 +42,7 @@ class SchoolSerializer(serializers.ModelSerializer):
   
   class Meta:
     model = School
-    fields  = ['id'] 
+    fields  = ['id', 'name','classes', 'owner', 'address', 'phone', 'email', 'logo'] 
 
 
 class AcademicSessionSerializer(serializers.ModelSerializer):
@@ -69,3 +69,24 @@ class TermSerializer(serializers.ModelSerializer):
     class Meta:
         model = School
         fields = '__all__'
+
+
+
+class TeacherSerializer(serializers.ModelSerializer):
+    # Nested serialization for related user fields
+    user_full_name = serializers.CharField(source='user.get_full_name', read_only=True)
+    user_email = serializers.EmailField(source='user.email', read_only=True)
+    user_phone = serializers.CharField(source='user.phone', read_only=True)
+
+    class Meta:
+        model = Teacher
+        fields = [
+            'id',
+            'user',  # User ID reference
+            'user_full_name',
+            'user_email',
+            'user_phone',
+            'school',
+            'department',
+        ]
+

@@ -12,22 +12,22 @@ from rest_framework.viewsets import ModelViewSet
 from rest_framework.generics import ListAPIView
 from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly
 
-from main.models import School, AcademicSession, Term, SchoolClass
+from main.models import School, AcademicSession, Term, SchoolClass, Teacher
 from api.serializers import AcademicSessionSerializer, SchoolClassSerializer, SchoolSerializer, TermSerializer
 
 
 from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly, AllowAny
 
 from main.models import School
-from .serializers import SchoolSerializer
+from .serializers import SchoolSerializer, TeacherSerializer
 from rest_framework_simplejwt.views import TokenObtainPairView
 
 
 
 class CustomTokenObtainPairView(TokenObtainPairView):
     # Replace the serializer with your custom
-    serializer_class = ExampleTokenObtainPairSerializer
-
+    # serializer_class = ExampleTokenObtainPairSerializer
+    pass
 
 class LogoutView(APIView):
     permission_classes = (AllowAny,)
@@ -83,4 +83,9 @@ class TermViewSet(ModelViewSet):
   # def get_serializer_context(self):
   #   return {'academic_session_id' : self.kwargs['academic_session_pk']}
   
+class TeacherViewSet(ModelViewSet):
+    queryset = Teacher.objects.all().select_related('user', 'school')
+    serializer_class = TeacherSerializer
+    permission_classes = [IsAuthenticated]
+   
 
