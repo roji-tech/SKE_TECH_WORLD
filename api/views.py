@@ -11,13 +11,13 @@ from rest_framework.viewsets import ModelViewSet
 from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly, AllowAny
 
 from main.models import School
-from .serializers import SchoolSerializer
+from .serializers import CustomTokenObtainPairSerializer, SchoolSerializer
 from rest_framework_simplejwt.views import TokenObtainPairView
 
 
 class CustomTokenObtainPairView(TokenObtainPairView):
     # Replace the serializer with your custom
-    serializer_class = ExampleTokenObtainPairSerializer
+    serializer_class = CustomTokenObtainPairSerializer
 
 
 class LogoutView(APIView):
