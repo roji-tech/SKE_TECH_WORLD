@@ -9,10 +9,12 @@ from . import views
 
 router = DefaultRouter()
 router.register('schools', views.SchoolViewSet, basename='schools')
+router.register('teachers', views.TeacherViewSet, basename='teachers')
 
 
 urlpatterns = [
     path('', include(router.urls)),
+    path('create-teacher/', views.CreateTeacherView.as_view(), name='create-teacher'),
 
     path("auth/", include("djoser.urls")),
     path("auth/", include("djoser.urls.jwt")),

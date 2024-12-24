@@ -10,10 +10,10 @@ from django.shortcuts import render
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly, AllowAny
 
-from main.models import School
-from .serializers import CustomTokenObtainPairSerializer, SchoolSerializer
+from .serializers import CreateTeacherSerializer, CustomTokenObtainPairSerializer, SchoolSerializer, TeacherSerializer
 from rest_framework_simplejwt.views import TokenObtainPairView
 
+from main.models import School, Teacher
 
 class CustomTokenObtainPairView(TokenObtainPairView):
     # Replace the serializer with your custom
@@ -37,4 +37,20 @@ class LogoutView(APIView):
 class SchoolViewSet(ModelViewSet):
     queryset = School.objects.all()
     serializer_class = SchoolSerializer
-    permission_classes = [IsAuthenticatedOrReadOnly]
+    # permission_classes = [IsAuthenticatedOrReadOnly]
+
+
+class TeacherViewSet(ModelViewSet):
+    queryset = Teacher.objects.all()
+    serializer_class = TeacherSerializer
+
+class CreateTeacherView(APIView):
+    def post(self, request):
+        serializer = CreateTeacherSerializer(data=request.data)
+        if serializer.is_valid():
+            teacher = serializer.save()
+            return Response({'message' : 'Teacher added successfully', 'teacher_id' : teacher.id}, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+    
