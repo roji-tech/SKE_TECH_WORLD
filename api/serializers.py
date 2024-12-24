@@ -1,13 +1,13 @@
 from rest_framework import serializers
-from main.models import School, AcademicSession, Term, SchoolClass, Teacher
-
-from main.models import School
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer, TokenRefreshSerializer
 from rest_framework_simplejwt.tokens import RefreshToken, SlidingToken, Token, UntypedToken
 from .models import RefreshTokenUsage
 from django.contrib.auth import get_user_model
 from rest_framework_simplejwt.settings import api_settings
 
+from main.models import School, Teacher
+
+User  = get_user_model()
 
 class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
     """Customizes JWT default Serializer to add more information about user"""
@@ -137,23 +137,39 @@ class TermSerializer(serializers.ModelSerializer):
         model = School
         fields = '__all__'
 
-
-
 class TeacherSerializer(serializers.ModelSerializer):
-    # Nested serialization for related user fields
-    user_full_name = serializers.CharField(source='user.get_full_name', read_only=True)
-    user_email = serializers.EmailField(source='user.email', read_only=True)
-    user_phone = serializers.CharField(source='user.phone', read_only=True)
-
     class Meta:
         model = Teacher
-        fields = [
-            'id',
-            'user',  # User ID reference
-            'user_full_name',
-            'user_email',
-            'user_phone',
-            'school',
-            'department',
-        ]
+        fields = '__all__'
 
+class CreateTeacherSerializer(serializers.Serializer):
+    user_id = serializers.IntegerField()
+    school_id = serializers.IntegerField()
+    department = serializers.CharField(max_length=24, required=False, allow_blank=True)
+
+    def validate_user_id(self, value):
+        try:
+            user = User.objects.get(id=value)
+        except User.DoesNotExist:
+            raise serializers.ValidationError('User with this id does not exit')
+        return value
+    
+    def validate_school_id(self, value):
+        try:
+            school = School.objects.get(id=value)
+        except School.DoesNotExist:
+            raise serializers.ValidationError('School with this id does not exit')
+        return value
+    
+    def create(self, validated_data):
+        user = User.objects.get(id=validated_data['user_id'])
+        school = School.objects.get(id=validated_data['school_id'])
+        department = validated_data.get('department', '')
+
+
+        teacher = Teacher.objects.create(
+            user=user,
+            school=school,
+            department=department
+        )
+        return teacher

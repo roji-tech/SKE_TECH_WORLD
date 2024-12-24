@@ -17,12 +17,13 @@ from api.serializers import AcademicSessionSerializer, SchoolClassSerializer, Sc
 
 
 from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly, AllowAny
-
-from main.models import School
-from .serializers import SchoolSerializer, TeacherSerializer, CustomTokenObtainPairSerializer
-
 from rest_framework_simplejwt.views import TokenObtainPairView
 
+
+from main.models import School
+from .serializers import CreateTeacherSerializer, CustomTokenObtainPairSerializer, SchoolSerializer, TeacherSerializer
+
+from main.models import School, Teacher
 
 
 class CustomTokenObtainPairView(TokenObtainPairView):
@@ -93,4 +94,16 @@ class TeacherViewSet(ModelViewSet):
     serializer_class = TeacherSerializer
     permission_classes = [IsAuthenticated]
    
+
+
+class CreateTeacherView(APIView):
+    def post(self, request):
+        serializer = CreateTeacherSerializer(data=request.data)
+        if serializer.is_valid():
+            teacher = serializer.save()
+            return Response({'message' : 'Teacher added successfully', 'teacher_id' : teacher.id}, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+    
 
