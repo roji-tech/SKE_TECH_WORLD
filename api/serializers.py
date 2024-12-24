@@ -5,7 +5,7 @@ from .models import RefreshTokenUsage
 from django.contrib.auth import get_user_model
 from rest_framework_simplejwt.settings import api_settings
 
-from main.models import School, Teacher
+from main.models import School, Teacher, SchoolClass, AcademicSession,Term
 
 User  = get_user_model()
 

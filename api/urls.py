@@ -16,11 +16,11 @@ router.register('teachers', views.TeacherViewSet, basename='teachers')
 
 # domains_router = routers.NestedSimpleRouter(router, r'domains', lookup='domain')
 # Nested routers for Academic sessiion
-academic_sessions_router = routers.NestedDefaultRouter(router, 'academic-sessions', lookup='academic_session')
+academic_sessions_router = routers.NestedSimpleRouter(router, 'academic-sessions', lookup='academic_session')
 academic_sessions_router.register('terms', views.TermViewSet, basename='academic-session-terms')
 
 # Nested Router for Schools
-school_router = routers.NestedDefaultRouter(router, 'schools', lookup='school')
+school_router = routers.NestedSimpleRouter(router, 'schools', lookup='school')
 school_router.register('classes', views.SchoolClassViewSet, basename='school-classes')
 
 urlpatterns = [
