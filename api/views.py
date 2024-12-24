@@ -19,15 +19,20 @@ from api.serializers import AcademicSessionSerializer, SchoolClassSerializer, Sc
 from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly, AllowAny
 
 from main.models import School
-from .serializers import SchoolSerializer, TeacherSerializer
+from .serializers import SchoolSerializer, TeacherSerializer, CustomTokenObtainPairSerializer
+
 from rest_framework_simplejwt.views import TokenObtainPairView
 
 
 
 class CustomTokenObtainPairView(TokenObtainPairView):
     # Replace the serializer with your custom
+
     # serializer_class = ExampleTokenObtainPairSerializer
-    pass
+    
+    serializer_class = CustomTokenObtainPairSerializer
+
+
 
 class LogoutView(APIView):
     permission_classes = (AllowAny,)
