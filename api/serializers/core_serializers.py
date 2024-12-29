@@ -5,7 +5,7 @@ from ..models import RefreshTokenUsage
 from django.contrib.auth import get_user_model
 from rest_framework_simplejwt.settings import api_settings
 
-from main.models import School, Teacher, SchoolClass, AcademicSession,Term, LessonPlan, Subject
+from main.models import School, Teacher, SchoolClass, AcademicSession,Term, LessonPlan, Subject, Student
 
 User = get_user_model()
 
@@ -154,47 +154,61 @@ class TeacherSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
-class CreateTeacherSerializer(serializers.Serializer):
-    user_id = serializers.IntegerField()
-    school_id = serializers.IntegerField()
-    department = serializers.CharField(
-        max_length=24, required=False, allow_blank=True)
+# class CreateTeacherSerializer(serializers.Serializer):
+#     user_id = serializers.IntegerField()
+#     school_id = serializers.IntegerField()
+#     department = serializers.CharField(
+#         max_length=24, required=False, allow_blank=True)
 
-    def validate_user_id(self, value):
-        try:
-            user = User.objects.get(id=value)
-        except User.DoesNotExist:
-            raise serializers.ValidationError(
-                'User with this id does not exit')
-        return value
+#     def validate_user_id(self, value):
+#         try:
+#             user = User.objects.get(id=value)
+#         except User.DoesNotExist:
+#             raise serializers.ValidationError(
+#                 'User with this id does not exit')
+#         return value
 
-    def validate_school_id(self, value):
-        try:
-            school = School.objects.get(id=value)
-        except School.DoesNotExist:
-            raise serializers.ValidationError(
-                'School with this id does not exit')
-        return value
+#     def validate_school_id(self, value):
+#         try:
+#             school = School.objects.get(id=value)
+#         except School.DoesNotExist:
+#             raise serializers.ValidationError(
+#                 'School with this id does not exit')
+#         return value
 
-    def create(self, validated_data):
-        user = User.objects.get(id=validated_data['user_id'])
-        school = School.objects.get(id=validated_data['school_id'])
-        department = validated_data.get('department', '')
+#     def create(self, validated_data):
+#         user = User.objects.get(id=validated_data['user_id'])
+#         school = School.objects.get(id=validated_data['school_id'])
+#         department = validated_data.get('department', '')
 
-        teacher = Teacher.objects.create(
-            user=user,
-            school=school,
-            department=department
-        )
-        return teacher
+#         teacher = Teacher.objects.create(
+#             user=user,
+#             school=school,
+#             department=department
+#         )
+#         return teacher
 
+class StudentSerializer(serializers.ModelSerializer):
+    full_name = serializers.SerializerMethodField(method_name='get_student_full_name')
+    session_admitted = serializers.SerializerMethodField(method_name='get_formatted_admission_date')
+    
+    class Meta:
+        model = Student
+        fields = ['student_id', 'reg_no', 'school', 'session_admitted', 'full_name', "date_of_birth", 'student_class']
+
+    
+    def get_student_full_name(self, obj):
+        return obj.get_full_name()
+
+    def get_formatted_admission_date(self, obj):
+        return obj.session_admitted.strftime('%d-%b-%Y') 
 
 class SubjectSerializer(serializers.ModelSerializer):
     class Meta:
         model = Subject
         fields  = ['name', 'teacher']
 
-class LessonPlanSerializer(serializers.ModelSerializers):
+class LessonPlanSerializer(serializers.ModelSerializer):
     class Meta:
         model  = LessonPlan
         fields  = ['title', 'school_class', 'subject', 'uploaded_file', 'uploaded_by']

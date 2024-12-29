@@ -4,6 +4,7 @@ from django.core.exceptions import ObjectDoesNotExist
 
 from rest_framework.response import Response
 from rest_framework import status
+from rest_framework.decorators import action
 from rest_framework.views import APIView
 from rest_framework.renderers import JSONRenderer, BrowsableAPIRenderer
 from rest_framework.viewsets import ModelViewSet
@@ -15,11 +16,20 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework_simplejwt.views import TokenObtainPairView
 
 
+from main.models.users import User
 from main.views.auth_views import send_verification_email_to_user
-from .serializers import (
-    CreateTeacherSerializer, CustomTokenObtainPairSerializer, SchoolSerializer, TeacherSerializer,
-    SchoolRegistrationSerializer,                          UserRegistrationSerializer)
-from main.models import School, Teacher
+from .serializers.auth_serializers import UserRegistrationSerializer, SchoolRegistrationSerializer
+from .serializers.core_serializers import (
+ CustomTokenObtainPairSerializer,
+   SchoolSerializer,
+     TeacherSerializer,
+       SchoolClassSerializer,
+         AcademicSessionSerializer,
+           StudentSerializer,
+             TermSerializer,
+               SubjectSerializer
+    )
+from main.models import School, Teacher, AcademicSession, Term, SchoolClass, Student, Subject
 
 import logging
 
@@ -164,17 +174,19 @@ class TeacherViewSet(ModelViewSet):
     queryset = Teacher.objects.all().select_related('user', 'school')
     serializer_class = TeacherSerializer
     permission_classes = [IsAuthenticated]
-   
 
-
-
-class CreateTeacherView(APIView):
-    def post(self, request):
-        serializer = CreateTeacherSerializer(data=request.data)
-        if serializer.is_valid():
-            teacher = serializer.save()
-            return Response({'message': 'Teacher added successfully', 'teacher_id': teacher.id}, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    @action(detail=True, methods=['GET', 'PUT'])
+    def me(self, request):
+        if request.method == 'GET':
+            (teacher, created) = Teacher.objects.get_or_create(teacher_id=request.user.id)
+            serializer = TeacherSerializer(teacher)
+            return Response(serializer.data)
+        elif request.method == 'PUT':
+            serializer = TeacherSerializer(teacher)
+            if serializer.is_valid(raise_exception=True):
+                serializer.save()
+                return Response(serializer.data)
+    
 
 
 class StudentViewSet(ModelViewSet):

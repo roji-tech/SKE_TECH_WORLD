@@ -490,10 +490,6 @@ class Student(models.Model):
     def __str__(self):
         return f"{self.id} - {self.user.full_name}"
 
-    @property
-    def full_name(self):
-        return f"{self.user.full_name}"
-
     def generate_student_id(self):
         """Generates a unique student ID based on the school and admission year."""
         # Extract short school name or fallback to school ID
