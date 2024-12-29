@@ -12,18 +12,18 @@ from rest_framework.viewsets import ModelViewSet
 from rest_framework.generics import ListAPIView
 from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly
 
-from main.models import School, AcademicSession, Term, SchoolClass, Teacher
-from api.serializers import AcademicSessionSerializer, SchoolClassSerializer, SchoolSerializer, TermSerializer
+from main.models import School, AcademicSession, Term, SchoolClass, Teacher, Subject, Student
+from api.serializers import AcademicSessionSerializer, SchoolClassSerializer, SchoolSerializer, TermSerializer, StudentSerializer
 
 
 from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly, AllowAny
 from rest_framework_simplejwt.views import TokenObtainPairView
 
 
-from main.models import School
-from .serializers import CreateTeacherSerializer, CustomTokenObtainPairSerializer, SchoolSerializer, TeacherSerializer
 
-from main.models import School, Teacher
+
+from .serializers import *
+
 
 
 class CustomTokenObtainPairView(TokenObtainPairView):
@@ -105,5 +105,10 @@ class CreateTeacherView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-    
+class StudentViewSet(ModelViewSet):
+    queryset = Student.objects.all()
+    serializer_class = StudentSerializer
 
+class SubjectViewSet(ModelViewSet):
+    queryset = Subject.objects.all()
+    serializer_class = SubjectSerializer

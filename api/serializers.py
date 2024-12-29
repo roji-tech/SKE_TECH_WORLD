@@ -1,11 +1,12 @@
 from rest_framework import serializers
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer, TokenRefreshSerializer
 from rest_framework_simplejwt.tokens import RefreshToken, SlidingToken, Token, UntypedToken
+
 from .models import RefreshTokenUsage
 from django.contrib.auth import get_user_model
 from rest_framework_simplejwt.settings import api_settings
 
-from main.models import School, Teacher, SchoolClass, AcademicSession,Term
+from main.models import School, Teacher, SchoolClass, AcademicSession,Term, LessonPlan, Subject
 
 User  = get_user_model()
 
@@ -90,6 +91,7 @@ class CustomTokenRefreshSerializer(TokenRefreshSerializer):
 class SchoolClassSerializer(serializers.ModelSerializer):
     name_display = serializers.CharField(source='get_name_display', read_only=True)
     category_display = serializers.CharField(source='get_category_display', read_only=True)
+    # class_capacity = serializers.SerializerMethodField(method_name='get_class_capacity')         
 
     class Meta:
         model = SchoolClass
@@ -99,17 +101,18 @@ class SchoolClassSerializer(serializers.ModelSerializer):
             'name_display',
             'division',
             'category',
+            'class_capacity',
             'category_display',
             'academic_session',
             'class_teacher',
         ]
 
 class SchoolSerializer(serializers.ModelSerializer):
-  classes = SchoolClassSerializer(read_only=True, many=True)
+#   classes = SchoolClassSerializer(read_only=True, many=True)
   
   class Meta:
     model = School
-    fields  = ['id', 'name','classes', 'owner', 'address', 'phone', 'email', 'logo'] 
+    fields  = ['id', 'name', 'owner', 'address', 'phone', 'email', 'logo'] 
 
 
 class AcademicSessionSerializer(serializers.ModelSerializer):
@@ -173,3 +176,15 @@ class CreateTeacherSerializer(serializers.Serializer):
             department=department
         )
         return teacher
+
+
+class SubjectSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Subject
+        fields  = ['name', 'teacher']
+
+class LessonPlanSerializer(serializers.ModelSerializers):
+    class Meta:
+        model  = LessonPlan
+        fields  = ['title', 'school_class', 'subject', 'uploaded_file', 'uploaded_by']
+

@@ -372,7 +372,7 @@ class SchoolClass(models.Model):
         max_length=12, choices=CLASS_CATEGORIES,
         blank=True, null=True, default=""
     )
-
+    class_capacity = models.IntegerField()
     def __str__(self):
         return f"{self.get_name_display()} ({self.academic_session.name})"
 
@@ -386,6 +386,12 @@ class SchoolClass(models.Model):
             return f"{self.get_name_display()} ({self.academic_session.name})"
             # return f"{self.name}({self.academic_session.name})"
 
+            
+    def validate_class_capacity(self):
+        if self.students.count() > self.class_capacity:
+            message = f"{self.name} already filled!"
+            return message
+        
     @classmethod
     def get_school_classes(cls, request):
         user = request.user
