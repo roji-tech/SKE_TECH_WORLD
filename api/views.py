@@ -1,6 +1,11 @@
+import re
+import jwt
+
 from django.shortcuts import render
 from django.db import IntegrityError
 from django.core.exceptions import ObjectDoesNotExist
+from django.conf import settings
+from django.utils.module_loading import import_string
 
 from rest_framework.response import Response
 from rest_framework import status
@@ -12,37 +17,24 @@ from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnl
 from rest_framework.decorators import api_view, renderer_classes
 
 from rest_framework_simplejwt.exceptions import TokenError
-from rest_framework_simplejwt.tokens import RefreshToken
+from rest_framework_simplejwt.tokens import RefreshToken, SlidingToken, Token, UntypedToken
 from rest_framework_simplejwt.views import TokenObtainPairView
 
-
-from main.models.users import User
 from main.views.auth_views import send_verification_email_to_user
-from .serializers.auth_serializers import UserRegistrationSerializer, SchoolRegistrationSerializer
-from .serializers.core_serializers import (
- CustomTokenObtainPairSerializer,
-   SchoolSerializer,
-     TeacherSerializer,
-       SchoolClassSerializer,
-         AcademicSessionSerializer,
-           StudentSerializer,
-             TermSerializer,
-               SubjectSerializer
-    )
-from main.models import School, Teacher, AcademicSession, Term, SchoolClass, Student, Subject
+from main.models import User, School, Teacher, AcademicSession, Term, SchoolClass, Student, Subject
 
-import logging
-
-logger = logging.getLogger(__name__)
-
-
-class CustomTokenObtainPairView(TokenObtainPairView):
-    # Replace the serializer with your custom
-
-    # serializer_class = ExampleTokenObtainPairSerializer
-    
-    serializer_class = CustomTokenObtainPairSerializer
-
+from .serializers import (
+    CustomTokenObtainPairSerializer,
+    SchoolSerializer,
+    TeacherSerializer,
+    SchoolClassSerializer,
+    AcademicSessionSerializer,
+    StudentSerializer,
+    TermSerializer,
+    SubjectSerializer,
+    UserRegistrationSerializer,
+    SchoolRegistrationSerializer,
+)
 
 
 class LogoutView(APIView):
@@ -108,7 +100,7 @@ class RegisterAndRegisterSchoolView(APIView):
                     send_verification_email_to_user(User, owner, request)
 
                 # Generate tokens
-                refresh = RefreshToken.for_user(owner)
+                refresh = MyRefreshToken.for_user(owner)
                 access = str(refresh.access_token)
 
                 return Response({
@@ -131,45 +123,43 @@ class RegisterAndRegisterSchoolView(APIView):
 
 
 class SchoolViewSet(ModelViewSet):
-  queryset = School.objects.all()
-  serializer_class  = SchoolSerializer
-  permission_classes = [IsAuthenticatedOrReadOnly]
+    queryset = School.objects.all()
+    serializer_class = SchoolSerializer
+    permission_classes = [IsAuthenticatedOrReadOnly]
 
 
 class SchoolClassViewSet(ModelViewSet):
-   queryset = SchoolClass.objects.all()
-   serializer_class = SchoolClassSerializer
+    queryset = SchoolClass.objects.all()
+    serializer_class = SchoolClassSerializer
 
-   def get_queryset(self):
-      user = self.request.user
-      school = School.get_user_school(user=user)
-      return SchoolClass.objects.filter(academic_session__school=school)
-
-
+    def get_queryset(self):
+        user = self.request.user
+        school = School.get_user_school(user=user)
+        return SchoolClass.objects.filter(academic_session__school=school)
 
 
 class AcademicSessionViewSet(ModelViewSet):
-  serializer_class = AcademicSessionSerializer
-  queryset = AcademicSession.objects.all()
+    serializer_class = AcademicSessionSerializer
+    queryset = AcademicSession.objects.all()
 
 
 class TermViewSet(ModelViewSet):
-  serializer_class = TermSerializer
-  queryset = Term.objects.all()
+    serializer_class = TermSerializer
+    queryset = Term.objects.all()
 
-  def get_queryset(self):
-      academic_session_id = self.kwargs.get('academic_session_pk')
-      if academic_session_id:
-          return self.queryset.filter(academic_session_id=academic_session_id)
-      return self.queryset
+    def get_queryset(self):
+        academic_session_id = self.kwargs.get('academic_session_pk')
+        if academic_session_id:
+            return self.queryset.filter(academic_session_id=academic_session_id)
+        return self.queryset
+
+    # def get_queryset(self, request):
+    #   return Term.objects.filter(academic_session_pk=self.kwargs['academic_session_pk'])
+
+    # def get_serializer_context(self):
+    #   return {'academic_session_id' : self.kwargs['academic_session_pk']}
 
 
-  # def get_queryset(self, request):
-  #   return Term.objects.filter(academic_session_pk=self.kwargs['academic_session_pk'])
-  
-  # def get_serializer_context(self):
-  #   return {'academic_session_id' : self.kwargs['academic_session_pk']}
-  
 class TeacherViewSet(ModelViewSet):
     queryset = Teacher.objects.all().select_related('user', 'school')
     serializer_class = TeacherSerializer
@@ -178,7 +168,8 @@ class TeacherViewSet(ModelViewSet):
     @action(detail=True, methods=['GET', 'PUT'])
     def me(self, request):
         if request.method == 'GET':
-            (teacher, created) = Teacher.objects.get_or_create(teacher_id=request.user.id)
+            (teacher, created) = Teacher.objects.get_or_create(
+                teacher_id=request.user.id)
             serializer = TeacherSerializer(teacher)
             return Response(serializer.data)
         elif request.method == 'PUT':
@@ -186,12 +177,12 @@ class TeacherViewSet(ModelViewSet):
             if serializer.is_valid(raise_exception=True):
                 serializer.save()
                 return Response(serializer.data)
-    
 
 
 class StudentViewSet(ModelViewSet):
     queryset = Student.objects.all()
     serializer_class = StudentSerializer
+
 
 class SubjectViewSet(ModelViewSet):
     queryset = Subject.objects.all()
