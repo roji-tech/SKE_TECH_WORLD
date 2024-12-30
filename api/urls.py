@@ -1,5 +1,6 @@
 from django.urls import path, include
 
+from rest_framework_nested import routers
 from rest_framework.routers import DefaultRouter
 from rest_framework_simplejwt.views import token_refresh, token_verify, token_obtain_pair
 
@@ -7,14 +8,24 @@ from api.views import LogoutView
 from . import views
 
 
-router = DefaultRouter()
-router.register('schools', views.SchoolViewSet, basename='schools')
+router = routers.DefaultRouter()
+router.register('schools', views.SchoolViewSet, basename='schools'),
+router.register('academic-sessions', views.AcademicSessionViewSet, basename='academic_session')
 router.register('teachers', views.TeacherViewSet, basename='teachers')
 
 
+# domains_router = routers.NestedSimpleRouter(router, r'domains', lookup='domain')
+# Nested routers for Academic sessiion
+academic_sessions_router = routers.NestedSimpleRouter(router, 'academic-sessions', lookup='academic_session')
+academic_sessions_router.register('terms', views.TermViewSet, basename='academic-session-terms')
+
+# Nested Router for Schools
+school_router = routers.NestedSimpleRouter(router, 'schools', lookup='school')
+school_router.register('classes', views.SchoolClassViewSet, basename='school-classes')
+
 urlpatterns = [
     path('', include(router.urls)),
-    path('create-teacher/', views.CreateTeacherView.as_view(), name='create-teacher'),
+#     path('create-teacher/', views.CreateTeacherView.as_view(), name='create-teacher'),
 
     path("auth/", include("djoser.urls")),
     path("auth/", include("djoser.urls.jwt")),

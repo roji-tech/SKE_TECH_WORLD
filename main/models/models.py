@@ -1,3 +1,4 @@
+import logging
 from django.contrib.auth import get_user_model
 from datetime import date
 
@@ -371,7 +372,7 @@ class SchoolClass(models.Model):
         max_length=12, choices=CLASS_CATEGORIES,
         blank=True, null=True, default=""
     )
-
+    class_capacity = models.IntegerField()
     def __str__(self):
         return f"{self.get_name_display()} ({self.academic_session.name})"
 
@@ -385,6 +386,12 @@ class SchoolClass(models.Model):
             return f"{self.get_name_display()} ({self.academic_session.name})"
             # return f"{self.name}({self.academic_session.name})"
 
+            
+    def validate_class_capacity(self):
+        if self.students.count() > self.class_capacity:
+            message = f"{self.name} already filled!"
+            return message
+        
     @classmethod
     def get_school_classes(cls, request):
         user = request.user
@@ -483,10 +490,6 @@ class Student(models.Model):
     def __str__(self):
         return f"{self.id} - {self.user.full_name}"
 
-    @property
-    def full_name(self):
-        return f"{self.user.full_name}"
-
     def generate_student_id(self):
         """Generates a unique student ID based on the school and admission year."""
         # Extract short school name or fallback to school ID
@@ -520,7 +523,7 @@ class Student(models.Model):
 
             try:
                 self.generate_student_id()
-            except ObjectDoesNotExist:
+            except ObjectDoesObjectDoesNotExistNotExist:
                 logging.warning(
                     "No students found for the given school and session.")
                 break

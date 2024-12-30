@@ -23,7 +23,6 @@ class Quiz(models.Model):
     )
     start_date = models.DateTimeField(null=True, blank=True)
     end_date = models.DateTimeField(null=True, blank=True)
-    duration = models.DurationField(null=True, blank=True)
 
     def academic_session(self) -> AcademicSession:
         return self.term.academic_session

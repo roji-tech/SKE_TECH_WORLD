@@ -40,50 +40,6 @@ def create_quiz(request):
 
 
 @mydecorators.teacher_is_authenticated
-def create_ass(request):
-    if request.method == "POST":
-        quiz_form = QuizForm(request.POST, request=request)
-        if quiz_form.is_valid():
-            quiz = quiz_form.save(commit=False)
-            # Assuming Teacher has a relation to User
-            quiz.quiz_type = "homework"
-            quiz.created_by = request.user
-            quiz.save()
-            return redirect('add-question', quiz_id=quiz.id)
-    else:
-        quiz_form = QuizForm(request=request)
-
-    return render(request, 'quiz/ass_form.html', {'form': quiz_form})
-
-
-@mydecorators.teacher_is_authenticated
-def create_exam(request):
-    if request.method == "POST":
-        quiz_form = QuizForm(request.POST, request=request)
-        if quiz_form.is_valid():
-            quiz = quiz_form.save(commit=False)
-
-            # Set quiz type as 'exam' and set current academic session
-            quiz.quiz_type = "exam"
-            quiz.created_by = request.user
-
-            # Get the current academic session and assign it to the quiz
-            current_session = AcademicSession.objects.filter(
-                school=School.get_user_school(request.user), is_current=True
-            ).first()
-
-            if current_session:
-                quiz.term.academic_session = current_session
-
-            quiz.save()
-            return redirect('add-question', quiz_id=quiz.id)
-    else:
-        quiz_form = QuizForm(request=request)
-
-    return render(request, 'quiz/exam_form.html', {'form': quiz_form})
-
-
-@mydecorators.teacher_is_authenticated
 def add_question(request, quiz_id):
     quiz = get_object_or_404(Quiz, id=quiz_id)
 

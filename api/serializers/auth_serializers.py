@@ -1,6 +1,6 @@
+from rest_framework_simplejwt.tokens import RefreshToken
 from typing import Any, Dict, TypeVar
 from main.models.models import School
-from ..mytokens import MyRefreshToken, MyToken, SlidingToken, UntypedToken
 from rest_framework_simplejwt.models import TokenUser
 from rest_framework import exceptions
 from django.utils.translation import gettext_lazy as _
@@ -54,7 +54,7 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
 class CustomTokenRefreshSerializer(TokenRefreshSerializer):
     refresh = serializers.CharField()
     access = serializers.CharField(read_only=True)
-    token_class = MyRefreshToken
+    token_class = RefreshToken
 
     def validate(self, attrs):
         print(attrs)
