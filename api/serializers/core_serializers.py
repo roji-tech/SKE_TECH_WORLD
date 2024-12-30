@@ -5,7 +5,7 @@ from ..models import RefreshTokenUsage
 from django.contrib.auth import get_user_model
 from rest_framework_simplejwt.settings import api_settings
 
-from main.models import School, Teacher, SchoolClass, AcademicSession,Term, LessonPlan, Subject, Student
+from main.models import School, Teacher, SchoolClass, AcademicSession, Term, LessonPlan, Subject, Student
 
 User = get_user_model()
 
@@ -28,9 +28,6 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
         # token["is_staff"] = user.is_staff
         print(token)
         return token
-
-
-
 
 
 class CustomTokenRefreshSerializer(TokenRefreshSerializer):
@@ -95,10 +92,13 @@ class CustomTokenRefreshSerializer(TokenRefreshSerializer):
 
         return data
 
+
 class SchoolClassSerializer(serializers.ModelSerializer):
-    name_display = serializers.CharField(source='get_name_display', read_only=True)
-    category_display = serializers.CharField(source='get_category_display', read_only=True)
-    # class_capacity = serializers.SerializerMethodField(method_name='get_class_capacity')         
+    name_display = serializers.CharField(
+        source='get_name_display', read_only=True)
+    category_display = serializers.CharField(
+        source='get_category_display', read_only=True)
+    # class_capacity = serializers.SerializerMethodField(method_name='get_class_capacity')
 
     class Meta:
         model = SchoolClass
@@ -114,38 +114,39 @@ class SchoolClassSerializer(serializers.ModelSerializer):
             'class_teacher',
         ]
 
+
 class SchoolSerializer(serializers.ModelSerializer):
-#   classes = SchoolClassSerializer(read_only=True, many=True)
-  
-  class Meta:
-    model = School
-    fields  = ['id', 'name', 'owner', 'address', 'phone', 'email', 'logo'] 
-
-
-class AcademicSessionSerializer(serializers.ModelSerializer):
-  school = SchoolSerializer(read_only=True)
-
-  class Meta:
-    model = AcademicSession
-    fields = ['id','name', 'school', 'start_date', 'end_date', 'is_current', 'next_session_begins']
-
-    # def get_school(self, obj):
-    #   return str(obj.school.name)
-
-class TermSerializer(serializers.ModelSerializer):
-  class Meta:
-    model = Term
-    fields = ['academic_session', 'name', 'start_date', 'end_date']
-
-    def create(self, validated_data):
-      academic_session_id = self.context['academic_session_id']
-      return Term.objects.create(academic_session_id=academic_session_id, **validated_data)
-
-
+    #   classes = SchoolClassSerializer(read_only=True, many=True)
 
     class Meta:
         model = School
-        fields = '__all__'
+        fields = ['id', 'name', 'owner', 'address', 'phone', 'email', 'logo']
+
+
+class AcademicSessionSerializer(serializers.ModelSerializer):
+    school = SchoolSerializer(read_only=True)
+
+    class Meta:
+        model = AcademicSession
+        fields = ['id', 'name', 'school', 'start_date',
+                  'end_date', 'is_current', 'next_session_begins']
+
+        # def get_school(self, obj):
+        #   return str(obj.school.name)
+
+
+class TermSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Term
+        fields = ['academic_session', 'name', 'start_date', 'end_date']
+
+        def create(self, validated_data):
+            academic_session_id = self.context['academic_session_id']
+            return Term.objects.create(academic_session_id=academic_session_id, **validated_data)
+
+        class Meta:
+            model = School
+            fields = '__all__'
 
 
 class TeacherSerializer(serializers.ModelSerializer):
@@ -189,27 +190,31 @@ class TeacherSerializer(serializers.ModelSerializer):
 #         return teacher
 
 class StudentSerializer(serializers.ModelSerializer):
-    full_name = serializers.SerializerMethodField(method_name='get_student_full_name')
-    session_admitted = serializers.SerializerMethodField(method_name='get_formatted_admission_date')
-    
+    full_name = serializers.SerializerMethodField(
+        method_name='get_student_full_name')
+    session_admitted = serializers.SerializerMethodField(
+        method_name='get_formatted_admission_date')
+
     class Meta:
         model = Student
-        fields = ['student_id', 'reg_no', 'school', 'session_admitted', 'full_name', "date_of_birth", 'student_class']
+        fields = ['student_id', 'reg_no', 'school', 'session_admitted',
+                  'full_name', "date_of_birth", 'student_class']
 
-    
     def get_student_full_name(self, obj):
         return obj.get_full_name()
 
     def get_formatted_admission_date(self, obj):
-        return obj.session_admitted.strftime('%d-%b-%Y') 
+        return obj.session_admitted.strftime('%d-%b-%Y')
+
 
 class SubjectSerializer(serializers.ModelSerializer):
     class Meta:
         model = Subject
-        fields  = ['name', 'teacher']
+        fields = ['name', 'teacher']
+
 
 class LessonPlanSerializer(serializers.ModelSerializer):
     class Meta:
-        model  = LessonPlan
-        fields  = ['title', 'school_class', 'subject', 'uploaded_file', 'uploaded_by']
-
+        model = LessonPlan
+        fields = ['title', 'school_class', 'subject',
+                  'uploaded_file', 'uploaded_by']
