@@ -28,9 +28,13 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
         token = super().get_token(user)
         # token["is_superuser"] = user.is_superuser
         if School.get_user_school(user) and School.get_user_school(user).logo:
-            token["school_logo"] = School.get_user_school(user).logo.url
+            token["school_logo"] = str(School.get_user_school(user).logo.url)
         else:
             token["school_logo"] = ""
+
+        token["school_name"] = str(School.get_user_school(user).name)
+        token["school_short_name"] = str(
+            School.get_user_school(user).short_name)
 
         token["username"] = user.username
         token["email"] = user.email
