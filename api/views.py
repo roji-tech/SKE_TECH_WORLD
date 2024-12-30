@@ -1,7 +1,11 @@
 from django.shortcuts import render
 from django.db import IntegrityError
 from django.core.exceptions import ObjectDoesNotExist
+import jwt
+from django.conf import settings
+from django.utils.module_loading import import_string
 
+import re
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.views import APIView
@@ -11,24 +15,20 @@ from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnl
 from rest_framework.decorators import api_view, renderer_classes
 
 from rest_framework_simplejwt.exceptions import TokenError
-from rest_framework_simplejwt.tokens import RefreshToken
+from .mytokens import MyRefreshToken
 from rest_framework_simplejwt.views import TokenObtainPairView
 
 
 from main.views.auth_views import send_verification_email_to_user
 from .serializers import (
-    CreateTeacherSerializer, CustomTokenObtainPairSerializer, SchoolSerializer, TeacherSerializer,
-    SchoolRegistrationSerializer,                          UserRegistrationSerializer)
+    CreateTeacherSerializer, SchoolSerializer, TeacherSerializer,
+    SchoolRegistrationSerializer, UserRegistrationSerializer
+)
 from main.models import School, Teacher
 
 import logging
 
 logger = logging.getLogger(__name__)
-
-
-class CustomTokenObtainPairView(TokenObtainPairView):
-    # Replace the serializer with your custom
-    serializer_class = CustomTokenObtainPairSerializer
 
 
 class LogoutView(APIView):
@@ -38,7 +38,7 @@ class LogoutView(APIView):
     def post(self, request):
         try:
             refresh_token = request.data["refresh"]
-            token = RefreshToken(refresh_token)
+            token = MyRefreshToken(refresh_token)
             token.blacklist()
             return Response(status=status.HTTP_200_OK)
         except (ObjectDoesNotExist, TokenError):
@@ -94,7 +94,7 @@ class RegisterAndRegisterSchoolView(APIView):
                     send_verification_email_to_user(User, owner, request)
 
                 # Generate tokens
-                refresh = RefreshToken.for_user(owner)
+                refresh = MyRefreshToken.for_user(owner)
                 access = str(refresh.access_token)
 
                 return Response({
