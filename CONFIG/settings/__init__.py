@@ -7,3 +7,4 @@ from .static import *
 from .graphiz import *
 from .email import *
 from .rest_framework import *
+from .djoser import *

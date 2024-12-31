@@ -14,6 +14,10 @@ from django.core.exceptions import ValidationError
 from ..models import RefreshTokenUsage
 from rest_framework_simplejwt.settings import api_settings
 from main.models import School, Teacher
+from django.db import transaction
+from rest_framework.response import Response
+from rest_framework import status
+from djoser.serializers import UserCreateSerializer
 
 User = get_user_model()
 
@@ -27,14 +31,18 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
     def get_token(cls, user):
         token = super().get_token(user)
         # token["is_superuser"] = user.is_superuser
-        if School.get_user_school(user) and School.get_user_school(user).logo:
-            token["school_logo"] = str(School.get_user_school(user).logo.url)
+        if School.get_user_school(user):
+            token["school_name"] = str(School.get_user_school(user).name)
+            token["school_short_name"] = str(
+                School.get_user_school(user).short_name)
+
+            if School.get_user_school(user).logo:
+                token["school_logo"] = str(
+                    School.get_user_school(user).logo.url)
         else:
             token["school_logo"] = ""
-
-        token["school_name"] = str(School.get_user_school(user).name)
-        token["school_short_name"] = str(
-            School.get_user_school(user).short_name)
+            token["school_name"] = ""
+            token["school_short_name"] = ""
 
         token["username"] = user.username
         token["email"] = user.email
@@ -115,7 +123,7 @@ class CustomTokenRefreshSerializer(TokenRefreshSerializer):
         return data
 
 
-class UserRegistrationSerializer(serializers.ModelSerializer):
+class UserRegistrationSerializer(UserCreateSerializer):
     class Meta:
         model = User
         fields = ['first_name', 'last_name', 'email', 'password', 'gender']
@@ -139,6 +147,54 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
         except ValidationError as ve:
             raise serializers.ValidationError(str(ve))
         return value
+
+    def create(self, validated_data):
+        with transaction.atomic():
+            try:
+                # Handle user registration
+                user = User.objects.create(
+                    first_name=validated_data['first_name'],
+                    last_name=validated_data['last_name'],
+                    email=validated_data['email'],
+                    gender=validated_data['gender'],
+                    role="owner"
+                )
+                user.set_password(validated_data['password'])
+                user.save()
+
+                # Create the School
+                school_data = {
+                    'name': self.context['request'].data.get('school_name'),
+                    'phone': self.context['request'].data.get('school_phone'),
+                    'email': self.context['request'].data.get('school_email'),
+                }
+                school_serializer = SchoolRegistrationSerializer(
+                    data=school_data)
+
+                school_serializer.is_valid(raise_exception=True)
+                school = school_serializer.save(owner=user)
+
+                if user.is_admin:  # Assuming you have an is_admin attribute for the user
+                    send_verification_email_to_user(
+                        User, user, self.context['request'])
+
+                return user
+            except Exception as e:
+                raise serializers.ValidationError(str(e))
+
+    def validate(self, attrs):
+        user = User(**attrs)
+        password = attrs.get("password")
+
+        try:
+            validate_password(password, user)
+        except django_exceptions.ValidationError as e:
+            serializer_error = serializers.as_serializer_error(e)
+            raise serializers.ValidationError(
+                {"password": serializer_error[api_settings.NON_FIELD_ERRORS_KEY]}
+            )
+
+        return attrs
 
 
 class SchoolRegistrationSerializer(serializers.ModelSerializer):
