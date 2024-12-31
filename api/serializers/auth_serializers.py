@@ -11,6 +11,8 @@ from django.contrib.auth.password_validation import validate_password
 from rest_framework import serializers
 from django.core.validators import validate_email
 from django.core.exceptions import ValidationError
+
+from main.views.auth_views import send_verification_email_to_user
 from ..models import RefreshTokenUsage
 from rest_framework_simplejwt.settings import api_settings
 from main.models import School, Teacher

@@ -25,7 +25,7 @@ from main.models import User, School, Teacher, AcademicSession, Term, SchoolClas
 from django.db import transaction
 from djoser.views import UserViewSet as DjoserUserViewSet
 
-from .serializers import (
+from api.serializers import (
     CustomTokenObtainPairSerializer,
     SchoolSerializer,
     TeacherSerializer,
@@ -37,7 +37,7 @@ from .serializers import (
     UserRegistrationSerializer,
     SchoolRegistrationSerializer,
 )
-from .permissions import IsAdminOrIsTeacherOrReadOnly, IsAdminOrReadOnly
+from api.permissions import IsAdminOrIsTeacherOrReadOnly, IsAdminOrReadOnly
 
 
 class SchoolViewSet(ModelViewSet):
@@ -93,13 +93,14 @@ class TeacherViewSet(ModelViewSet):
 
     @action(detail=True, methods=['GET', 'PUT'])
     def me(self, request):
+        teacher = Teacher.objects.get(user=request.user)
+
         if request.method == 'GET':
-            (teacher, created) = Teacher.objects.get_or_create(
-                teacher_id=request.user.id)
             serializer = TeacherSerializer(teacher)
             return Response(serializer.data)
+        
         elif request.method == 'PUT':
-            serializer = TeacherSerializer(teacher)
+            serializer = TeacherSerializer(teacher, data=request.data, partial=True)
             if serializer.is_valid(raise_exception=True):
                 serializer.save()
                 return Response(serializer.data)
@@ -109,6 +110,8 @@ class StudentViewSet(ModelViewSet):
     queryset = Student.objects.all()
     serializer_class = StudentSerializer
     permission_classes = [IsAuthenticatedOrReadOnly]
+
+    
 
 
 class SubjectViewSet(ModelViewSet):
