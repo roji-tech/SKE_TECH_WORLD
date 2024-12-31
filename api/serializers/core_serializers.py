@@ -20,7 +20,7 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
         token["email"] = user.email
         token["first_name"] = user.first_name
         token["last_name"] = user.last_name
-        token["image"] = user.image
+        token["image"] = user.image.url if user.image else None
         token["gender"] = user.gender
         token["phone"] = user.phone
         token["role"] = user.role
