@@ -35,7 +35,7 @@ from .serializers import (
     UserRegistrationSerializer,
     SchoolRegistrationSerializer,
 )
-
+from .permissions import IsAdminOrIsTeacherOrReadOnly, IsAdminOrReadOnly
 
 class LogoutView(APIView):
     permission_classes = (AllowAny,)
@@ -100,7 +100,7 @@ class RegisterAndRegisterSchoolView(APIView):
                     send_verification_email_to_user(User, owner, request)
 
                 # Generate tokens
-                refresh = MyRefreshToken.for_user(owner)
+                refresh = RefreshToken.for_user(owner)
                 access = str(refresh.access_token)
 
                 return Response({
@@ -131,6 +131,7 @@ class SchoolViewSet(ModelViewSet):
 class SchoolClassViewSet(ModelViewSet):
     queryset = SchoolClass.objects.all()
     serializer_class = SchoolClassSerializer
+    permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
         user = self.request.user
@@ -141,11 +142,13 @@ class SchoolClassViewSet(ModelViewSet):
 class AcademicSessionViewSet(ModelViewSet):
     serializer_class = AcademicSessionSerializer
     queryset = AcademicSession.objects.all()
+    permission_classes = [IsAdminOrReadOnly]
 
 
 class TermViewSet(ModelViewSet):
     serializer_class = TermSerializer
     queryset = Term.objects.all()
+    permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
         academic_session_id = self.kwargs.get('academic_session_pk')
@@ -165,6 +168,11 @@ class TeacherViewSet(ModelViewSet):
     serializer_class = TeacherSerializer
     permission_classes = [IsAuthenticated]
 
+    def get_permissions(self):
+        if self.request.method == 'GET':
+            return [AllowAny()]
+        return [IsAuthenticated()]
+
     @action(detail=True, methods=['GET', 'PUT'])
     def me(self, request):
         if request.method == 'GET':
@@ -182,8 +190,10 @@ class TeacherViewSet(ModelViewSet):
 class StudentViewSet(ModelViewSet):
     queryset = Student.objects.all()
     serializer_class = StudentSerializer
+    permission_classes = [IsAuthenticatedOrReadOnly]
 
 
 class SubjectViewSet(ModelViewSet):
     queryset = Subject.objects.all()
     serializer_class = SubjectSerializer
+    permission_classes = [IsAdminOrIsTeacherOrReadOnly]
