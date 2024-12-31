@@ -22,6 +22,8 @@ from rest_framework_simplejwt.views import TokenObtainPairView
 
 from main.views.auth_views import send_verification_email_to_user
 from main.models import User, School, Teacher, AcademicSession, Term, SchoolClass, Student, Subject
+from django.db import transaction
+from djoser.views import UserViewSet as DjoserUserViewSet
 
 from .serializers import (
     CustomTokenObtainPairSerializer,
@@ -37,6 +39,7 @@ from .serializers import (
 )
 from .permissions import IsAdminOrIsTeacherOrReadOnly, IsAdminOrReadOnly
 
+
 class LogoutView(APIView):
     permission_classes = (AllowAny,)
     authentication_classes = ()
@@ -51,76 +54,52 @@ class LogoutView(APIView):
             return Response(status=status.HTTP_400_BAD_REQUEST)
 
 
-class RegisterAndRegisterSchoolView(APIView):
+class CustomUserViewSet(DjoserUserViewSet):
+    queryset = User.objects.all()
     serializer_class = UserRegistrationSerializer
-    renderer_classes = [JSONRenderer, BrowsableAPIRenderer]
-    permission_classes = [AllowAny]  # Adjust permission as necessary
 
-    def get(self, request, *args, **kwargs):
-        user_serializer = UserRegistrationSerializer()
-        school_serializer = SchoolRegistrationSerializer()
+    @action(detail=False, methods=['GET'])
+    def me(self, request, *args, **kwargs):
+        user = request.user
+        serializer = self.get_serializer(user)
+        return Response(serializer.data)
 
-        # Return initial empty forms for HTML rendering
-        return Response({
-            "data_input": {
-                "first_name": "John",
-                "last_name": "Doe",
-                "email": "john.does@example.com",
-                "password": "StrongPassword123!",
-                "gender": "M",
-                "school_name": "Sample School",
-                "school_phone": "1234567890",
-                "school_email": "contact-us@sampleschool.com"
-            },
-            "message": "Use POST to register."
-        }, status=status.HTTP_200_OK)
+    def create(self, request, *args, **kwargs):
+        user_serializer = UserRegistrationSerializer(
+            data=request.data, context={'request': request})
+        user_serializer.is_valid(raise_exception=True)
+        self.perform_create(user_serializer)
+        # send_verification_email_to_user(user)
+        headers = self.get_success_headers(user_serializer.data)
+        return Response(user_serializer.data, status=status.HTTP_201_CREATED, headers=headers)
 
-    def post(self, request, *args, **kwargs):
-        # Handle user registration
-        user_serializer = UserRegistrationSerializer(data=request.data)
+        # if user_serializer.is_valid():
+        #     result = user_serializer.save()
 
-        if user_serializer.is_valid():
-            # Create the User
-            owner = user_serializer.save()
-            owner.set_password(user_serializer.validated_data['password'])
-            owner.save()
+        #     if result["status"]:
+        #         # Generate tokens
+        #         user = User.objects.get(email=request.data['email'])
+        #         # refresh = RefreshToken.for_user(user)
+        #         # access = str(refresh.access_token)
 
-            # Create the School
-            school_data = {
-                'name': request.data.get('school_name'),
-                'phone': request.data.get('school_phone'),
-                'email': request.data.get('school_email'),
-            }
-            school_serializer = SchoolRegistrationSerializer(data=school_data)
+        #         return Response({
+        #             "status": True,
+        #             "message": result["message"],
+        #             # "tokens": {
+        #             #     "refresh": str(refresh),
+        #             #     "access": access
+        #             # }
+        #         }, status=status.HTTP_201_CREATED)
 
-            if school_serializer.is_valid():
-                school = school_serializer.save(owner=owner)
+        #     return Response({"status": False, "message": result["message"]}, status=status.HTTP_400_BAD_REQUEST)
 
-                if owner.is_admin:  # Assuming you have an is_admin attribute for the user
-                    send_verification_email_to_user(User, owner, request)
+        # print(user_serializer.errors)
+        # print(user_serializer.error_messages)
 
-                # Generate tokens
-                refresh = RefreshToken.for_user(owner)
-                access = str(refresh.access_token)
+        # return Response({"status": False, "message": user_serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
 
-                return Response({
-                    "status": True,
-                    "message": "Account created successfully.",
-                    "tokens": {
-                        "refresh": str(refresh),
-                        "access": access
-                    }
-                }, status=status.HTTP_201_CREATED)
 
-            return Response({"status": False, "message": school_serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
-
-        return Response({"status": False, "message": user_serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
-
-    def handle_exception(self, exc):
-        response = super().handle_exception(exc)
-        response.data['status'] = False
-        return response
-
+#
 
 class SchoolViewSet(ModelViewSet):
     queryset = School.objects.all()
@@ -197,3 +176,29 @@ class SubjectViewSet(ModelViewSet):
     queryset = Subject.objects.all()
     serializer_class = SubjectSerializer
     permission_classes = [IsAdminOrIsTeacherOrReadOnly]
+
+
+# class RegisterAndRegisterSchoolView(APIView):
+#     serializer_class = UserRegistrationSerializer
+#     renderer_classes = [JSONRenderer, BrowsableAPIRenderer]
+#     # Adjust permission as necessary
+#     permission_classes = [AllowAny]
+
+#     def get(self, request, *args, **kwargs):
+#         user_serializer = UserRegistrationSerializer()
+#         school_serializer = SchoolRegistrationSerializer()
+
+#         # Return initial empty forms for HTML rendering
+#         return Response({
+#             "data_input": {
+#                 "first_name": "John",
+#                 "last_name": "Doe",
+#                 "email": "john.does@example.com",
+#                 "password": "StrongPassword123!",
+#                 "gender": "M",
+#                 "school_name": "Sample School",
+#                 "school_phone": "1234567890",
+#                 "school_email": "contact-us@sampleschool.com"
+#             },
+#             "message": "Use POST to register."
+#         }, status=status.HTTP_200_OK)
