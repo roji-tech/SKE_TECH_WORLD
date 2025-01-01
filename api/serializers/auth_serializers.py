@@ -1,6 +1,6 @@
 from rest_framework_simplejwt.tokens import RefreshToken
 from typing import Any, Dict, TypeVar
-from main.models.models import School
+from main.models.models import School, User
 from rest_framework_simplejwt.models import TokenUser
 from rest_framework import exceptions
 from django.utils.translation import gettext_lazy as _
@@ -11,6 +11,8 @@ from django.contrib.auth.password_validation import validate_password
 from rest_framework import serializers
 from django.core.validators import validate_email
 from django.core.exceptions import ValidationError
+
+from main.views.auth_views import send_verification_email_to_user
 from ..models import RefreshTokenUsage
 from rest_framework_simplejwt.settings import api_settings
 from main.models import School, Teacher
@@ -19,7 +21,6 @@ from rest_framework.response import Response
 from rest_framework import status
 from djoser.serializers import UserCreateSerializer
 
-User = get_user_model()
 
 AuthUser = TypeVar("AuthUser", AbstractBaseUser, TokenUser)
 
@@ -31,14 +32,14 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
     def get_token(cls, user):
         token = super().get_token(user)
         # token["is_superuser"] = user.is_superuser
-        if School.get_user_school(user):
-            token["school_name"] = str(School.get_user_school(user).name)
+        user_school: School | None = School.get_user_school(user)
+        if user_school:
+            token["school_name"] = str(user_school.name)
             token["school_short_name"] = str(
-                School.get_user_school(user).short_name)
+                user_school.short_name)
 
-            if School.get_user_school(user).logo:
-                token["school_logo"] = str(
-                    School.get_user_school(user).logo.url)
+            if user_school.logo:
+                token["school_logo"] = str(user_school.logo.url)
         else:
             token["school_logo"] = ""
             token["school_name"] = ""
@@ -188,7 +189,7 @@ class UserRegistrationSerializer(UserCreateSerializer):
 
         try:
             validate_password(password, user)
-        except django_exceptions.ValidationError as e:
+        except ValidationError as e:
             serializer_error = serializers.as_serializer_error(e)
             raise serializers.ValidationError(
                 {"password": serializer_error[api_settings.NON_FIELD_ERRORS_KEY]}

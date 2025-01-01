@@ -9,7 +9,7 @@ from django.db import models, transaction
 import string
 from django.db.models import Q
 from datetime import datetime, timedelta
-
+from django.core.exceptions import ObjectDoesNotExist
 
 User = get_user_model()
 
@@ -42,7 +42,7 @@ class School(models.Model):
         return self.name
 
     @staticmethod
-    def get_user_school(user: User):
+    def get_user_school(user):
         try:
             if user.is_admin:
                 # For owners or admins, return the school where they are the owner
@@ -373,6 +373,7 @@ class SchoolClass(models.Model):
         blank=True, null=True, default=""
     )
     class_capacity = models.IntegerField()
+
     def __str__(self):
         return f"{self.get_name_display()} ({self.academic_session.name})"
 
@@ -386,12 +387,11 @@ class SchoolClass(models.Model):
             return f"{self.get_name_display()} ({self.academic_session.name})"
             # return f"{self.name}({self.academic_session.name})"
 
-            
     def validate_class_capacity(self):
         if self.students.count() > self.class_capacity:
             message = f"{self.name} already filled!"
             return message
-        
+
     @classmethod
     def get_school_classes(cls, request):
         user = request.user
@@ -523,7 +523,7 @@ class Student(models.Model):
 
             try:
                 self.generate_student_id()
-            except ObjectDoesObjectDoesNotExistNotExist:
+            except ObjectDoesNotExist:
                 logging.warning(
                     "No students found for the given school and session.")
                 break

@@ -25,7 +25,7 @@ from main.models import User, School, Teacher, AcademicSession, Term, SchoolClas
 from django.db import transaction
 from djoser.views import UserViewSet as DjoserUserViewSet
 
-from .serializers import (
+from ..serializers import (
     CustomTokenObtainPairSerializer,
     SchoolSerializer,
     TeacherSerializer,
@@ -37,7 +37,7 @@ from .serializers import (
     UserRegistrationSerializer,
     SchoolRegistrationSerializer,
 )
-from .permissions import IsAdminOrIsTeacherOrReadOnly, IsAdminOrReadOnly
+from ..permissions import IsAdminOrIsTeacherOrReadOnly, IsAdminOrReadOnly
 
 
 class LogoutView(APIView):
