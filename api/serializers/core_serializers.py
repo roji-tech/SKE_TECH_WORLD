@@ -1,6 +1,10 @@
+import django.db
+from django.db import transaction
 from rest_framework import serializers
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer, TokenRefreshSerializer
 from rest_framework_simplejwt.tokens import RefreshToken, SlidingToken, Token, UntypedToken
+
+from main.models.users import TEACHER
 from ..models import RefreshTokenUsage
 from django.contrib.auth import get_user_model
 from rest_framework_simplejwt.settings import api_settings
@@ -218,3 +222,45 @@ class LessonPlanSerializer(serializers.ModelSerializer):
         model = LessonPlan
         fields = ['title', 'school_class', 'subject',
                   'uploaded_file', 'uploaded_by']
+
+
+class UserSerializer(serializers.ModelSerializer):
+    image = serializers.ImageField(required=False, allow_null=True)
+
+    class Meta:
+        model = User
+        fields = ['id', 'first_name', 'last_name',
+                  'gender', 'email', 'phone', 'image']
+
+
+class TeacherSerializer(serializers.ModelSerializer):
+    user = UserSerializer()
+
+    class Meta:
+        model = Teacher
+        fields = ['id', 'user', 'department']
+
+    def create(self, validated_data):
+        with transaction.atomic():
+            request = self.context.get('request')
+            user_data = validated_data.pop('user')
+            user = User.objects.create(**user_data)
+            user.role = TEACHER  # Assuming 'TEACHER' is a predefined constant
+            user.set_password(user.last_name)
+            user.save()
+            print(School.get_user_school(request.user))
+            teacher = Teacher.objects.create(
+                user=user, school=School.get_user_school(request.user), **validated_data)
+            teacher.save()
+        return teacher
+
+    def update(self, instance, validated_data):
+        user_data = validated_data.pop('user', None)
+        if user_data:
+            for field, value in user_data.items():
+                setattr(instance.user, field, value)
+            instance.user.save()
+        for field, value in validated_data.items():
+            setattr(instance, field, value)
+        instance.save()
+        return instance
