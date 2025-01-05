@@ -27,6 +27,13 @@ from djoser.views import UserViewSet as DjoserUserViewSet
 
 from ..serializers import (
     CustomTokenObtainPairSerializer,
+    SchoolSerializer,
+    TeacherSerializer,
+    SchoolClassSerializer,
+    AcademicSessionSerializer,
+    StudentSerializer,
+    TermSerializer,
+    SubjectSerializer,
     UserRegistrationSerializer,
     SchoolRegistrationSerializer,
 )
