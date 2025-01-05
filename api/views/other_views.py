@@ -7,7 +7,7 @@ from rest_framework.filters import SearchFilter, OrderingFilter
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.decorators import action
-from rest_framework.viewsets import ModelViewSet
+from rest_framework.viewsets import ModelViewSet, ReadOnlyModelViewSet
 from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly, AllowAny
 
 
@@ -55,14 +55,10 @@ class AcademicSessionViewSet(ModelViewSet):
     serializer_class = AcademicSessionSerializer
     permission_classes = [IsAdminOrReadOnly]
 
-    def get_queryset(self):
-        school = self.request.user  #
-
-        return self.queryset.filter(school=school).select_related(
-            'school'
-        ).prefetch_related(
-            'terms'
-        )
+    def get_school_sessions(self, request):
+        user = self.request.user
+        school = School.objects.filter(owner=user).first()
+        return AcademicSession.objects.filter(school=school)
 
 
     @action(detail=True, methods=['post'])
@@ -91,7 +87,7 @@ class AcademicSessionViewSet(ModelViewSet):
         academic_session.create_all_classes()
         return Response({'detail' : 'Terms and classes are created successfully'})
 
-class TermViewSet(ModelViewSet):
+class TermViewSet(ReadOnlyModelViewSet):
     serializer_class = TermSerializer
     queryset = Term.objects.all()
     permission_classes = [IsAuthenticated]

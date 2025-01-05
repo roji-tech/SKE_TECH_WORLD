@@ -132,6 +132,8 @@ class SchoolSerializer(serializers.ModelSerializer):
     class Meta:
         model = School
         fields = ['id', 'name', 'owner', 'address', 'phone', 'email', 'logo']
+
+        
 class TermSerializer(serializers.ModelSerializer):
     class Meta:
         model = Term
