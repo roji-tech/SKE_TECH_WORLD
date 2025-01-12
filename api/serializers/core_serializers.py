@@ -9,6 +9,7 @@ from django.contrib.auth import get_user_model
 from rest_framework_simplejwt.settings import api_settings
 
 from main.models import User, School, Teacher, SchoolClass, AcademicSession, Term, LessonPlan, Subject, Student
+from main.models.models import School
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -47,7 +48,8 @@ class SchoolSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = School
-        fields = ['id', 'name', 'owner', 'address', 'phone', 'email', 'logo']
+        fields = ['id', 'name', 'owner', 'address', 'phone', 'email',
+                  'logo', "short_name", "code", "website", "motto", "about",]
 
 
 class TermSerializer(serializers.ModelSerializer):
@@ -128,14 +130,18 @@ class StudentSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         with transaction.atomic():
             request = self.context.get('request')
+            school = request.school
             user_data = validated_data.pop('user')
             user = User.objects.create(**user_data)
             user.role = STUDENT
             user.set_password(user.last_name)
             user.save()
-            print(School.get_user_school(request.user))
-            student = Student.objects.create(
-                user=user, school=School.get_user_school(request.user), **validated_data)
+
+            print(school)
+
+            validated_data['school'] = school
+            validated_data['user'] = user
+            student = Student.objects.create(**validated_data)
             student.save()
         return student
 
@@ -180,19 +186,20 @@ class TeacherSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         with transaction.atomic():
             request = self.context.get('request')
-            school = School.get_user_school(request.user)
+            school = request.school
             user_data = validated_data.pop('user')
-            user = User.objects.create(
-                **user_data, role=TEACHER, school=school)
+
+            user_data['role'] = TEACHER
+            user_data['school'] = school
+            user = User.objects.create(**user_data)
             user.set_password(user.last_name)
             user.save()
 
             print(school)
 
-            teacher = Teacher.objects.create(
-                user=user, school=school,
-                **validated_data
-            )
+            validated_data['school'] = school
+            validated_data['user'] = user
+            teacher = Teacher.objects.create(**validated_data)
             # teacher.save()
         return teacher
 

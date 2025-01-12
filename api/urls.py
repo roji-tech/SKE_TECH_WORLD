@@ -5,6 +5,7 @@ from rest_framework_nested import routers
 from rest_framework_simplejwt.views import token_refresh, token_verify, token_obtain_pair
 
 from api.views import LogoutView
+from api.views.auth_views import get_school_info
 from api.views.other_views import TeacherViewSet
 from . import views
 
@@ -40,6 +41,8 @@ router.register('teachers', TeacherViewSet, basename='teacher')
 
 urlpatterns = [
     path('', include(router.urls)),
+    path('school_info/', get_school_info),
+
     #     path('create-teacher/', views.CreateTeacherView.as_view(), name='create-teacher'),
 
     path("auth/", include("djoser.urls")),

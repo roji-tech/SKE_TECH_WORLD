@@ -12,6 +12,7 @@ from django.core.validators import validate_email
 from django.core.exceptions import ValidationError
 
 from main.views.auth_views import send_verification_email_to_user
+import urllib
 from ..models import RefreshTokenUsage
 from rest_framework_simplejwt.settings import api_settings
 from main.models import School
@@ -19,8 +20,6 @@ from django.db import transaction
 from djoser.serializers import UserCreateSerializer
 
 from main.models import School, User
-
-AuthUser = TypeVar("AuthUser", AbstractBaseUser, TokenUser)
 
 
 class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):

@@ -34,6 +34,9 @@ class School(models.Model):
     address = models.TextField(default="")
     phone = models.CharField(max_length=15)
     email = models.EmailField()
+    website = models.URLField(null=True, blank=True)
+    motto = models.CharField(max_length=100, default="")
+    about = models.TextField(default="")
     logo = models.ImageField(
         upload_to='school_logos/', default="logo.png", null=True, blank=True,
     )
@@ -334,9 +337,8 @@ class Teacher(models.Model):
         ordering = ['school', 'department']
 
     def get_school_teachers(request):
-        user = request.user
-        school = School.get_user_school(user)
-        return Teacher.objects.filter(school=school).select_related("user")
+        school = request.school
+        return Teacher.objects.filter(school=school).select_related('user', 'school')
 
     @property
     def full_name(self):
@@ -423,15 +425,14 @@ class SchoolClass(models.Model):
 
     @classmethod
     def get_school_classes(cls, request):
-        user = request.user
-        school = School.get_user_school(user)
+        school = request.school
         print(SchoolClass.objects.filter(academic_session__school=school))
         return SchoolClass.objects.filter(academic_session__school=school)
 
     @classmethod
     def get_school_class_ids(cls, request):
-        user = request.user
-        school = School.get_user_school(user)
+        school = request.school
+        print("Current School ", school)
         print(SchoolClass.objects.filter(academic_session__school=school))
         # # Use a subquery to explicitly define the filtering
         return cls.objects.filter(
@@ -466,8 +467,8 @@ class Subject(models.Model):
             QuerySet: A QuerySet of Subject objects.
         """
 
-        user = request.user
-        school = School.objects.filter(owner=user).first()
+        school = request.school
+        print(f"Current School {school}")
 
         if school:
             return Subject.objects.filter(school_class__academic_session__school=school)
@@ -494,8 +495,8 @@ class Student(models.Model):
         AcademicSession, on_delete=models.CASCADE, null=True, blank=True)  # e.g., 2023/2024
 
     def get_school_students(request):
-        user = request.user
-        school = School.get_user_school(user)
+        school = request.school
+        print(f"Current School {school}")
         return Student.objects.filter(school=school).select_related("user", "student_class").order_by("student_class")
 
     @property

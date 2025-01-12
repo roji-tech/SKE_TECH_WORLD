@@ -1,3 +1,4 @@
+from urllib import request
 from django.db.models import Q
 from rest_framework.permissions import IsAuthenticated
 
@@ -26,6 +27,7 @@ from ..serializers import (
     SubjectSerializer,
 )
 from ..permissions import IsAdminOrIsTeacherOrReadOnly, IsAdminOrReadOnly
+
 
 class StandardResultSetPagination(PageNumberPagination):
     page_size = 10
@@ -60,32 +62,34 @@ class AcademicSessionViewSet(ModelViewSet):
         school = School.objects.filter(owner=user).first()
         return AcademicSession.objects.filter(school=school)
 
-
     @action(detail=True, methods=['post'])
     def current(self, request):
         user = request.user
         school = user.academic_sessions.first()
-        current_session = self.queryset.filter(school=school, is_current=True).first()
+        current_session = self.queryset.filter(
+            school=school, is_current=True).first()
         if current_session:
             serializer = self.get_serializer(current_session)
             print(serializer.data)
             return Response(serializer.data)
-        return Response({'detail' : 'No current session found'}, status=status.HTTP_404_NOT_FOUND) 
-    
+        return Response({'detail': 'No current session found'}, status=status.HTTP_404_NOT_FOUND)
+
     @action(detail=True, methods=['post'])
     def make_session_current(self, request, pk=None):
         academic_session = self.get_object()
-        AcademicSession.objects.filter(school=academic_session.school).update(is_current=False)
+        AcademicSession.objects.filter(
+            school=academic_session.school).update(is_current=False)
         academic_session.is_current = True
         academic_session.save()
-        return Response({'detail' : 'Academic Session updated as current'})
-    
+        return Response({'detail': 'Academic Session updated as current'})
+
     @action(detail=True, methods=['post'])
     def create_terms_and_classes_manually(self, request, pk=None):
         academic_session = self.get_object()
         academic_session.create_terms()
         academic_session.create_all_classes()
-        return Response({'detail' : 'Terms and classes are created successfully'})
+        return Response({'detail': 'Terms and classes are created successfully'})
+
 
 class TermViewSet(ReadOnlyModelViewSet):
     serializer_class = TermSerializer
@@ -122,18 +126,35 @@ class TeacherViewSet(ModelViewSet):
         if request.method == 'GET':
             serializer = TeacherSerializer(teacher)
             return Response(serializer.data)
-        
+
         elif request.method == 'PUT':
-            serializer = TeacherSerializer(teacher, data=request.data, partial=True)
+            serializer = TeacherSerializer(
+                teacher, data=request.data, partial=True)
             if serializer.is_valid(raise_exception=True):
                 serializer.save()
                 return Response(serializer.data)
 
 
 class TeacherViewSet(ModelViewSet):
-    queryset = Teacher.objects.all().select_related('user', 'school')
     serializer_class = TeacherSerializer
     permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        request = self.request
+        queryset = Teacher.get_school_teachers(request)
+
+        # Get the 'q' parameter from the request query parameters
+        query = self.request.query_params.get('q', None)
+
+        # Apply filter if 'q' is provided
+        if query:
+            queryset = queryset.filter(
+                Q(user__first_name__icontains=query) |  # Search by first name
+                Q(user__last_name__icontains=query) |   # Search by last name
+                Q(department__icontains=query)          # Search by department
+            )
+
+        return queryset
 
     def get_permissions(self):
         if self.request.method == 'GET':
@@ -219,14 +240,16 @@ class TeacherViewSet(ModelViewSet):
         teacher.delete()
         return Response({"detail": "Teacher deleted successfully!"}, status=status.HTTP_204_NO_CONTENT)
 
+
 class StudentViewSet(ModelViewSet):
     queryset = Student.objects.all()
     serializer_class = StudentSerializer
     permission_classes = [IsAuthenticatedOrReadOnly]
-    pagination_class  = [StandardResultSetPagination]
+    pagination_class = [StandardResultSetPagination]
     filter_backends = [SearchFilter, OrderingFilter]
     ordering_fields = ['user__first_name', 'grade']
-    search_fields = ['user__first_name', 'user__last_name', 'department', 'student_class__name'] #unique search fields for students
+    search_fields = ['user__first_name', 'user__last_name', 'department',
+                     'student_class__name']  # unique search fields for students
 
     def get_queryset(self, request):
         qs = Student.get_school_students(request=self.request)
@@ -234,8 +257,6 @@ class StudentViewSet(ModelViewSet):
         if class_filter:
             qs = qs.filter(school_class__name__icontain=class_filter)
         return qs.distinct()
-
-    
 
 
 class SubjectViewSet(ModelViewSet):
