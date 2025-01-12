@@ -3,7 +3,7 @@ from django.contrib.auth import get_user_model
 from datetime import date
 
 from django.utils.crypto import get_random_string
-import main.models.models
+from django.db.models import UniqueConstraint
 from .users import ADMIN, OWNER, STUDENT, TEACHER
 from django.db import models, transaction
 import string
@@ -187,6 +187,7 @@ class AcademicSession(models.Model):
             Term.objects.get_or_create(
                 academic_session=self,
                 name=term_name,
+                school=self.school,
                 defaults={
                     'start_date': current_start_date,
                     'end_date': current_end_date,
@@ -216,7 +217,7 @@ class AcademicSession(models.Model):
                 if created:
                     for subject_name in default_subjects:
                         Subject.objects.get_or_create(
-                            school_class=school_class, name=subject_name
+                            school_class=school_class, name=subject_name, school=self.school
                         )
 
     def create_primary5_classes(self):
@@ -285,17 +286,18 @@ class AcademicSession(models.Model):
     @classmethod
     @transaction.atomic
     def create_default_setup(cls, session_name, start_date, end_date, school):
-        """Method to create a new academic session and all related data."""
-        academic_session, _ = cls.objects.get_or_create(
-            school=school,
-            name=session_name,
-            start_date=start_date,
-            end_date=end_date,
-            is_current=True
-        )
-        academic_session.create_terms()
-        academic_session.create_all_classes()
-        return academic_session
+        with transaction.atomic():
+            """Method to create a new academic session and all related data."""
+            academic_session, _ = cls.objects.get_or_create(
+                school=school,
+                name=session_name,
+                start_date=start_date,
+                end_date=end_date,
+                is_current=True
+            )
+            academic_session.create_terms()
+            academic_session.create_all_classes()
+            return academic_session
 
 
 class Term(models.Model):
@@ -403,7 +405,7 @@ class SchoolClass(models.Model):
         max_length=12, choices=CLASS_CATEGORIES,
         blank=True, null=True, default=""
     )
-    class_capacity = models.IntegerField()
+    class_capacity = models.IntegerField(default=50)
 
     def __str__(self):
         return f"{self.get_name_display()} ({self.academic_session.name})"
@@ -478,10 +480,9 @@ class Subject(models.Model):
 
 
 class Student(models.Model):
-    reg_no = models.CharField(
-        max_length=20, null=True, blank=True, unique=True)
-    student_id = models.CharField(
-        max_length=20, unique=True, null=True, blank=True)
+    reg_no = models.CharField(max_length=20, null=True,
+                              blank=True)  # e.g., "STU-2023-001"
+    student_id = models.CharField(max_length=20, null=True, blank=True)
     school = models.ForeignKey(
         School, on_delete=models.CASCADE, related_name='students')
     user = models.OneToOneField(
@@ -520,10 +521,22 @@ class Student(models.Model):
                 self.date_of_birth.month, self.date_of_birth.day)
         )
 
+    class Meta:
+        constraints = [
+            # Ensure `student_id` is unique within the same school
+            UniqueConstraint(fields=['school', 'student_id'],
+                             name='unique_student_id_per_school'),
+            # Ensure `reg_no` is unique within the same school
+            UniqueConstraint(fields=['school', 'reg_no'],
+                             name='unique_reg_no_per_school'),
+            UniqueConstraint(fields=['school', 'user'],
+                             name='unique_user_per_school'),
+        ]
+
     def __str__(self):
         return f"{self.id} - {self.user.full_name}"
 
-    def generate_student_id(self):
+    def prev_generate_student_id(self):
         """Generates a unique student ID based on the school and admission year."""
         # Extract short school name or fallback to school ID
         school_short_name = self.school.short_name[:3].upper(
@@ -547,6 +560,33 @@ class Student(models.Model):
         # Combine to form the student ID
         return f"{school_short_name}{admission_year}-{new_number}"
 
+    def generate_student_id(self):
+        """Generates a unique student ID based on the school and admission year."""
+        # Extract short school name or fallback to school ID
+        prefix = "STU"
+
+        # Admission year (last 2 digits of current year)
+        if self.session_admitted:
+            admission_year = str(self.session_admitted.start_date.year)[-2:]
+        else:
+            admission_year = "25"
+
+        # Find the last student in the same school and admission year
+        last_student = Student.objects.filter(
+            school=self.school, session_admitted=self.session_admitted
+        ).order_by('student_id').last()
+
+        if last_student and last_student.student_id:
+            # Extract the last 3 digits and increment
+            last_number = int(last_student.student_id.split('-')[-1])
+            new_number = str(last_number + 1).zfill(3)
+        else:
+            new_number = "001"  # Start from 001 if no previous student
+
+        print(f"{prefix}-{admission_year}-{new_number}")
+        # Combine to form the student ID
+        return f"{prefix}-{admission_year}-{new_number}"
+
     def generate_unique_student_id(self):
         max_attempts = 5
         attempts = 0
@@ -565,8 +605,8 @@ class Student(models.Model):
                 continue  # Continue to the next iteration for recovery
 
         # If unable to generate a unique ID after several attempts
-        raise Exception(
-            "Unable to generate a unique student ID after multiple attempts.")
+            # raise Exception(
+            #         "Unable to generate a unique student ID after multiple attempts.")
 
     def generate_unique_email(self):
         """Generates a unique dynamic email for the student."""

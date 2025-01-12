@@ -6,8 +6,7 @@ from rest_framework_simplejwt.views import token_refresh, token_verify, token_ob
 
 from api.views import LogoutView
 from api.views.auth_views import get_school_info
-from api.views.other_views import TeacherViewSet
-from . import views
+from api import views
 
 
 router = routers.DefaultRouter()
@@ -16,6 +15,7 @@ router.register('academic-sessions', views.AcademicSessionViewSet,
                 basename='academic_session')
 router.register('teachers', views.TeacherViewSet, basename='teachers')
 router.register('students', views.StudentViewSet, basename='students')
+router.register('classes', views.SchoolClassViewSet, basename='classes')
 
 
 # domains_router = routers.NestedSimpleRouter(router, r'domains', lookup='domain')
@@ -34,9 +34,6 @@ school_router.register('classes', views.SchoolClassViewSet,
 # user_router.register('custom', views.CustomUserViewSet, basename='user-custom')
 
 # router.register("auth/users", views.CustomUserViewSet)
-
-
-router.register('teachers', TeacherViewSet, basename='teacher')
 
 
 urlpatterns = [

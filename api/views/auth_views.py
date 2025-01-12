@@ -1,29 +1,17 @@
-from math import perm
-from django.shortcuts import render
 from django.core.exceptions import ObjectDoesNotExist
-from django.conf import settings
-from django.utils.module_loading import import_string
 
-from rest_framework.response import Response
 from rest_framework import status
-from rest_framework.decorators import action
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.exceptions import NotFound
+from rest_framework.permissions import AllowAny
+from rest_framework.response import Response
 from rest_framework.views import APIView
-from rest_framework.renderers import JSONRenderer, BrowsableAPIRenderer
-from rest_framework.viewsets import ModelViewSet
-from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly, AllowAny
-from rest_framework.decorators import api_view, renderer_classes, permission_classes
 
 from rest_framework_simplejwt.exceptions import TokenError
-from rest_framework_simplejwt.tokens import RefreshToken, SlidingToken, Token, UntypedToken
-from rest_framework_simplejwt.views import TokenObtainPairView
+from rest_framework_simplejwt.tokens import RefreshToken
 
-from main.views.auth_views import send_verification_email_to_user
-from main.models import User, School, Teacher, AcademicSession, Term, SchoolClass, Student, Subject
-from django.db import transaction
-from djoser.views import UserViewSet as DjoserUserViewSet
 
 from api.serializers import SchoolSerializer
-from ..permissions import IsAdminOrIsTeacherOrReadOnly, IsAdminOrReadOnly
 
 
 class LogoutView(APIView):
@@ -43,7 +31,26 @@ class LogoutView(APIView):
 @permission_classes([AllowAny])
 @api_view(['GET'])
 def get_school_info(request, school_code):
-    school = request.school
-    print("School", school)
-    serializer = SchoolSerializer(school)
-    return Response(serializer.data)
+    try:
+        # Attempt to retrieve the school from the request
+        school = request.school
+        if not school:
+            raise NotFound("School not found or unauthorized access.")
+
+        print("School:", school)
+
+        # Serialize the school data
+        serializer = SchoolSerializer(school)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+    except NotFound as e:
+        # Handle cases where the school is not found
+        return Response({"error": str(e)}, status=status.HTTP_404_NOT_FOUND)
+
+    except Exception as e:
+        # Generic exception handler for unexpected errors
+        print("An unexpected error occurred:", e)
+        return Response(
+            {"error": "An unexpected error occurred. Please try again later."},
+            status=status.HTTP_500_INTERNAL_SERVER_ERROR
+        )

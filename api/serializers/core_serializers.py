@@ -45,10 +45,11 @@ class SchoolClassSerializer(serializers.ModelSerializer):
 
 class SchoolSerializer(serializers.ModelSerializer):
     #   classes = SchoolClassSerializer(read_only=True, many=True)
+    # owner = UserSerializer()
 
     class Meta:
         model = School
-        fields = ['id', 'name', 'owner', 'address', 'phone', 'email',
+        fields = ['id', 'name', 'address', 'phone', 'email',
                   'logo', "short_name", "code", "website", "motto", "about",]
 
 
@@ -116,33 +117,57 @@ class AcademicSessionSerializer(serializers.ModelSerializer):
 #         )
 #         return teacher
 
+class SubjectSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Subject
+        fields = ['name', 'teacher']
+
+
+class LessonPlanSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = LessonPlan
+        fields = ['title', 'school_class', 'subject',
+                  'uploaded_file', 'uploaded_by']
+
+
 class StudentSerializer(serializers.ModelSerializer):
-    full_name = serializers.SerializerMethodField(
-        method_name='get_student_full_name')
-    session_admitted = serializers.SerializerMethodField(
-        method_name='get_formatted_admission_date')
+    user = UserSerializer()
+    # full_name = serializers.SerializerMethodField(
+    #     method_name='get_student_full_name')
 
     class Meta:
         model = Student
         fields = ['user', 'reg_no', 'school', 'session_admitted',
                   "date_of_birth", 'student_class']
 
+
+class StudentCreateSerializer(serializers.ModelSerializer):
+    user = UserSerializer()
+    session_admitted = serializers.SerializerMethodField(
+        method_name='get_formatted_admission_date')
+
+    class Meta:
+        model = Student
+        fields = ['user', 'reg_no', 'session_admitted',
+                  "date_of_birth", 'student_class']
+
     def create(self, validated_data):
         with transaction.atomic():
             request = self.context.get('request')
             school = request.school
+            print(school)
+
             user_data = validated_data.pop('user')
+            user_data['role'] = STUDENT
+            user_data['school'] = school
             user = User.objects.create(**user_data)
-            user.role = STUDENT
-            user.set_password(user.last_name)
+            user.set_password(str(user.last_name).lower())
             user.save()
 
-            print(school)
 
             validated_data['school'] = school
             validated_data['user'] = user
             student = Student.objects.create(**validated_data)
-            student.save()
         return student
 
     def update(self, instance, validated_data):
@@ -160,21 +185,10 @@ class StudentSerializer(serializers.ModelSerializer):
         return obj.get_full_name()
 
     def get_formatted_admission_date(self, obj):
-        return obj.session_admitted.strftime('%d-%b-%Y')
-
-
-class SubjectSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Subject
-        fields = ['name', 'teacher']
-
-
-class LessonPlanSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = LessonPlan
-        fields = ['title', 'school_class', 'subject',
-                  'uploaded_file', 'uploaded_by']
-
+        try:
+            return obj.session_admitted.strftime('%d-%b-%Y')
+        except:
+          return None
 
 class TeacherSerializer(serializers.ModelSerializer):
     user = UserSerializer()
@@ -192,7 +206,7 @@ class TeacherSerializer(serializers.ModelSerializer):
             user_data['role'] = TEACHER
             user_data['school'] = school
             user = User.objects.create(**user_data)
-            user.set_password(user.last_name)
+            user.set_password(str(user.last_name).lower())
             user.save()
 
             print(school)

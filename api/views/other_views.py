@@ -1,3 +1,4 @@
+import datetime
 from urllib import request
 from django.db.models import Q
 from rest_framework.permissions import IsAuthenticated
@@ -12,6 +13,7 @@ from rest_framework.viewsets import ModelViewSet, ReadOnlyModelViewSet
 from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly, AllowAny
 
 
+from api.serializers.core_serializers import StudentCreateSerializer
 from main.forms import TeacherForm, TeacherUserForm
 from main.models.users import TEACHER
 from main.notification_handler import NotificationManager
@@ -42,14 +44,28 @@ class SchoolViewSet(ModelViewSet):
 
 
 class SchoolClassViewSet(ModelViewSet):
-    queryset = SchoolClass.objects.all()
     serializer_class = SchoolClassSerializer
-    permission_classes = [IsAuthenticated]
+    # permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
-        user = self.request.user
-        school = School.get_user_school(user=user)
+        # user = self.request.user
+        school = self.request.school
         return SchoolClass.objects.filter(academic_session__school=school)
+
+    @action(detail=False, methods=['GET',], url_path="all")
+    def all(self, request, *args, **kwargs):
+        print("All Classes", args, kwargs)
+        classes = SchoolClass.get_school_classes(request)
+        # AcademicSession.create_default_setup(
+        #     "2023/2024",
+        #     datetime.date(2023, 2, 9),  # Use datetime.date for date values
+        #     datetime.date(2024, 12, 4),
+        #     request.school
+        # )
+        # print(classes)
+
+        serializer = SchoolClassSerializer(classes, many=True)
+        return Response(serializer.data)
 
 
 class AcademicSessionViewSet(ModelViewSet):
@@ -242,21 +258,26 @@ class TeacherViewSet(ModelViewSet):
 
 
 class StudentViewSet(ModelViewSet):
-    queryset = Student.objects.all()
     serializer_class = StudentSerializer
     permission_classes = [IsAuthenticatedOrReadOnly]
-    pagination_class = [StandardResultSetPagination]
+    # pagination_class = [StandardResultSetPagination]
     filter_backends = [SearchFilter, OrderingFilter]
     ordering_fields = ['user__first_name', 'grade']
     search_fields = ['user__first_name', 'user__last_name', 'department',
                      'student_class__name']  # unique search fields for students
 
-    def get_queryset(self, request):
+    def get_queryset(self):
         qs = Student.get_school_students(request=self.request)
         class_filter = self.request.query_params.get('class', None)
         if class_filter:
             qs = qs.filter(school_class__name__icontain=class_filter)
         return qs.distinct()
+
+    def get_serializer_class(self):
+        if self.request.method == 'POST':
+            return StudentCreateSerializer
+
+        return StudentSerializer
 
 
 class SubjectViewSet(ModelViewSet):
