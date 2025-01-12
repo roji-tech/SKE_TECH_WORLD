@@ -5,11 +5,11 @@ from rest_framework_simplejwt.serializers import TokenObtainPairSerializer, Toke
 from rest_framework_simplejwt.tokens import RefreshToken, SlidingToken, Token, UntypedToken
 
 from main.models.users import TEACHER, STUDENT
-from ..models import RefreshTokenUsage
 from django.contrib.auth import get_user_model
 from rest_framework_simplejwt.settings import api_settings
 
 from main.models import User, School, Teacher, SchoolClass, AcademicSession, Term, LessonPlan, Subject, Student
+
 
 class UserSerializer(serializers.ModelSerializer):
     image = serializers.ImageField(required=False, allow_null=True)
@@ -18,6 +18,7 @@ class UserSerializer(serializers.ModelSerializer):
         model = User
         fields = ['id', 'first_name', 'last_name',
                   'gender', 'email', 'phone', 'image']
+
 
 class SchoolClassSerializer(serializers.ModelSerializer):
     name_display = serializers.CharField(
@@ -48,7 +49,7 @@ class SchoolSerializer(serializers.ModelSerializer):
         model = School
         fields = ['id', 'name', 'owner', 'address', 'phone', 'email', 'logo']
 
-        
+
 class TermSerializer(serializers.ModelSerializer):
     class Meta:
         model = Term
@@ -58,30 +59,25 @@ class TermSerializer(serializers.ModelSerializer):
             academic_session_id = self.context['academic_session_id']
             return Term.objects.create(academic_session_id=academic_session_id, **validated_data)
 
+
 class AcademicSessionSerializer(serializers.ModelSerializer):
     school = SchoolSerializer(read_only=True)
     terms = TermSerializer(read_only=True, many=True)
 
     class Meta:
         model = AcademicSession
-        fields = ['id', 'name', 'school', 'start_date', 'terms','end_date', 'is_current', 'next_session_begins']
+        fields = ['id', 'name', 'school', 'start_date', 'terms',
+                  'end_date', 'is_current', 'next_session_begins']
         read_only_fields = ['name', 'is_current', 'school_name']
 
     def create(self, validated_data):
         pass
 
-
     def update(self, instance, validated_data):
         pass
 
-    
-
         # def get_school(self, obj):
         #   return str(obj.school.name)
-
-
-
-
 
 
 # class CreateTeacherSerializer(serializers.Serializer):
@@ -127,14 +123,14 @@ class StudentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Student
         fields = ['user', 'reg_no', 'school', 'session_admitted',
-                 "date_of_birth", 'student_class']
-   
+                  "date_of_birth", 'student_class']
+
     def create(self, validated_data):
         with transaction.atomic():
             request = self.context.get('request')
             user_data = validated_data.pop('user')
             user = User.objects.create(**user_data)
-            user.role = STUDENT  
+            user.role = STUDENT
             user.set_password(user.last_name)
             user.save()
             print(School.get_user_school(request.user))
@@ -149,7 +145,7 @@ class StudentSerializer(serializers.ModelSerializer):
             for field, value in user_data.items():
                 setattr(instance.user, field, value)
             instance.user.save()
-        for field , value in validated_data.items():
+        for field, value in validated_data.items():
             setattr(instance, field, value)
         instance.save()
         return instance
@@ -159,7 +155,6 @@ class StudentSerializer(serializers.ModelSerializer):
 
     def get_formatted_admission_date(self, obj):
         return obj.session_admitted.strftime('%d-%b-%Y')
-        
 
 
 class SubjectSerializer(serializers.ModelSerializer):
@@ -173,8 +168,6 @@ class LessonPlanSerializer(serializers.ModelSerializer):
         model = LessonPlan
         fields = ['title', 'school_class', 'subject',
                   'uploaded_file', 'uploaded_by']
-
-
 
 
 class TeacherSerializer(serializers.ModelSerializer):
