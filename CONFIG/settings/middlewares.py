@@ -14,4 +14,6 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 
+    # Add SchoolCodeMiddleware here
+    'main.middlewares.auth_middleware.SchoolCodeMiddleware',
 ]

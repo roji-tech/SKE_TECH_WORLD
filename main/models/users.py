@@ -32,6 +32,7 @@ class UserManager(BaseUserManager):
 
 
 class User(AbstractUser):
+    ES_Sep = "_:_"  # email - school separator
     ROLE_CHOICES = (
         (SUPERADMIN, "Super Admin"),
         (OWNER, "School Owner"),
@@ -45,16 +46,25 @@ class User(AbstractUser):
         ("F", "Female"),
     )
 
-    USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = ['role']
+    USERNAME_FIELD = 'login_email'  # Use login_email for authentication
+    REQUIRED_FIELDS = ['role', "email"]
 
     username = None  # Remove the username field
-    email = models.EmailField(_('email address'), unique=True)
+    email = models.EmailField(
+        _('email address'), unique=False)  # Non-unique email
     role = models.CharField(
-        max_length=10, default=STUDENT, choices=ROLE_CHOICES)
+        max_length=10, default=STUDENT, choices=ROLE_CHOICES
+    )  # Default role is student
     gender = models.CharField(max_length=1, choices=GENDER_CHOICES)
     image = models.ImageField(blank=True, null=True)
     phone = models.CharField(max_length=20, default="+234----")
+    login_email = models.CharField(
+        max_length=255, unique=True, editable=False
+    )  # Proxy field
+
+    school = models.ForeignKey(
+        'School', on_delete=models.CASCADE, related_name='users', null=True, blank=True
+    )  # Add school as a ForeignKey
 
     objects = UserManager()
 
@@ -105,8 +115,18 @@ class User(AbstractUser):
             if (self.is_teacher or self.is_student) and not self.password:
                 self.set_password(str(self.last_name).lower())
         except Exception as e:
+            print(e)
             pass
+
+        # Generate the unique login_email
+        if self.school:
+            self.login_email = f"{self.email}{self.ES_Sep}{self.school.id}"
+        else:
+            self.login_email = self.email
         super().save(*args, **kwargs)
+
+    def __str__(self):
+        return f"{self.email} ({self.school.name if self.school else 'No School'})"
 
 
 # from django.contrib.auth.models import AbstractUser

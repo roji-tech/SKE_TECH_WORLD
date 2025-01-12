@@ -1,7 +1,7 @@
 from django.urls import path, include
 
 from rest_framework_nested import routers
-from rest_framework.routers import DefaultRouter
+# from rest_framework.routers import DefaultRouter
 from rest_framework_simplejwt.views import token_refresh, token_verify, token_obtain_pair
 
 from api.views import LogoutView
@@ -32,18 +32,17 @@ school_router.register('classes', views.SchoolClassViewSet,
 # user_router = routers.NestedSimpleRouter(router, 'users', lookup='user')
 # user_router.register('custom', views.CustomUserViewSet, basename='user-custom')
 
-router.register("auth/users", views.CustomUserViewSet)
+# router.register("auth/users", views.CustomUserViewSet)
 
 
 router.register('teachers', TeacherViewSet, basename='teacher')
 
-urlpatterns = router.urls
 
 urlpatterns = [
     path('', include(router.urls)),
     #     path('create-teacher/', views.CreateTeacherView.as_view(), name='create-teacher'),
 
-    # path("auth/", include("djoser.urls")),
+    path("auth/", include("djoser.urls")),
     path("auth/", include("djoser.urls.jwt")),
     path("auth/logout/", LogoutView.as_view()),
 
@@ -55,3 +54,5 @@ urlpatterns = [
     #      name='register_school'),
 
 ]
+
+urlpatterns += router.urls

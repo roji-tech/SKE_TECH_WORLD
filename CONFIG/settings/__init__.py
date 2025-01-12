@@ -8,3 +8,9 @@ from .graphiz import *
 from .email import *
 from .rest_framework import *
 from .djoser import *
+
+AUTHENTICATION_BACKENDS = [
+    # Replace with the actual path to your backend
+    'CONFIG.auth_backend.SchoolEmailBackend',
+    # 'django.contrib.auth.backends.ModelBackend',  # Default backend
+]

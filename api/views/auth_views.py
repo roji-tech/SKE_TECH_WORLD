@@ -54,49 +54,49 @@ class LogoutView(APIView):
             return Response(status=status.HTTP_400_BAD_REQUEST)
 
 
-class CustomUserViewSet(DjoserUserViewSet):
-    queryset = User.objects.all()
-    serializer_class = UserRegistrationSerializer
+# class CustomUserViewSet(DjoserUserViewSet):
+#     queryset = User.objects.all()
+#     serializer_class = UserRegistrationSerializer
 
-    @action(detail=False, methods=['GET'])
-    def me(self, request, *args, **kwargs):
-        user = request.user
-        serializer = self.get_serializer(user)
-        return Response(serializer.data)
+#     @action(detail=False, methods=['GET'])
+#     def me(self, request, *args, **kwargs):
+#         user = request.user
+#         serializer = self.get_serializer(user)
+#         return Response(serializer.data)
 
-    def create(self, request, *args, **kwargs):
-        user_serializer = UserRegistrationSerializer(
-            data=request.data, context={'request': request})
-        user_serializer.is_valid(raise_exception=True)
-        self.perform_create(user_serializer)
-        # send_verification_email_to_user(user)
-        headers = self.get_success_headers(user_serializer.data)
-        return Response(user_serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+#     def create(self, request, *args, **kwargs):
+#         user_serializer = UserRegistrationSerializer(
+#             data=request.data, context={'request': request})
+#         user_serializer.is_valid(raise_exception=True)
+#         self.perform_create(user_serializer)
+#         # send_verification_email_to_user(user)
+#         headers = self.get_success_headers(user_serializer.data)
+#         return Response(user_serializer.data, status=status.HTTP_201_CREATED, headers=headers)
 
-        # if user_serializer.is_valid():
-        #     result = user_serializer.save()
+#         # if user_serializer.is_valid():
+#         #     result = user_serializer.save()
 
-        #     if result["status"]:
-        #         # Generate tokens
-        #         user = User.objects.get(email=request.data['email'])
-        #         # refresh = RefreshToken.for_user(user)
-        #         # access = str(refresh.access_token)
+#         #     if result["status"]:
+#         #         # Generate tokens
+#         #         user = User.objects.get(email=request.data['email'])
+#         #         # refresh = RefreshToken.for_user(user)
+#         #         # access = str(refresh.access_token)
 
-        #         return Response({
-        #             "status": True,
-        #             "message": result["message"],
-        #             # "tokens": {
-        #             #     "refresh": str(refresh),
-        #             #     "access": access
-        #             # }
-        #         }, status=status.HTTP_201_CREATED)
+#         #         return Response({
+#         #             "status": True,
+#         #             "message": result["message"],
+#         #             # "tokens": {
+#         #             #     "refresh": str(refresh),
+#         #             #     "access": access
+#         #             # }
+#         #         }, status=status.HTTP_201_CREATED)
 
-        #     return Response({"status": False, "message": result["message"]}, status=status.HTTP_400_BAD_REQUEST)
+#         #     return Response({"status": False, "message": result["message"]}, status=status.HTTP_400_BAD_REQUEST)
 
-        # print(user_serializer.errors)
-        # print(user_serializer.error_messages)
+#         # print(user_serializer.errors)
+#         # print(user_serializer.error_messages)
 
-        # return Response({"status": False, "message": user_serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
+#         # return Response({"status": False, "message": user_serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
 
 
 #

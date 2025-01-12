@@ -9,7 +9,7 @@ from django.db import models, transaction
 import string
 from django.db.models import Q
 from datetime import datetime, timedelta
-from django.core.exceptions import ObjectDoesNotExist
+from django.core.exceptions import ObjectDoesNotExist, ValidationError
 
 User = get_user_model()
 
@@ -29,14 +29,32 @@ class School(models.Model):
     # class School(models.Model):
     name = models.CharField(max_length=50)
     owner = models.OneToOneField(
-        User, on_delete=models.CASCADE, related_name='school')
+        User, on_delete=models.CASCADE, related_name='myschool'
+    )
     address = models.TextField(default="")
     phone = models.CharField(max_length=15)
     email = models.EmailField()
-    logo = models.ImageField(upload_to='school_logos/',
-                             default="logo.png", null=True, blank=True,)
+    logo = models.ImageField(
+        upload_to='school_logos/', default="logo.png", null=True, blank=True,
+    )
     created_at = models.DateTimeField(auto_now_add=True)
-    short_name = models.CharField(max_length=6, null=True, blank=True)
+    short_name = models.CharField(max_length=15, null=True, blank=True)
+    code = models.CharField(max_length=6, null=True, blank=True, unique=True)
+
+    def clean(self):
+        if self.short_name and self.short_name.startswith("SC") and (len(self.short_name) == 6 or len(self.short_name) == 5) and self.short_name[2:].isdigit():
+            raise ValidationError("Invalid short name format.")
+
+    def save(self, *args, **kwargs):
+        if not self.code:
+            last_school = School.objects.all().order_by('id').last()
+            if last_school and last_school.code:
+                last_code = int(last_school.code[2:])
+                new_code = f"SC{str(last_code + 1).zfill(4)}"
+            else:
+                new_code = "SC0001"
+            self.code = new_code
+        super().save(*args, **kwargs)
 
     def __str__(self):
         return self.name
@@ -44,9 +62,15 @@ class School(models.Model):
     @staticmethod
     def get_user_school(user):
         try:
-            if user.is_admin:
+            if user.is_owner:
                 # For owners or admins, return the school where they are the owner
                 return School.objects.filter(owner=user).first()
+            if user.is_admin:
+                try:
+                    return School.objects.filter(owner=user).first()
+                except:
+                    return user.school
+                # For admins, return the school associated with their admin profile
             elif user.is_teacher:
                 # For teachers, return the school associated with their teacher profile
                 return user.teacher_profile.school
@@ -68,7 +92,8 @@ class AcademicSession(models.Model):
         ordering = ['-is_current']
 
     school = models.ForeignKey(
-        School, on_delete=models.CASCADE, related_name='academic_sessions')
+        School, on_delete=models.CASCADE, related_name='academic_sessions'
+    )
     name = models.CharField(max_length=100)  # e.g., "2023/2024"
     start_date = models.DateField()
     end_date = models.DateField()
@@ -276,8 +301,12 @@ class Term(models.Model):
         ('2nd', '2nd Term'),
         ('3rd', '3rd Term'),
     ]
+    school = models.ForeignKey(
+        School, on_delete=models.CASCADE, related_name='terms'
+    )
     academic_session = models.ForeignKey(
-        AcademicSession, on_delete=models.CASCADE, related_name='terms')
+        AcademicSession, on_delete=models.CASCADE, related_name='terms'
+    )
     name = models.CharField(max_length=4, choices=TERM_CHOICES)
     start_date = models.DateField(null=True, blank=True)
     end_date = models.DateField(null=True, blank=True)
@@ -411,6 +440,9 @@ class SchoolClass(models.Model):
 
 
 class Subject(models.Model):
+    school = models.ForeignKey(
+        School, on_delete=models.CASCADE, related_name='subjects'
+    )
     school_class = models.ForeignKey(
         SchoolClass, on_delete=models.CASCADE, related_name='subjects')
     name = models.CharField(max_length=100)
@@ -583,6 +615,9 @@ class Student(models.Model):
 
 
 class GmeetClass(models.Model):
+    school = models.ForeignKey(
+        School, on_delete=models.CASCADE, related_name='gmeet_classes'
+    )
     title = models.CharField(max_length=50, null=True, blank=True)
     subject = models.ForeignKey(
         Subject, on_delete=models.SET_NULL, null=True, blank=True, related_name='gmeet_classes')
@@ -652,6 +687,9 @@ class GmeetClass(models.Model):
 
 
 class LessonPlan(models.Model):
+    school = models.ForeignKey(
+        School, on_delete=models.CASCADE, related_name='lesson_plans'
+    )
     title = models.CharField(max_length=50, null=True, blank=True)
     school_class = models.ForeignKey(SchoolClass, on_delete=models.CASCADE)
     subject = models.ForeignKey(

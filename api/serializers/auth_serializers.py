@@ -1,6 +1,5 @@
 from rest_framework_simplejwt.tokens import RefreshToken
 from typing import Any, Dict, TypeVar
-from main.models.models import School, User
 from rest_framework_simplejwt.models import TokenUser
 from rest_framework import exceptions
 from django.utils.translation import gettext_lazy as _
@@ -15,18 +14,18 @@ from django.core.exceptions import ValidationError
 from main.views.auth_views import send_verification_email_to_user
 from ..models import RefreshTokenUsage
 from rest_framework_simplejwt.settings import api_settings
-from main.models import School, Teacher
+from main.models import School
 from django.db import transaction
-from rest_framework.response import Response
-from rest_framework import status
 from djoser.serializers import UserCreateSerializer
 
+from main.models import School, User
 
 AuthUser = TypeVar("AuthUser", AbstractBaseUser, TokenUser)
 
 
 class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
     """Customizes JWT default Serializer to add more information about user"""
+    username_field = "email"
 
     @classmethod
     def get_token(cls, user):
@@ -152,28 +151,33 @@ class UserRegistrationSerializer(UserCreateSerializer):
     def create(self, validated_data):
         with transaction.atomic():
             try:
+                req = self.context['request']
+
                 # Handle user registration
                 user = User.objects.create(
                     first_name=validated_data['first_name'],
                     last_name=validated_data['last_name'],
                     email=validated_data['email'],
                     gender=validated_data['gender'],
-                    role="owner"
+                    role="owner",
                 )
                 user.set_password(validated_data['password'])
                 user.save()
 
                 # Create the School
                 school_data = {
-                    'name': self.context['request'].data.get('school_name'),
-                    'phone': self.context['request'].data.get('school_phone'),
-                    'email': self.context['request'].data.get('school_email'),
+                    'name': req.data.get('school_name'),
+                    'phone': req.data.get('school_phone'),
+                    'email': req.data.get('school_email'),
                 }
                 school_serializer = SchoolRegistrationSerializer(
                     data=school_data)
 
                 school_serializer.is_valid(raise_exception=True)
                 school = school_serializer.save(owner=user)
+
+                user.school = school
+                user.save()
 
                 if user.is_admin:  # Assuming you have an is_admin attribute for the user
                     send_verification_email_to_user(

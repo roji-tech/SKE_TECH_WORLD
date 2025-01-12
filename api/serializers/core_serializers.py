@@ -9,92 +9,7 @@ from ..models import RefreshTokenUsage
 from django.contrib.auth import get_user_model
 from rest_framework_simplejwt.settings import api_settings
 
-from main.models import School, Teacher, SchoolClass, AcademicSession, Term, LessonPlan, Subject, Student
-
-User = get_user_model()
-
-
-class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
-    """Customizes JWT default Serializer to add more information about user"""
-
-    @classmethod
-    def get_token(cls, user):
-        token = super().get_token(user)
-        token["username"] = user.username
-        token["email"] = user.email
-        token["first_name"] = user.first_name
-        token["last_name"] = user.last_name
-        token["image"] = user.image.url if user.image else None
-        token["gender"] = user.gender
-        token["phone"] = user.phone
-        token["role"] = user.role
-        # token["is_superuser"] = user.is_superuser
-        # token["is_staff"] = user.is_staff
-        print(token)
-        return token
-
-
-class CustomTokenRefreshSerializer(TokenRefreshSerializer):
-    refresh = serializers.CharField()
-    access = serializers.CharField(read_only=True)
-    token_class = RefreshToken
-
-    def validate(self, attrs):
-        refresh = self.token_class(attrs["refresh"])
-        print(refresh.payload)
-
-        data = {"access": str(refresh.access_token)}
-
-        # Decode the refresh token to get the user ID
-        try:
-            payload = refresh.payload
-            # Assuming 'user_id' is the key for the user ID in the payload
-            user_id = payload['user_id']
-        except KeyError:
-            raise serializers.ValidationError("Invalid refresh token.")
-
-        # Fetch the user from the database
-        User = get_user_model()
-        user = User.objects.get(id=user_id)
-
-        TIME_RANGE_SECONDS = 3600  # 1 hour reuse range
-        valid_token = RefreshTokenUsage.get_valid_token(
-            user, TIME_RANGE_SECONDS)
-
-        if valid_token:
-            # Reuse the existing refresh token
-            access_token = str(refresh.access_token)
-            return {
-                "access": access_token,
-                "refresh": valid_token,
-            }
-        else:
-            if api_settings.ROTATE_REFRESH_TOKENS:
-                # If no valid token, proceed with the default behavior and rotation
-                data = super().validate(attrs)
-
-                # Save the new refresh token in the database
-                RefreshTokenUsage.objects.create(
-                    user=user,
-                    refresh_token=data["refresh"],
-                )
-                if api_settings.BLACKLIST_AFTER_ROTATION:
-
-                    try:
-                        # Attempt to blacklist the given refresh token
-                        refresh.blacklist()
-                    except AttributeError:
-                        # If blacklist app not installed, `blacklist` method will
-                        # not be present
-                        pass
-
-                refresh.set_jti()
-                refresh.set_exp()
-                refresh.set_iat()
-
-                data["refresh"] = str(refresh)
-
-        return data
+from main.models import User, School, Teacher, SchoolClass, AcademicSession, Term, LessonPlan, Subject, Student
 
 
 class SchoolClassSerializer(serializers.ModelSerializer):
@@ -151,12 +66,6 @@ class TermSerializer(serializers.ModelSerializer):
         class Meta:
             model = School
             fields = '__all__'
-
-
-class TeacherSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Teacher
-        fields = '__all__'
 
 
 # class CreateTeacherSerializer(serializers.Serializer):
@@ -243,15 +152,20 @@ class TeacherSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         with transaction.atomic():
             request = self.context.get('request')
+            school = School.get_user_school(request.user)
             user_data = validated_data.pop('user')
-            user = User.objects.create(**user_data)
-            user.role = TEACHER  # Assuming 'TEACHER' is a predefined constant
+            user = User.objects.create(
+                **user_data, role=TEACHER, school=school)
             user.set_password(user.last_name)
             user.save()
-            print(School.get_user_school(request.user))
+
+            print(school)
+
             teacher = Teacher.objects.create(
-                user=user, school=School.get_user_school(request.user), **validated_data)
-            teacher.save()
+                user=user, school=school,
+                **validated_data
+            )
+            # teacher.save()
         return teacher
 
     def update(self, instance, validated_data):
