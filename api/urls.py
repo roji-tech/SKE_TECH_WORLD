@@ -10,7 +10,8 @@ from . import views
 
 
 router = routers.DefaultRouter()
-router.register('schools', views.SchoolViewSet, basename='schools'),
+router.register('schools', views.SchoolViewSet, basename='schools')
+router.register('subject', views.SubjectViewSet, basename='subjects')
 router.register('academic-sessions', views.AcademicSessionViewSet,
                 basename='academic_session')
 router.register('teachers', views.TeacherViewSet, basename='teachers')

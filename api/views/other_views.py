@@ -53,7 +53,7 @@ class SchoolClassViewSet(ModelViewSet):
 class AcademicSessionViewSet(ModelViewSet):
     queryset = AcademicSession.objects.all()
     serializer_class = AcademicSessionSerializer
-    permission_classes = [IsAdminOrReadOnly]
+    # permission_classes = [IsAdminOrReadOnly]
 
     def get_school_sessions(self, request):
         user = self.request.user
@@ -73,7 +73,7 @@ class AcademicSessionViewSet(ModelViewSet):
         return Response({'detail' : 'No current session found'}, status=status.HTTP_404_NOT_FOUND) 
     
     @action(detail=True, methods=['post'])
-    def make_session_current(self, request, pk=None):
+    def set_current(self, request, pk=None):
         academic_session = self.get_object()
         AcademicSession.objects.filter(school=academic_session.school).update(is_current=False)
         academic_session.is_current = True
@@ -81,7 +81,7 @@ class AcademicSessionViewSet(ModelViewSet):
         return Response({'detail' : 'Academic Session updated as current'})
     
     @action(detail=True, methods=['post'])
-    def create_terms_and_classes_manually(self, request, pk=None):
+    def create_terms_and_classes(self, request, pk=None):
         academic_session = self.get_object()
         academic_session.create_terms()
         academic_session.create_all_classes()
@@ -204,11 +204,6 @@ class TeacherViewSet(ModelViewSet):
         if user_form.is_valid() and teacher_form.is_valid():
             user_form.save()
             teacher_form.save()
-            NotificationManager.create_notification(
-                user=request.user,
-                action='updated',
-                object_instance=teacher
-            )
             return Response({"detail": "Teacher updated successfully!"})
         return Response({"errors": user_form.errors}, status=status.HTTP_400_BAD_REQUEST)
 
@@ -242,3 +237,17 @@ class SubjectViewSet(ModelViewSet):
     queryset = Subject.objects.all()
     serializer_class = SubjectSerializer
     permission_classes = [IsAdminOrIsTeacherOrReadOnly]
+
+    @action(detail=False, methods=['get'], permission_classes=[IsAuthenticated])
+    def get_school_subjects(self, request):
+        user = self.request.user
+        school = School.objects.filter(owner=user).first()
+        if school:
+            subjects = Subject.objects.filter(school_class__academic_session__school=school)
+            serializer = self.get_serializer(subjects, many=True)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        
+        else:
+            return Response({'detail' : 'No school found for the user'}, status=status.HTTP_400_BAD_REQUEST)
+    
+

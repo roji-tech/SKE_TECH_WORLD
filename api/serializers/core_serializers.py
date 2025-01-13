@@ -133,7 +133,7 @@ class SchoolSerializer(serializers.ModelSerializer):
         model = School
         fields = ['id', 'name', 'owner', 'address', 'phone', 'email', 'logo']
 
-        
+
 class TermSerializer(serializers.ModelSerializer):
     class Meta:
         model = Term
@@ -153,16 +153,18 @@ class AcademicSessionSerializer(serializers.ModelSerializer):
         read_only_fields = ['name', 'is_current', 'school_name']
 
     def create(self, validated_data):
-        pass
-
-
-    def update(self, instance, validated_data):
-        pass
-
+        academic_session = AcademicSession.objects.create(**validated_data)
+        academic_session.create_terms()
+        academic_session.create_all_classes()
+        return academic_session
     
+    def update(self, instance, validated_data):
+        instance = super().update(instance, validated_data)
+        instance.create_terms()
+        instance.create_all_classes()
+        return instance
 
-        # def get_school(self, obj):
-        #   return str(obj.school.name)
+
 
 
 
@@ -250,7 +252,10 @@ class StudentSerializer(serializers.ModelSerializer):
 class SubjectSerializer(serializers.ModelSerializer):
     class Meta:
         model = Subject
-        fields = ['name', 'teacher']
+        fields = ['name', 'teacher', 'school_class']
+
+
+
 
 
 class LessonPlanSerializer(serializers.ModelSerializer):
