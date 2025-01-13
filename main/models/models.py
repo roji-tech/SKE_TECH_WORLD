@@ -3,13 +3,13 @@ from django.contrib.auth import get_user_model
 from datetime import date
 
 from django.utils.crypto import get_random_string
-import main.models.models
+from django.db.models import UniqueConstraint
 from .users import ADMIN, OWNER, STUDENT, TEACHER
 from django.db import models, transaction
 import string
 from django.db.models import Q
 from datetime import datetime, timedelta
-from django.core.exceptions import ObjectDoesNotExist
+from django.core.exceptions import ObjectDoesNotExist, ValidationError
 
 User = get_user_model()
 
@@ -29,14 +29,35 @@ class School(models.Model):
     # class School(models.Model):
     name = models.CharField(max_length=50)
     owner = models.OneToOneField(
-        User, on_delete=models.CASCADE, related_name='school')
+        User, on_delete=models.CASCADE, related_name='myschool'
+    )
     address = models.TextField(default="")
     phone = models.CharField(max_length=15)
     email = models.EmailField()
-    logo = models.ImageField(upload_to='school_logos/',
-                             default="logo.png", null=True, blank=True,)
+    website = models.URLField(null=True, blank=True)
+    motto = models.CharField(max_length=100, default="")
+    about = models.TextField(default="")
+    logo = models.ImageField(
+        upload_to='school_logos/', default="logo.png", null=True, blank=True,
+    )
     created_at = models.DateTimeField(auto_now_add=True)
-    short_name = models.CharField(max_length=6, null=True, blank=True)
+    short_name = models.CharField(max_length=15, null=True, blank=True)
+    code = models.CharField(max_length=6, null=True, blank=True, unique=True)
+
+    def clean(self):
+        if self.short_name and self.short_name.startswith("SC") and (len(self.short_name) == 6 or len(self.short_name) == 5) and self.short_name[2:].isdigit():
+            raise ValidationError("Invalid short name format.")
+
+    def save(self, *args, **kwargs):
+        if not self.code:
+            last_school = School.objects.all().order_by('id').last()
+            if last_school and last_school.code:
+                last_code = int(last_school.code[2:])
+                new_code = f"SC{str(last_code + 1).zfill(4)}"
+            else:
+                new_code = "SC0001"
+            self.code = new_code
+        super().save(*args, **kwargs)
 
     def __str__(self):
         return self.name
@@ -44,9 +65,15 @@ class School(models.Model):
     @staticmethod
     def get_user_school(user):
         try:
-            if user.is_admin:
+            if user.is_owner:
                 # For owners or admins, return the school where they are the owner
                 return School.objects.filter(owner=user).first()
+            if user.is_admin:
+                try:
+                    return School.objects.filter(owner=user).first()
+                except:
+                    return user.school
+                # For admins, return the school associated with their admin profile
             elif user.is_teacher:
                 # For teachers, return the school associated with their teacher profile
                 return user.teacher_profile.school
@@ -68,7 +95,8 @@ class AcademicSession(models.Model):
         ordering = ['-is_current']
 
     school = models.ForeignKey(
-        School, on_delete=models.CASCADE, related_name='academic_sessions')
+        School, on_delete=models.CASCADE, related_name='academic_sessions'
+    )
     name = models.CharField(max_length=100)  # e.g., "2023/2024"
     start_date = models.DateField()
     end_date = models.DateField()
@@ -159,6 +187,7 @@ class AcademicSession(models.Model):
             Term.objects.get_or_create(
                 academic_session=self,
                 name=term_name,
+                school=self.school,
                 defaults={
                     'start_date': current_start_date,
                     'end_date': current_end_date,
@@ -188,7 +217,7 @@ class AcademicSession(models.Model):
                 if created:
                     for subject_name in default_subjects:
                         Subject.objects.get_or_create(
-                            school_class=school_class, name=subject_name
+                            school_class=school_class, name=subject_name, school=self.school
                         )
 
     def create_primary5_classes(self):
@@ -257,17 +286,18 @@ class AcademicSession(models.Model):
     @classmethod
     @transaction.atomic
     def create_default_setup(cls, session_name, start_date, end_date, school):
-        """Method to create a new academic session and all related data."""
-        academic_session, _ = cls.objects.get_or_create(
-            school=school,
-            name=session_name,
-            start_date=start_date,
-            end_date=end_date,
-            is_current=True
-        )
-        academic_session.create_terms()
-        academic_session.create_all_classes()
-        return academic_session
+        with transaction.atomic():
+            """Method to create a new academic session and all related data."""
+            academic_session, _ = cls.objects.get_or_create(
+                school=school,
+                name=session_name,
+                start_date=start_date,
+                end_date=end_date,
+                is_current=True
+            )
+            academic_session.create_terms()
+            academic_session.create_all_classes()
+            return academic_session
 
 
 class Term(models.Model):
@@ -276,8 +306,12 @@ class Term(models.Model):
         ('2nd', '2nd Term'),
         ('3rd', '3rd Term'),
     ]
+    school = models.ForeignKey(
+        School, on_delete=models.CASCADE, related_name='terms'
+    )
     academic_session = models.ForeignKey(
-        AcademicSession, on_delete=models.CASCADE, related_name='terms')
+        AcademicSession, on_delete=models.CASCADE, related_name='terms'
+    )
     name = models.CharField(max_length=4, choices=TERM_CHOICES)
     start_date = models.DateField(null=True, blank=True)
     end_date = models.DateField(null=True, blank=True)
@@ -305,9 +339,8 @@ class Teacher(models.Model):
         ordering = ['school', 'department']
 
     def get_school_teachers(request):
-        user = request.user
-        school = School.get_user_school(user)
-        return Teacher.objects.filter(school=school).select_related("user")
+        school = request.school
+        return Teacher.objects.filter(school=school).select_related('user', 'school')
 
     @property
     def full_name(self):
@@ -372,7 +405,7 @@ class SchoolClass(models.Model):
         max_length=12, choices=CLASS_CATEGORIES,
         blank=True, null=True, default=""
     )
-    class_capacity = models.IntegerField()
+    class_capacity = models.IntegerField(default=50)
 
     def __str__(self):
         return f"{self.get_name_display()} ({self.academic_session.name})"
@@ -394,15 +427,14 @@ class SchoolClass(models.Model):
 
     @classmethod
     def get_school_classes(cls, request):
-        user = request.user
-        school = School.get_user_school(user)
+        school = request.school
         print(SchoolClass.objects.filter(academic_session__school=school))
         return SchoolClass.objects.filter(academic_session__school=school)
 
     @classmethod
     def get_school_class_ids(cls, request):
-        user = request.user
-        school = School.get_user_school(user)
+        school = request.school
+        print("Current School ", school)
         print(SchoolClass.objects.filter(academic_session__school=school))
         # # Use a subquery to explicitly define the filtering
         return cls.objects.filter(
@@ -411,6 +443,9 @@ class SchoolClass(models.Model):
 
 
 class Subject(models.Model):
+    school = models.ForeignKey(
+        School, on_delete=models.CASCADE, related_name='subjects'
+    )
     school_class = models.ForeignKey(
         SchoolClass, on_delete=models.CASCADE, related_name='subjects')
     name = models.CharField(max_length=100)
@@ -434,8 +469,8 @@ class Subject(models.Model):
             QuerySet: A QuerySet of Subject objects.
         """
 
-        user = request.user
-        school = School.objects.filter(owner=user).first()
+        school = request.school
+        print(f"Current School {school}")
 
         if school:
             return Subject.objects.filter(school_class__academic_session__school=school)
@@ -445,10 +480,9 @@ class Subject(models.Model):
 
 
 class Student(models.Model):
-    reg_no = models.CharField(
-        max_length=20, null=True, blank=True, unique=True)
-    student_id = models.CharField(
-        max_length=20, unique=True, null=True, blank=True)
+    reg_no = models.CharField(max_length=20, null=True,
+                              blank=True)  # e.g., "STU-2023-001"
+    student_id = models.CharField(max_length=20, null=True, blank=True)
     school = models.ForeignKey(
         School, on_delete=models.CASCADE, related_name='students')
     user = models.OneToOneField(
@@ -462,8 +496,8 @@ class Student(models.Model):
         AcademicSession, on_delete=models.CASCADE, null=True, blank=True)  # e.g., 2023/2024
 
     def get_school_students(request):
-        user = request.user
-        school = School.get_user_school(user)
+        school = request.school
+        print(f"Current School {school}")
         return Student.objects.filter(school=school).select_related("user", "student_class").order_by("student_class")
 
     @property
@@ -487,10 +521,22 @@ class Student(models.Model):
                 self.date_of_birth.month, self.date_of_birth.day)
         )
 
+    class Meta:
+        constraints = [
+            # Ensure `student_id` is unique within the same school
+            UniqueConstraint(fields=['school', 'student_id'],
+                             name='unique_student_id_per_school'),
+            # Ensure `reg_no` is unique within the same school
+            UniqueConstraint(fields=['school', 'reg_no'],
+                             name='unique_reg_no_per_school'),
+            UniqueConstraint(fields=['school', 'user'],
+                             name='unique_user_per_school'),
+        ]
+
     def __str__(self):
         return f"{self.id} - {self.user.full_name}"
 
-    def generate_student_id(self):
+    def prev_generate_student_id(self):
         """Generates a unique student ID based on the school and admission year."""
         # Extract short school name or fallback to school ID
         school_short_name = self.school.short_name[:3].upper(
@@ -514,6 +560,33 @@ class Student(models.Model):
         # Combine to form the student ID
         return f"{school_short_name}{admission_year}-{new_number}"
 
+    def generate_student_id(self):
+        """Generates a unique student ID based on the school and admission year."""
+        # Extract short school name or fallback to school ID
+        prefix = "STU"
+
+        # Admission year (last 2 digits of current year)
+        if self.session_admitted:
+            admission_year = str(self.session_admitted.start_date.year)[-2:]
+        else:
+            admission_year = "25"
+
+        # Find the last student in the same school and admission year
+        last_student = Student.objects.filter(
+            school=self.school, session_admitted=self.session_admitted
+        ).order_by('student_id').last()
+
+        if last_student and last_student.student_id:
+            # Extract the last 3 digits and increment
+            last_number = int(last_student.student_id.split('-')[-1])
+            new_number = str(last_number + 1).zfill(3)
+        else:
+            new_number = "001"  # Start from 001 if no previous student
+
+        print(f"{prefix}-{admission_year}-{new_number}")
+        # Combine to form the student ID
+        return f"{prefix}-{admission_year}-{new_number}"
+
     def generate_unique_student_id(self):
         max_attempts = 5
         attempts = 0
@@ -532,8 +605,8 @@ class Student(models.Model):
                 continue  # Continue to the next iteration for recovery
 
         # If unable to generate a unique ID after several attempts
-        raise Exception(
-            "Unable to generate a unique student ID after multiple attempts.")
+            # raise Exception(
+            #         "Unable to generate a unique student ID after multiple attempts.")
 
     def generate_unique_email(self):
         """Generates a unique dynamic email for the student."""
@@ -583,6 +656,9 @@ class Student(models.Model):
 
 
 class GmeetClass(models.Model):
+    school = models.ForeignKey(
+        School, on_delete=models.CASCADE, related_name='gmeet_classes'
+    )
     title = models.CharField(max_length=50, null=True, blank=True)
     subject = models.ForeignKey(
         Subject, on_delete=models.SET_NULL, null=True, blank=True, related_name='gmeet_classes')
@@ -652,6 +728,9 @@ class GmeetClass(models.Model):
 
 
 class LessonPlan(models.Model):
+    school = models.ForeignKey(
+        School, on_delete=models.CASCADE, related_name='lesson_plans'
+    )
     title = models.CharField(max_length=50, null=True, blank=True)
     school_class = models.ForeignKey(SchoolClass, on_delete=models.CASCADE)
     subject = models.ForeignKey(

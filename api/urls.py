@@ -1,12 +1,12 @@
 from django.urls import path, include
 
 from rest_framework_nested import routers
-from rest_framework.routers import DefaultRouter
+# from rest_framework.routers import DefaultRouter
 from rest_framework_simplejwt.views import token_refresh, token_verify, token_obtain_pair
 
 from api.views import LogoutView
-from api.views.other_views import TeacherViewSet
-from . import views
+from api.views.auth_views import get_school_info
+from api import views
 
 
 router = routers.DefaultRouter()
@@ -16,6 +16,7 @@ router.register('academic-sessions', views.AcademicSessionViewSet,
                 basename='academic_session')
 router.register('teachers', views.TeacherViewSet, basename='teachers')
 router.register('students', views.StudentViewSet, basename='students')
+router.register('classes', views.SchoolClassViewSet, basename='classes')
 
 
 # domains_router = routers.NestedSimpleRouter(router, r'domains', lookup='domain')
@@ -33,18 +34,16 @@ school_router.register('classes', views.SchoolClassViewSet,
 # user_router = routers.NestedSimpleRouter(router, 'users', lookup='user')
 # user_router.register('custom', views.CustomUserViewSet, basename='user-custom')
 
-router.register("auth/users", views.CustomUserViewSet)
+# router.register("auth/users", views.CustomUserViewSet)
 
-
-router.register('teachers', TeacherViewSet, basename='teacher')
-
-urlpatterns = router.urls
 
 urlpatterns = [
     path('', include(router.urls)),
+    path('school_info/', get_school_info),
+
     #     path('create-teacher/', views.CreateTeacherView.as_view(), name='create-teacher'),
 
-    # path("auth/", include("djoser.urls")),
+    path("auth/", include("djoser.urls")),
     path("auth/", include("djoser.urls.jwt")),
     path("auth/logout/", LogoutView.as_view()),
 
@@ -56,3 +55,5 @@ urlpatterns = [
     #      name='register_school'),
 
 ]
+
+urlpatterns += router.urls

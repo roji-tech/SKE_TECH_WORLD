@@ -2,7 +2,13 @@ from django.contrib import admin
 from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
-from django.contrib.auth import views as auth_views
+
+
+# from djoser.views import UserViewSet
+
+
+# router = routers.DefaultRouter()
+# router.register("api/v1/auth/users/", UserViewSet)
 
 
 urlpatterns = [
@@ -11,8 +17,9 @@ urlpatterns = [
     path('library/', include("library.urls")),
     path('myquiz/', include("myquiz.urls")),
     path('report/', include('report.urls')),
-    path('api/v1/', include('api.urls'))
-] 
+    path("api/v1/auth/", include("djoser.urls")),
+    path('<school_code>/api/v1/', include('api.urls'))
+]
 
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL,

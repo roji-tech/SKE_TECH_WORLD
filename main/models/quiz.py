@@ -17,9 +17,10 @@ from django.db.models.signals import pre_save
 
 from django.db.models import Q
 
+from main.quiz.utils import unique_slug_generator
 from model_utils.managers import InheritanceManager
 from course.models import Course
-from .utils import *
+from ..utils import *
 
 CHOICE_ORDER_OPTIONS = (
     ("content", _("Content")),
@@ -151,7 +152,7 @@ class Quiz(models.Model):
 
 def quiz_pre_save_receiver(sender, instance, *args, **kwargs):
     if not instance.slug:
-        instance.slug = unique_slug_generator(instance)
+        instance.slug = unique_slug_generator()(instance)
 
 
 pre_save.connect(quiz_pre_save_receiver, sender=Quiz)
@@ -554,5 +555,3 @@ class Choice(models.Model):
     class Meta:
         verbose_name = _("Choice")
         verbose_name_plural = _("Choices")
-
-
